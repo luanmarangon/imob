@@ -4,7 +4,8 @@
     <div class="container" style="height: 100%;">
         <div class="row align-items-center" style="height: 100%;">
             <div class="col-8">
-                <p class="main_slide_content">Encontre o <b>imóvel ideal</b> para você e <b>sua família</b> morar na praia!</p>
+                <p class="main_slide_content">Encontre o <b>imóvel ideal</b> para você e <b>sua família</b> morar na
+                    praia!</p>
                 <a href="#" class="btn btn-front btn-lg">Quero <b>Alugar</b></a>
                 <a href="#" class="btn btn-front btn-lg">Quero <b>Comprar</b></a>
             </div>
@@ -149,7 +150,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h2 class="main_properties_item_title"><a href="<?= url("/propriedades"); ?>"><span class="reference"><?= CONF_IMOVEL_TEST;?></span> - Linda Casa no Campeche</a></h2>
+                            <h2 class="main_properties_item_title"><a href="<?= url("/propriedades"); ?>"><span class="reference"><?= CONF_IMOVEL_TEST; ?></span> - Linda Casa no Campeche</a></h2>
                             <p class="main_properties_item_category">Imóvel Residencial</p>
                             <p class="main_properties_item_type">Apartamento - Campeche <i class="icon-icon-location-arrow"></i></p>
                             <p class="main_properties_item_price text-front">R$ 400.000,00</p>
@@ -203,7 +204,8 @@
                         </div>
 
                         <div class="card-body">
-                            <h2 class="main_properties_item_title"><a href="<?= url("/propriedades"); ?>"><span class="reference"><?= CONF_IMOVEL_TEST;?></span> - Lindo Apartamento em São Paulo</a></h2>
+                            <h2 class="main_properties_item_title"><a href="<?= url("/propriedades"); ?>"><span class="reference"><?= CONF_IMOVEL_TEST; ?></span> - Lindo Apartamento em São
+                                    Paulo</a></h2>
                             <p class="main_properties_item_category">Imóvel Residencial</p>
                             <p class="main_properties_item_type">Apartamento - Campeche <i class="icon-icon-location-arrow"></i></p>
                             <p class="main_properties_item_price text-front">R$ 2.000,00/mês</p>

@@ -1,4 +1,6 @@
 <?php
+
+
 ob_start();
 
 require __DIR__ . "/vendor/autoload.php";
@@ -9,7 +11,6 @@ require __DIR__ . "/vendor/autoload.php";
 
 use Source\Core\Session;
 use CoffeeCode\Router\Router;
-
 
 $session = new Session();
 $route = new Router(url(), ":");
@@ -32,23 +33,23 @@ $route->get("/termos", "Web:terms");
  * ERROR ROUTES
  */
 
- $route->namespace("Source\App")->group("/ops");
- $route->get("/{errcode}", "Web:error");
- 
- /**
-  * ROUTE
-  */
- 
- $route->dispatch();
- 
- /**
-  * ERROR REDIRECT
-  */
- 
- if ($route->error()) {
-   $route->redirect("/ops/{$route->error()}");
- }
- 
+$route->namespace("Source\App")->group("/ops");
+$route->get("/{errcode}", "Web:error");
+
+/**
+ * ROUTE
+ */
+
+$route->dispatch();
+
+/**
+ * ERROR REDIRECT
+ */
+
+if ($route->error()) {
+  $route->redirect("/ops/{$route->error()}");
+}
+
 
 
 

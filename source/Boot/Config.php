@@ -4,7 +4,7 @@
  * DATA BASE
  */
 
-if (strpos($_SERVER['HTTP_HOST'], 'localhost')) {
+if (strpos($_SERVER['HTTP_HOST'], "localhost")) {
     define("CONF_DB_HOST", "localhost");
     define("CONF_DB_USER", "root");
     define("CONF_DB_PASS", "");
@@ -12,7 +12,7 @@ if (strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 } else {
     define("CONF_DB_HOST", "localhost");
     define("CONF_DB_USER", "root");
-    define("CONF_DB_PASS", "1111");
+    define("CONF_DB_PASS", "");
     define("CONF_DB_NAME", "imob");
 }
 

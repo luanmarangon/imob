@@ -5,9 +5,6 @@ namespace Source\Models;
 use Source\Core\Model;
 
 /**
- * FSPHP | Class User Active Record Pattern
- *
- * @author Robson V. Leite <cursos@upinside.com.br>
  * @package Source\Models
  */
 class User extends Model
@@ -20,7 +17,7 @@ class User extends Model
         parent::__construct("users", ["id"], ["first_name", "last_name", "email", "password", "level", "office"]);
     }
 
-   
+
     public function bootstrap(
         string $firstName,
         string $lastName,

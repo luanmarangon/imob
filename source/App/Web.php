@@ -2,20 +2,73 @@
 
 namespace Source\App;
 
+use Source\Models\Type;
+use Source\Models\User;
 use Source\Core\Controller;
+use Source\Models\Category;
+use Source\Models\Addresses;
+use Source\Models\Customers;
+use Source\Models\Properties;
+use Source\Models\OwnersContacts;
+use Source\Models\PropertiesFeatures;
+use Source\Models\PropertiesComfortable;
+use Source\Models\Transactions;
 
 class Web extends Controller
 {
     public function __construct()
     {
         //  COLOCANDO O SISTEMA EM MANUTENÇÃO
-        //    redirect("/ops/manutencao");
+        // redirect("/ops/manutencao");
         parent::__construct(__DIR__ . "/../../themes/" . CONF_VIEW_THEME . "/");
+
+        // $teste = (new Type())->create();
+        // $teste = (new User())->findById(5)->destroy();
+        // $teste = (new User())->bootstrap("Jessica Fernanda", "Marangon", "jeg.fernanda@marangon.com.br", "12345678", "Administrador", "CEO")->save();
+        // $teste = (new Type())->lastId();
+        // $delete = (new Type())->delete("id=:id", "id=7");
+        // $teste = (new Addresses())->find()->fetch(true);
+        // $teste['count'] = (new Addresses())->find("complement=:complement", "complement=Casa")->count();
+        // $teste['count_full']  = (new Addresses())->find()->count();
+        // $teste["teste"] = (new OwnersContacts())->find()->fetch();
+        // $ad = (new Addresses())->create(["teste", "10", "a", "b", "c"])->save();
+
+        // $teste["Imovel"] = (new Properties())->find()->fetch(true);
+        // $teste["Owners"] = (new Customers())->find()->fetch(true);
+        // $teste["newContact"] = (new PropertiesComfortable())->findByProperties(3);
+        // $teste["user"] = (new User())->findByEmail("marangon@imob.com.br")->teste();
+        // $teste["categories"] = (new Category())->find()->fetch(true);
+        // $teste["last"] = (new Category())->lastId();
+        // $teste["categories"] = (new Customers())->find()->fetch(true);
+        // $teste["last"] = (new Customers())->lastId();
+        // $teste["categories"] = (new PropertiesFeatures())->find();
+        // $teste["last"] = (new PropertiesComfortable())->lastPropertId();
+        $teste["transactions"] = (new Transactions())->findTransactionsType("venda");
+        $teste["last"] = (new Transactions())->lastId();
+        // var_dump(
+        //     $teste
+        // );
+
+        // for ($i = 0; $i < 30; $i++) {
+        //     var_dump($teste["categories"][$i]);
+        // }
+
+        for ($i = 0; $i < $teste["last"] - 1; $i++) {
+            var_dump(
+                $teste["last"],
+                $teste["transactions"]
+                // $ad
+            );
+        }
+
+        // exit();
     }
 
 
     public function home(): void
     {
+
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
             CONF_SITE_DESC,
@@ -84,20 +137,19 @@ class Web extends Controller
         ]);
     }
 
-public function terms()
-{
-    $head = $this->seo->render(
-        CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
-        CONF_SITE_DESC,
-        url("/termos"),
-        theme("/assets/images/share.png")
-    );
+    public function terms()
+    {
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/termos"),
+            theme("/assets/images/share.png")
+        );
 
-    echo $this->view->render("terms", [
-        "head" => $head
-    ]);
-    
-}
+        echo $this->view->render("terms", [
+            "head" => $head
+        ]);
+    }
 
 
 
@@ -148,6 +200,4 @@ public function terms()
             "error" => $error
         ]);
     }
-
-
 }
