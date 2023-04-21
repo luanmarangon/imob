@@ -60,7 +60,7 @@ define("CONF_IMOVEL_TEST", "IMOB0091");
 /**
  * SOCIAL
  */
-define("CONF_SOCIAL_TWITTER_CREATOR", "marangonLuan");
+define("CONF_SOCIAL_TWITTER_CREATOR", "LuanMarangon");
 define("CONF_SOCIAL_TWITTER_PUBLISHER", "#");
 define("CONF_SOCIAL_FACEBOOK_APP", "#");
 define("CONF_SOCIAL_FACEBOOK_PAGE", "marangonluan");
@@ -69,6 +69,7 @@ define("CONF_SOCIAL_GOOGLE_PAGE", "#");
 define("CONF_SOCIAL_GOOGLE_AUTHOR", "#");
 define("CONF_SOCIAL_INSTAGRAM_PAGE", "luan_marangon");
 define("CONF_SOCIAL_YOUTUBE", "#");
+define("CONF_API_GOOGLE_MAPS", "AIzaSyChwUAYltIcuV82BhrVuiGkzrByR8ve19Y");
 
 
 /**
@@ -91,8 +92,8 @@ define("CONF_PASSWD_OPTION", ["cost" => 10]);
 define("CONF_VIEW_PATH", __DIR__ . "/../../shared/views");
 define("CONF_VIEW_EXT", "php");
 define("CONF_VIEW_THEME", "imobweb");
-// define("CONF_VIEW_APP", "cafeapp");
-// define("CONF_VIEW_ADMIN", "cafeadm");
+// define("CONF_VIEW_APP", "imobapp");
+define("CONF_VIEW_ADMIN", "imobadm");
 
 /**
  * UPLOAD

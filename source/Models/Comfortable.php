@@ -3,6 +3,9 @@
 namespace Source\Models;
 
 use Source\Core\Model;
+use Source\Models\PropertiesComfortable;
+
+
 
 class Comfortable extends Model
 {

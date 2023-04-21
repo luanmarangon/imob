@@ -1,0 +1,21 @@
+<div class="dash_content_sidebar">
+    <h3 class="icon-home">Imóveis\Detalhes <a href="javascript:history.back()"><span class=" icon-reply"></span></a>
+    </h3>
+    <p class="dash_content_sidebar_desc">Cômodos, características e estruturas do seu imóvel? Está tudo aqui...</p>
+
+    <nav>
+        <?php
+        $nav = function ($icon, $href, $title) use ($app) {
+            $active = ($app == $href ? "active" : null);
+            $url = url("/admin/{$href}");
+            return "<a class=\"icon-{$icon} radius {$active}\" href=\"{$url}\">{$title}</a>";
+        };
+
+        echo $nav("laptop", "properties/properties/{$propertie->reference}/details/home", "Dashboard");
+        echo $nav("bed", "properties/properties/{$propertie->reference}/details/comfortable", "Cômodos");
+        echo $nav("car", "properties/properties/{$propertie->reference}/details/features", "Características");
+        echo $nav("building-o", "properties/properties/{$propertie->reference}/details/structures", "Estruturas");
+        // echo $nav("plus-circle", "proprietarios/create", "Novo Proprietário");
+        ?>
+    </nav>
+</div>

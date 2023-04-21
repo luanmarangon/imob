@@ -19,12 +19,14 @@ a {
   --font-medium: 1.2em;
   --font-large: 1.4em;
   --font-max: 2em;
+  --color-title: #2431A3;
+  --color-subtitle: #6D6978;
   --color-default: #f25955;
+  --color-default-admin: #555555;
   --color-green: #36BA9B;
   --color-blue: #39AED9;
   --color-yellow: #F5B946;
   --color-red: #D94352;
-  /* --color-light: rgba(243, 246, 250, 1); */
   --color-light: #F3F6FA;
   --color-dark: #1D2025;
   --weight-light: 300;
@@ -53,6 +55,12 @@ a {
 }
 
 /*ELEMENTS*/
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 img {
   max-width: 100%;
 }
@@ -158,18 +166,22 @@ input:-webkit-autofill {
   0% {
     -webkit-transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(360deg);
   }
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 /*CONTAINER*/
 .content,
 .container {

@@ -2,17 +2,18 @@
 
 namespace Source\App;
 
-use Source\Models\Type;
-use Source\Models\User;
+use Source\Models\Auth;
+use Source\Models\Images;
 use Source\Core\Controller;
 use Source\Models\Category;
-use Source\Models\Addresses;
-use Source\Models\Customers;
+use Source\Models\Tributes;
 use Source\Models\Properties;
-use Source\Models\OwnersContacts;
-use Source\Models\PropertiesFeatures;
-use Source\Models\PropertiesComfortable;
+use Source\Models\Structures;
+use Source\Models\Comfortable;
 use Source\Models\Transactions;
+use Source\Models\PropertiesStructures;
+use Source\Models\PropertiesComfortable;
+use Source\Models\User;
 
 class Web extends Controller
 {
@@ -22,52 +23,30 @@ class Web extends Controller
         // redirect("/ops/manutencao");
         parent::__construct(__DIR__ . "/../../themes/" . CONF_VIEW_THEME . "/");
 
-        // $teste = (new Type())->create();
-        // $teste = (new User())->findById(5)->destroy();
-        // $teste = (new User())->bootstrap("Jessica Fernanda", "Marangon", "jeg.fernanda@marangon.com.br", "12345678", "Administrador", "CEO")->save();
-        // $teste = (new Type())->lastId();
-        // $delete = (new Type())->delete("id=:id", "id=7");
-        // $teste = (new Addresses())->find()->fetch(true);
-        // $teste['count'] = (new Addresses())->find("complement=:complement", "complement=Casa")->count();
-        // $teste['count_full']  = (new Addresses())->find()->count();
-        // $teste["teste"] = (new OwnersContacts())->find()->fetch();
-        // $ad = (new Addresses())->create(["teste", "10", "a", "b", "c"])->save();
+        // $teste = (new PropertiesComfortable())->find("properties_id = :id", "id=3")->fetch(true);
+        // $teste2 = (new Comfortable())->find()->fetch(true);
 
-        // $teste["Imovel"] = (new Properties())->find()->fetch(true);
-        // $teste["Owners"] = (new Customers())->find()->fetch(true);
-        // $teste["newContact"] = (new PropertiesComfortable())->findByProperties(3);
-        // $teste["user"] = (new User())->findByEmail("marangon@imob.com.br")->teste();
-        // $teste["categories"] = (new Category())->find()->fetch(true);
-        // $teste["last"] = (new Category())->lastId();
-        // $teste["categories"] = (new Customers())->find()->fetch(true);
-        // $teste["last"] = (new Customers())->lastId();
-        // $teste["categories"] = (new PropertiesFeatures())->find();
-        // $teste["last"] = (new PropertiesComfortable())->lastPropertId();
-        $teste["transactions"] = (new Transactions())->findTransactionsType("venda");
-        $teste["last"] = (new Transactions())->lastId();
-        // var_dump(
-        //     $teste
-        // );
-
-        // for ($i = 0; $i < 30; $i++) {
-        //     var_dump($teste["categories"][$i]);
+        // foreach ($teste as $test) {
+        //     var_dump($test);
         // }
+        // var_dump($teste2);
 
-        for ($i = 0; $i < $teste["last"] - 1; $i++) {
-            var_dump(
-                $teste["last"],
-                $teste["transactions"]
-                // $ad
-            );
-        }
-
-        // exit();
+        // (new User())->bootstrap("Luan", "Marangon", "luan.limarangon@gmail.com", "M4r4ng0n210990", "Administrador", "Manager")->save();
     }
 
 
     public function home(): void
     {
+        $properties = (new Properties())->find(
+            "active = :active",
+            "active=1"
+        )
+            ->limit(8)
+            ->order("updated_at ASC")
+            ->fetch(true);
 
+        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -77,7 +56,10 @@ class Web extends Controller
         );
 
         echo $this->view->render("home", [
-            "head" => $head
+            "head" => $head,
+            "properties" => $properties,
+            "propertiComfortable" => $propertiComfortable,
+            "propertiStructures" => $propertiStructures
         ]);
     }
 
@@ -96,8 +78,38 @@ class Web extends Controller
         ]);
     }
 
-    public function filter()
+    public function filter(array $data)
     {
+        // var_dump($data);
+        if (empty($data)) {
+            redirect("/error");
+        }
+        if ($data['type'] != 'Aluguel' && $data['type'] != 'Venda') {
+            redirect("/error");
+        } else {
+            if ($data['type'] == 'Aluguel') {
+                $type = "Alugar";
+            } else {
+                $type = "Comprar";
+            }
+        }
+
+        $transactionType = (new Transactions())->find(
+            "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
+            "type={$data['type']}"
+        )->fetch();
+
+        $properties = (new Properties())->find(
+            "active = :active",
+            "active=1"
+        )
+            ->limit(8)
+            ->order("updated_at ASC")
+            ->fetch(true);
+
+        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
             CONF_SITE_DESC,
@@ -106,12 +118,78 @@ class Web extends Controller
         );
 
         echo $this->view->render("filter", [
-            "head" => $head
+            "head" => $head,
+            "transactionType" => $transactionType,
+            "properties" => $properties,
+            "propertiComfortable" => $propertiComfortable,
+            "propertiStructures" => $propertiStructures,
+            "type" => $type,
+            "data" => $data['type']
         ]);
     }
 
-    public function property()
+    public function emphasis()
     {
+
+        $properties = (new Properties())->find(
+            "active = :active",
+            "active=1"
+        )
+            ->limit(8)
+            ->order("updated_at ASC")
+            ->fetch(true);
+
+        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/propriedades"),
+            theme("/assets/images/share.png")
+        );
+
+        echo $this->view->render("emphasis", [
+            "head" => $head,
+            "properties" => $properties,
+            "propertiComfortable" => $propertiComfortable,
+            "propertiStructures" => $propertiStructures,
+        ]);
+    }
+    public function property(array $data)
+    {
+
+        $properti = (new Properties())->findById($data['id']);
+        if (!$properti) {
+            redirect("/404");
+        }
+
+        $propertiesImages = (new Images())->find(
+            "properties_id = :properties",
+            "properties={$properti->id}"
+        )
+            ->limit(8)
+            ->order("created_at ASC")
+            ->fetch(true);
+
+        $propertiComfortable = (new PropertiesComfortable())->find(
+            "properties_id = :properties",
+            "properties={$properti->id}"
+        )
+            ->order("quantity DESC")
+            ->fetch(true);
+
+        $propertiStructures  = (new PropertiesStructures())->find(
+            "properties_id = :properties",
+            "properties={$properti->id}"
+        )->fetch(true);
+
+        $propertiTributes = (new Tributes())->find(
+            "properties_id = :properties AND exercise = year(NOW())",
+            "properties={$properti->id}"
+        )->fetch(true);
+
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
             CONF_SITE_DESC,
@@ -120,20 +198,13 @@ class Web extends Controller
         );
 
         echo $this->view->render("property", [
-            "head" => $head
-        ]);
-    }
-    public function propertyReferece()
-    {
-        $head = $this->seo->render(
-            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
-            CONF_SITE_DESC,
-            url("/propriedades"),
-            theme("/assets/images/share.png")
-        );
+            "head" => $head,
+            "properti" => $properti,
+            "propertiesImages" => $propertiesImages,
+            "propertiComfortable" => $propertiComfortable,
+            "propertiStructures" => $propertiStructures,
+            "propertiTributes" => $propertiTributes
 
-        echo $this->view->render("property", [
-            "head" => $head
         ]);
     }
 
@@ -150,6 +221,110 @@ class Web extends Controller
             "head" => $head
         ]);
     }
+
+    // public function login(array $data)
+    // {
+
+    //     if (Auth::user()) {
+    //         redirect("/admin");
+    //     }
+
+    //     if (!empty($data['csrf'])) {
+    //         if (!csrf_verify($data)) {
+    //             $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
+    //             echo json_encode($json);
+    //             return;
+    //         }
+
+    //         // if (request_limit("weblogin", 3, 60 * 5)) {
+    //         //     $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();
+    //         //     echo json_encode($json);
+    //         //     return;
+    //         // }
+
+    //         if (empty($data['email'] || empty($data['password']))) {
+    //             $json['message'] = $this->message->warning("Informe seu email e senha para entrar")->render();
+    //             echo json_encode($json);
+    //             return;
+    //         }
+    //         $save = (!empty($data['save']) ? true : false);
+    //         $auth = new Auth();
+    //         $login = $auth->login($data['email'], $data['password'], $save);
+
+    //         if ($login) {
+    //             $this->message->success("Seja bem-vindo(a) de volta " . Auth::user()->first_name . " " . Auth::user()->last_name . "!")->flash();
+    //             $json['redirect'] =  redirect("/admin");
+    //         } else {
+    //             $json['message'] = $auth->message()->before("Ooops! ")->after("!")->render();
+    //         }
+
+    //         echo json_encode($json);
+    //         return;
+    //     }
+
+    //     $head = $this->seo->render(
+    //         "Entrar - " . CONF_SITE_NAME,
+    //         CONF_SITE_DESC,
+    //         url("/entrar"),
+    //         theme("/assets/images/share.jpg")
+    //     );
+
+    //     echo $this->view->render("login", [
+    //         "head" => $head,
+    //         "cookie" => filter_input(INPUT_COOKIE, "authEmail")
+    //     ]);
+
+
+    //     // if (Auth::user()) {
+    //     //     redirect("/app");
+    //     // }
+
+    //     // if (!empty($data['csrf'])) {
+    //     //     if (!csrf_verify($data)) {
+    //     //         $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
+    //     //         echo json_encode($json);
+    //     //         return;
+    //     //     }
+
+    //     //     // if (request_limit("weblogin", 3, 60 * 5)) {
+    //     //     //     $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();
+    //     //     //     echo json_encode($json);
+    //     //     //     return;
+    //     //     // }
+
+    //     //     if (empty($data['email'] || empty($data['password']))) {
+    //     //         $json['message'] = $this->message->warning("Informe seu email e senha para entrar")->render();
+    //     //         echo json_encode($json);
+    //     //         return;
+    //     //     }
+    //     //     $save = (!empty($data['save']) ? true : false);
+    //     //     $auth = new Auth();
+    //     //     $login = $auth->login($data['email'], $data['password'], $save);
+    //     //     // var_dump($save, $auth, $login);
+
+    //     //     if ($login) {
+    //     //         $this->message->success("Seja bem-vindo(a) de volta " . Auth::user()->first_name . " " . Auth::user()->last_name . "!")->flash();
+    //     //         $json['redirect'] = url("/app");
+    //     //     } else {
+    //     //         $json['message'] = $auth->message()->before("Ooops! ")->after("")->render();
+    //     //     }
+
+    //     //     echo json_encode($json);
+    //     //     return;
+    //     // }
+
+    //     // $head = $this->seo->render(
+    //     //     "Entrar - " . CONF_SITE_NAME,
+    //     //     CONF_SITE_DESC,
+    //     //     url("/entrar"),
+    //     //     theme("/assets/images/share.jpg")
+    //     // );
+
+    //     // echo $this->view->render("login", [
+    //     //     "head" => $head,
+    //     //     "cookie" => filter_input(INPUT_COOKIE, "authEmail")
+    //     // ]);
+    // }
 
 
 
@@ -184,8 +359,6 @@ class Web extends Controller
                 $error->link = url_back();
                 break;
         }
-
-
 
         $head = $this->seo->render(
             "{$error->code} | {$error->title}",

@@ -3,8 +3,11 @@
 <div class="main_property">
     <div class="main_property_header light py-5">
         <div class="container">
-            <h1 class="text-front"><small class="reference"><?= CONF_IMOVEL_TEST;?></small> - Linda Casa no Rio Tavares com vista para o Mar</h1>
-            <p class="mb-0">Imóvel Residencial - Apartamento - Campeche</p>
+            <h1 class="text-front"><small class="reference"><?= $properti->reference; ?></small> - Lindo imóvel
+                localizado no <?= $properti->address()->district; ?></h1>
+            <p class="mb-0">Imóvel <?= $properti->category()->category; ?> - <?= $properti->type()->type; ?> -
+                <?= $properti->address()->city ?>-<?= $properti->address()->state ?>
+            </p>
         </div>
     </div>
 
@@ -21,18 +24,18 @@
                             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                         </div>
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="<?= theme("assets/images/properties/1/1.jpg"); ?>" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="<?= theme("assets/images/properties/1/2.jpg"); ?>" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="<?= theme("assets/images/properties/1/3.jpg"); ?>" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="<?= theme("assets/images/properties/1/4.jpg"); ?>" class="d-block w-100" alt="...">
-                            </div>
+                            <?php if (!empty($propertiesImages)) : ?>
+                                <?php foreach ($propertiesImages as $images) : ?>
+                                    <div class="carousel-item active">
+                                        <img src="<?= image($images->path, 1280); ?>" class="d-block w-100" alt="<?= $images->identification; ?>" title="<?= $images->identification; ?>">
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <div class="carousel-item active">
+                                    <img src="<?= theme("/assets/images/semImagem.png"); ?>" class="d-block w-100" alt="...">
+                                </div>
+
+                            <?php endif; ?>
 
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -46,56 +49,71 @@
                     </div>
 
                     <div class="main_property_content_price text-muted pt-4">
-                        <p class="main_property_content_price_small">IPTU: R$ 100,00</p>
-                        <p class="main_property_content_price_big">Valor de Aluguel: R$ 2.300,00/mês</p>
+                        <p class="main_property_content_price_small">IPTU:
+                            <?= $propertiTributes ? str_price($propertiTributes) : "Não Informado"; ?></p>
+                        <p class="main_property_content_price_big">Valor de
+                            <?= $properti->transactionsProperties($properti->id)->type; ?>:
+                            <?= str_price($properti->transactionsProperties($properti->id)->value); ?><?= $properti->transactionsProperties($properti->id)->type === "Aluguel" ? "/ mês" : ""; ?>
+                        </p>
                     </div>
 
                     <div class="main_property_content_description">
                         <h2 class="text-front">Conheça mais o imóvel</h2>
+                        <?php if ($properti->description) : ?>
+                            <p>
+                                <?= $properti->description; ?>
+                            </p>
+                        <?php else : ?>
+                            <p>
+                                Lindo imóvel <?= $properti->category()->category; ?>, localizado no bairro
+                                <?= $properti->address()->district; ?>, na cidade de
+                                <?= $properti->address()->city ?>-<?= $properti->address()->state ?>
+                            </p>
+                        <?php endif; ?>
                         <p>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            Repudiandae, doloremque sint maiores deserunt, accusantium,
-                            mollitia nisi autem possimus voluptatem sunt ducimus harum
-                            nihil. Doloremque optio dolorum itaque voluptas alias
-                            exercitationem!
+                            Esperamos que essas informações ajudem a conhecer melhor o imóvel e a decidir se ele atende
+                            às suas necessidades
+                            e expectativas. Caso haja alguma dúvida ou informação adicional que gostaria de saber, por
+                            favor,
+                            não hesite em entrar em contato.
                         </p>
                     </div>
                     <div class="main_property_content_features">
                         <h2 class="text-front">Características</h2>
                         <table class="table table-striped">
                             <tbody>
-                                <?php
-                                for ($i = 0; $i < 5; $i++) {
-                                ?>
+                                <?php foreach ($propertiComfortable as $comfortable) : ?>
                                     <tr>
-                                        <td>Caracteristica_1</td>
-                                        <td>Quantidade_1</td>
+                                        <td><?= $comfortable->comfortable()->convenient; ?>
+                                        </td>
+                                        <td><?= $comfortable->quantity; ?></td>
                                     </tr>
-                                <?php
-                                }
-                                ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="main_property_content_structure">
                         <h2 class="text-front">Estrutura</h2>
-                        <?php
-                        for ($i = 1; $i < 11; $i++) {
-                        ?>
 
-                            <button class="main_property_content_structure_item icon-check">Estrutura_<?= $i; ?></button>
 
-                        <?php
-                        }
-                        ?>
-
+                        <?php foreach ($propertiStructures as $structures) : ?>
+                            <!-- <div class="d-flex"> -->
+                            <button class="main_property_content_structure_item icon-check"><?= $structures->structures()->structure; ?></button>
+                            <!-- <label for=""><?= $structures->structures()->structure; ?> : </label> -->
+                            <button class="main_property_content_structure_item icon-check"><?= $structures->footage; ?></button>
+                            <!-- </div> -->
+                        <?php endforeach; ?>
 
                     </div>
 
                     <div class="main_property_content_location">
                         <h2 class="text-front">Localização</h2>
-                        <!-- colocar a Localização -->
+                        <hr>
+                        <input type="hidden" id="latitude" value="<?= $properti->address()->latitude ?>">
+                        <input type="hidden" id="longitute" value="<?= $properti->address()->longitude ?>">
+                        <div class="main_property_content_location_maps" id="map"></div>
+
                     </div>
 
 
@@ -104,26 +122,28 @@
                 </div>
                 <di class="col-12 col-lg-4">
 
-                    <a href="https://api.whatsapp.com/send?phone=<?= CONF_COMPANY_ATTENDANCE_WHATS; ?>&text=<?= CONF_COMPANY_ATTENDANCE_MENSAGE; ?> <?=CONF_IMOVEL_TEST;?>" target="_blank" class="btn btn-success btn-lg icon-whatsapp mb-3 w-100">Converse com um Corretor</a>
+                    <a href="https://api.whatsapp.com/send?phone=<?= CONF_COMPANY_ATTENDANCE_WHATS; ?>&text=<?= CONF_COMPANY_ATTENDANCE_MENSAGE; ?> <?= $properti->reference; ?>" target="_blank" class="btn btn-success btn-lg icon-whatsapp mb-3 w-100">Converse com um
+                        Corretor</a>
 
                     <div class="main_property_contact">
                         <h2 class="bg-front text-white">Entre em Contato</h2>
                         <form action="">
+                            <input type="hidden" name="" value="<?= $properti->reference; ?>">
                             <div class="form-group">
                                 <label for="">Seu Nome:</label>
-                                <input type="text" class="form-control" placeholder="Informe seu nome completo">
+                                <input type="text" class="form-control" placeholder="Informe seu nome completo" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Seu Telefone:</label>
-                                <input type="text" class="form-control" placeholder="Informe seu telefone com DDD">
+                                <input type="text" id="phone" class="form-control" placeholder="Informe seu telefone com DDD" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Seu E-mail:</label>
-                                <input type="text" class="form-control" placeholder="Informe seu melhor e-mail">
+                                <input type="email" class="form-control" placeholder="Informe seu melhor e-mail" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Sua Mensagem:</label>
-                                <textarea name="" rows="5" class="form-control">Quero ter mais informações sobre este imóvel. Imóvel Residencial - Apartamento - Campeche (#1)</textarea>
+                                <textarea name="" rows="5" class="form-control">Quero ter mais informações sobre este imóvel. Imóvel <?= $properti->category()->category; ?> - <?= $properti->type()->type; ?> - <?= $properti->address()->city ?>/<?= $properti->address()->state ?> (#<?= $properti->reference ?>)</textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-front w-100 mt-3">Enviar</button>

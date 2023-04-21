@@ -140,6 +140,11 @@ abstract class Model
         return $find->fetch();
     }
 
+    public function findByProperties(int $id, string $columns = "*"): ?Model
+    {
+        $find = $this->find("properties_id = :id", "id={$id}", $columns);
+        return $find;
+    }
     /**
      * @param string $columnOrder
      * @return Model

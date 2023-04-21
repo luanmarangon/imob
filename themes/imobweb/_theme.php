@@ -18,15 +18,22 @@
                 <div class="row justify-content-around">
                     <div class="d-none d-lg-flex col-lg-4 justify-content-center align-items-center p-2 text-white">
                         <i class="icon-location-arrow"></i>
-                        <p class="my-auto ml-3"><?= CONF_SITE_ADDR_STREET . ", " . CONF_SITE_ADDR_NUMBER . " - " . CONF_SITE_ADDR_DISTRICT; ?> <br><?= CONF_SITE_ADDR_CITY . "/" . CONF_SITE_ADDR_STATE; ?></p>
+                        <p class="my-auto ml-3">
+                            <?= CONF_SITE_ADDR_STREET . ", " . CONF_SITE_ADDR_NUMBER . " - " . CONF_SITE_ADDR_DISTRICT; ?>
+                            <br><?= CONF_SITE_ADDR_CITY . "/" . CONF_SITE_ADDR_STATE; ?>
+                        </p>
                     </div>
                     <div class="d-none d-md-flex col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
                         <i class="icon-clock-o"></i>
-                        <p class="my-auto ml-3"><?= CONF_COMPANY_ATTENDANCE_WEEK . ": " . CONF_COMPANY_ATTENDANCE_WEEK_TIME; ?> <br><?= CONF_COMPANY_ATTENDANCE_WEEKEND . ": " . CONF_COMPANY_ATTENDANCE_WEEKEND_TIME; ?></p>
+                        <p class="my-auto ml-3">
+                            <?= CONF_COMPANY_ATTENDANCE_WEEK . ": " . CONF_COMPANY_ATTENDANCE_WEEK_TIME; ?>
+                            <br><?= CONF_COMPANY_ATTENDANCE_WEEKEND . ": " . CONF_COMPANY_ATTENDANCE_WEEKEND_TIME; ?>
+                        </p>
                     </div>
                     <div class="d-flex col-4 col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
                         <i class="icon-envelope"></i>
-                        <p class="my-auto ml-3"><a class="text-white" href="mailto:<?= CONF_COMPANY_ATTENDANCE_MAIL; ?>"><?= CONF_COMPANY_ATTENDANCE_MAIL; ?></a></br><a class="text-white" href="tel:<?= CONF_COMPANY_ATTENDANCE_PHONE; ?>"><?= CONF_COMPANY_ATTENDANCE_PHONE; ?></a> </p>
+                        <p class="my-auto ml-3"><a class="text-white" href="mailto:<?= CONF_COMPANY_ATTENDANCE_MAIL; ?>"><?= CONF_COMPANY_ATTENDANCE_MAIL; ?></a></br><a class="text-white" href="tel:<?= CONF_COMPANY_ATTENDANCE_PHONE; ?>"><?= CONF_COMPANY_ATTENDANCE_PHONE; ?></a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -48,10 +55,11 @@
 
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                     <ul class="navbar-nav  mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/"); ?>">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-front" aria-current="page" href="<?= url("/propriedades"); ?>">Destaque</a></li>
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro"); ?>">Alugar</a></li>
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro"); ?>">Comprar</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/"); ?>">Home</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link text-front" aria-current="page" href="<?= url("/destaques"); ?>">Destaque</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro/Aluguel"); ?>">Alugar</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro/Venda"); ?>">Comprar</a></li>
                         <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/contato"); ?>">Contato</a></li>
                     </ul>
                 </div>
@@ -91,11 +99,12 @@
                     <h1 class="pb-2">Navegue <span class="text-front">Aqui!</span></h1>
                     <ul>
                         <li><a href="<?= url("/"); ?>">Home</a></li>
-                        <li><a href="<?= url("/propriedades"); ?>" class="text-front">Destaque</a></li>
-                        <li><a href="<?= url("/filtro"); ?>">Alugar</a></li>
-                        <li><a href="<?= url("/filtro"); ?>">Comprar</a></li>
+                        <li><a href="<?= url("/destaques"); ?>" class="text-front">Destaque</a></li>
+                        <li><a href="<?= url("/filtro/Aluguel"); ?>">Alugar</a></li>
+                        <li><a href="<?= url("/filtro/Venda"); ?>">Comprar</a></li>
                         <li><a href="<?= url("/contato"); ?>">Contato</a></li>
                         <li><a href="<?= url("/termos"); ?>">Termos de Uso</a></li>
+                        <li><a href="<?= url("/admin/login"); ?>">Login</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md-9 col-lg-6">
@@ -106,9 +115,16 @@
                     <p>Entre em contato com nossa equipe e vamos lhe informar sempre sobre os melhores negócios.</p>
                 </div>
                 <div class="col-12 col-md-12 col-lg-3 text-center">
-                    <a href="https://www.facebook.com/<?= CONF_SOCIAL_FACEBOOK_PAGE; ?>" target="_blank" class="btn btn-front icon-facebook icon-notext"></a>
-                    <a href="https://twitter.com/<?= CONF_SOCIAL_TWITTER_CREATOR; ?>" target="_blank" class="btn btn-front icon-twitter icon-notext"></a>
-                    <a href="https://www.instagram.com/<?= CONF_SOCIAL_INSTAGRAM_PAGE; ?>" target="_blank" class="btn btn-front icon-instagram icon-notext"></a>
+                    <?php if (CONF_SOCIAL_FACEBOOK_PAGE != "#") : ?>
+                        <a href="https://www.facebook.com/<?= CONF_SOCIAL_FACEBOOK_PAGE; ?>" target="_blank" class="btn btn-front icon-facebook icon-notext"></a>
+                    <?php endif; ?>
+                    <?php if (CONF_SOCIAL_TWITTER_CREATOR != "#") : ?>
+                        <a href="https://twitter.com/<?= CONF_SOCIAL_TWITTER_CREATOR; ?>" target="_blank" class="btn btn-front icon-twitter icon-notext"></a>
+                    <?php endif; ?>
+                    <?php if (CONF_SOCIAL_INSTAGRAM_PAGE != "#") : ?>
+                        <a href="https://www.instagram.com/<?= CONF_SOCIAL_INSTAGRAM_PAGE; ?>" target="_blank" class="btn btn-front icon-instagram icon-notext"></a>
+                    <?php endif; ?>
+
 
                 </div>
             </div>
@@ -131,6 +147,10 @@
     </div>
 
     <script src="<?= theme("/assets/scripts.js"); ?>"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?= CONF_API_GOOGLE_MAPS; ?>&callback=initMap">
+    </script>
+
+
     <?= $v->section("scripts"); ?>
 
 

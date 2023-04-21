@@ -19,7 +19,9 @@ class Addresses extends Model
                 "district",
                 "city",
                 "state",
-                "zipcode"
+                "zipcode",
+                "latitude",
+                "longitude"
             ]
         );
     }

@@ -156,11 +156,11 @@ function str_price(?string $price): string
  */
 function str_search(?string $search): string
 {
-    if(!$search){
+    if (!$search) {
         return "all";
     }
-    
-    $search = preg_replace("/[^a-z0-9A-Z\@\ ]/","", $search);
+
+    $search = preg_replace("/[^a-z0-9A-Z\@\ ]/", "", $search);
     return (!empty($search) ? $search : "all");
 }
 

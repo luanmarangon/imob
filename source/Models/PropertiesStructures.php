@@ -12,4 +12,9 @@ class PropertiesStructures extends Model
     {
         parent::__construct("properties_structures", ["properties_id", "structures_id"], ["footage"]);
     }
+
+    public function structures(): ?Structures
+    {
+        return (new Structures())->findById($this->structures_id);
+    }
 }
