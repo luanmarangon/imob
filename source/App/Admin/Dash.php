@@ -4,7 +4,7 @@ namespace Source\App\Admin;
 
 use Source\Models\Auth;
 use Source\Models\Leads;
-use Source\Models\Owners;
+use Source\Models\people;
 use Source\App\Admin\Admin;
 use Source\Models\Properties;
 use Source\Models\Transactions;
@@ -34,7 +34,7 @@ class Dash extends Admin
         $rents = (new Transactions())->find("type = :type AND status = :status", "type=Aluguel&status=ativo")->count();
         $sales = (new Transactions())->find("type = :type AND status = :status", "type=Venda&status=ativo")->count();
         $properties = (new Properties())->find("active = :active", "active=1")->count();
-        $owners = (new Owners())->find()->count();
+        $people = (new People())->find()->count();
 
 
         //Real time access
@@ -77,7 +77,7 @@ class Dash extends Admin
             "rents" => $rents,
             "sales" => $sales,
             "properties" => $properties,
-            "owners" => $owners,
+            "people" => $people,
             // "control" => (object) [
             //     "subscribers" => (new AppSubscription())->find("pay_status = :s", "s=active")->count(),
             //     "plans" => (new AppPlan())->find("status = :s", "s=active")->count(),

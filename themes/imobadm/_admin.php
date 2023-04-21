@@ -49,10 +49,10 @@
                 };
 
                 echo $nav("laptop", "dash/home", "Dashboard");
-                echo $nav("users", "owners/home", "Proprietarios");
+                echo $nav("users", "people/home", "Clientes");
                 echo $nav("home", "properties/home", "Imóveis");
                 echo $nav("money", "transactions/home", "Transações");
-                echo $nav("user-plus", "clients/home", "Clientes");
+                echo $nav("user-plus", "leads/home", "Leads");
                 echo $nav("cogs", "settings/home", "Configurações");
                 echo $nav("files-o", "reports/home", "Relatórios");
                 echo $nav("user", "users/home", "Usuários");
@@ -67,9 +67,7 @@
                     <div class="dash_content_box">
                         <h1 class="icon-home transition"><a href="<?= url("/admin/dash"); ?>">Imob<b>Admin</b></a></h1>
                         <div class="dash_userbar_box_bar">
-                            <span class="notification_center_open icon-bell"
-                                data-count="<?= url("/admin/notifications/count"); ?>"
-                                data-notify="<?= url("/admin/notifications/list"); ?>">0</span>
+                            <span class="notification_center_open icon-bell" data-count="<?= url("/admin/notifications/count"); ?>" data-notify="<?= url("/admin/notifications/list"); ?>">0</span>
                             <span class="no_mobile icon-clock-o"><?= date("d/m H\hi"); ?></span>
                             <a class="no_mobile icon-sign-out" title="Sair" href="<?= url("/admin/logoff"); ?>">Sair</a>
                             <span class="icon-menu icon-notext mobile_menu transition"></span>

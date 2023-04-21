@@ -4,16 +4,16 @@ namespace Source\Models;
 
 use Source\Core\Model;
 
-class OwnersContacts extends Model
+class PeopleContacts extends Model
 {
     public function __construct()
     {
-        parent::__construct("owners_contacts", [], ["owners_id", "contacts_id"]);
+        parent::__construct("people_contacts", [], ["people_id", "contacts_id"]);
     }
 
     public function findByOwners(int $id, string $columns = "*"): ?Model
     {
-        $find = $this->find("owners_id = :id", "id={$id}", $columns);
+        $find = $this->find("people_id = :id", "id={$id}", $columns);
         return $find;
     }
 

@@ -1,5 +1,5 @@
 <?php $v->layout("_admin"); ?>
-<?php $v->insert("widgets/clients/sidebar.php"); ?>
+<?php $v->insert("widgets/leads/sidebar.php"); ?>
 
 <section class="dash_content_app">
     <header class="dash_content_app_header">
@@ -34,11 +34,11 @@
             <section class="app_control_subs radius">
                 <h3 class="icon-heartbeat">Imóveis: {Ultimos}</h3>
                 <?php for ($i = 0; $i < 6; $i++) : ?>
-                    <article class="subscriber">
-                        <h5>Cliente A</h5>
-                        <p>(99) 99723-2369</p>
-                        <p><?= date("d/m/Y H\hi"); ?></p>
-                    </article>
+                <article class="subscriber">
+                    <h5>Cliente A</h5>
+                    <p>(99) 99723-2369</p>
+                    <p><?= date("d/m/Y H\hi"); ?></p>
+                </article>
                 <?php endfor; ?>
             </section>
         </div>

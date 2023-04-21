@@ -49,16 +49,16 @@ $route->get("/dash/home", "Dash:home");
 $route->post("/dash/home", "Dash:home");
 $route->get("/logoff", "Dash:logoff");
 
-//Owners
-$route->get("/owners/home", "Owner:home");
+//people/
+$route->get("/people/home", "Person:home");
 
-$route->get("/owners/owners", "Owner:owners");
-$route->post("/owners/owners", "Owner:owners");
-$route->get("/owners/owners/{search}/{page}", "Owner:owners");
+$route->get("/people/people", "Person:people");
+$route->post("/people/people", "Person:people");
+$route->get("/people/people/{search}/{page}", "Person:people");
 
 
-$route->get("/owners/owners/{owners_id}/contacts", "Owner:contacts");
-$route->get("/owners/owners/create", "Owner:create");
+$route->get("/people/people/{people_id}/contacts", "Person:contacts");
+$route->get("/people/people/create", "Person:create");
 
 //properties
 $route->get("/properties/home", "Propertie:home");
@@ -79,13 +79,13 @@ $route->get("/transactions/transactions/{search}/{page}", "Transaction:transacti
 
 
 //customers
-$route->get("/clients/home", "Customer:home");
+$route->get("/leads/home", "Customer:home");
 $route->get("/clients/client", "Customer:clients");
 $route->get("/clients/client/{clients_id}/contacts", "Customer:clientContacts");
 
-$route->get("/clients/leads", "Customer:leads");
-$route->post("/clients/leads", "Customer:leads");
-$route->get("/clients/leads/{search}/{page}", "Customer:leads");
+$route->get("/leads/leads", "Customer:leads");
+$route->post("/leads/leads", "Customer:leads");
+$route->get("/leads/leads/{search}/{page}", "Customer:leads");
 
 //settings
 $route->get("/settings/home", "Setting:home");

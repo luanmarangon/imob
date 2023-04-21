@@ -26,7 +26,7 @@ class Customer extends Admin
             false
         );
 
-        echo $this->view->render("widgets/clients/home", [
+        echo $this->view->render("widgets/leads/home", [
             "app" => "clients/home",
             "head" => $head,
 
@@ -121,7 +121,7 @@ class Customer extends Admin
             false
         );
 
-        echo $this->view->render("widgets/clients/contacts", [
+        echo $this->view->render("widgets/leads/contacts", [
             "app" => "clients/client",
             "head" => $head,
             "clients" => $clients,
@@ -136,7 +136,7 @@ class Customer extends Admin
         //search redirect
         if (!empty($data["s"])) {
             $s = str_search($data["s"]);
-            echo json_encode(["redirect" => url("/admin/clients/leads/{$s}/1")]);
+            echo json_encode(["redirect" => url("/admin/leads/leads/{$s}/1")]);
             return;
         }
 
@@ -149,11 +149,11 @@ class Customer extends Admin
             $leads = (new leads())->find("MATCH(full_name, email, phone) AGAINST(:s)", "s={$search}");
             if (!$leads->count()) {
                 $this->message->info("Sua pesquisa não retornou resultados")->flash();
-                redirect("/admin/clients/leads");
+                redirect("/admin/leads/leads");
             }
         }
         $all = ($search ?? "all");
-        $pager = new Pager(url("/admin/clients/leads/{$all}/"));
+        $pager = new Pager(url("/admin/leads/leads/{$all}/"));
         $pager->pager($leads->count(), 4, (!empty($data["page"]) ? $data["page"] : 1));
 
         $head = $this->seo->render(
@@ -164,8 +164,8 @@ class Customer extends Admin
             false
         );
 
-        echo $this->view->render("widgets/clients/leads", [
-            "app" => "clients/leads",
+        echo $this->view->render("widgets/leads/leads", [
+            "app" => "leads/leads",
             "head" => $head,
             "leads" => $leads->limit($pager->limit())->offset($pager->offset())->order("created_at")->fetch(true),
             "search" => $search,

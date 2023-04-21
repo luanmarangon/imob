@@ -61,7 +61,8 @@
                 <label class="label">
                     <span class="legend">C.E.P.: </span>
                     <!-- <input class="mask-cep" type="text" id="cep" name="number" required /> -->
-                    <input class="mask-cep" type="text" id="cep" name="number" minlength="10" required placeholder="Digite o CEP" />
+                    <input class="mask-cep" type="text" id="cep" name="number" minlength="10" required
+                        placeholder="Digite o CEP" />
 
                 </label>
 

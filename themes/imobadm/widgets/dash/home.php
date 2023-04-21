@@ -33,7 +33,7 @@
             <section class="app_control_home_stats">
                 <article class="radius">
                     <h4 class="icon-users">Proprietários</h4>
-                    <p><b>Total:</b> <?= sprintf('%02d', $owners); ?></p>
+                    <p><b>Total:</b> <?= sprintf('%02d', $people); ?></p>
                 </article>
 
                 <article class="radius">

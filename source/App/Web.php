@@ -98,7 +98,6 @@ class Web extends Controller
             "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
             "type={$data['type']}"
         )->fetch();
-
         $properties = (new Properties())->find(
             "active = :active",
             "active=1"

@@ -1,9 +1,9 @@
 <?php $v->layout("_admin"); ?>
-<?php $v->insert("widgets/owners/sidebar.php"); ?>
+<?php $v->insert("widgets/people/sidebar.php"); ?>
 
 <section class="dash_content_app">
     <header class="dash_content_app_header">
-        <h2 class="icon-book">Contatos do <?= $owners->fullName(); ?></h2>
+        <h2 class="icon-book">Contatos do <?= $people->fullName(); ?></h2>
     </header>
 
     <div class="dash_content_app_box">
@@ -35,8 +35,8 @@
         </form>
         <section class="app_control_subs radius">
             <h3 class="icon-bar-chart">Contatos: <?= sprintf('%02d', $count); ?></h3>
-            <?php if ($ownersContacts) : ?>
-            <?php foreach ($ownersContacts as $contacts) : ?>
+            <?php if ($peopleContacts) : ?>
+            <?php foreach ($peopleContacts as $contacts) : ?>
             <article>
                 <?php if ($contacts->contact()->type === "WhatsApp") : ?>
                 <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
