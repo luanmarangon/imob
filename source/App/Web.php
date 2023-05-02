@@ -31,7 +31,6 @@ class Web extends Controller
         // }
         // var_dump($teste2);
 
-        // (new User())->bootstrap("Luan", "Marangon", "luan.limarangon@gmail.com", "M4r4ng0n210990", "Administrador", "Manager")->save();
     }
 
 

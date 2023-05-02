@@ -40,8 +40,8 @@
 
                     <p><b>Status:</b> <?= $transaction->status; ?></p>
 
-                    <?php foreach ($owners as $owner) : ?>
-                    <?php if ($propertie->address($propertie->id)->owners_id === $owner->id) : ?>
+                    <?php foreach ($people as $owner) : ?>
+                    <?php if ($propertie->address($propertie->id)->people_id === $owner->id) : ?>
                     <p><b>Proprietário:</b> <?= $owner->fullName(); ?></p>
                     <?php endif; ?>
                     <?php endforeach; ?>
@@ -50,8 +50,10 @@
                 </div>
 
                 <div class="actions">
+                    <?php if ($user->office === 'Manager') : ?>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
                     <a class="icon-ban btn btn-yellow" href="" title="">Desativar</a>
+                    <?php endif; ?>
                 </div>
             </article>
             <?php endforeach; ?>

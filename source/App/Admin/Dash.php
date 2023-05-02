@@ -70,7 +70,7 @@ class Dash extends Admin
         );
 
         echo $this->view->render("widgets/dash/home", [
-            "app" => "dash",
+            "app" => "dash/home",
             "head" => $head,
 
             "leads" => $leads,

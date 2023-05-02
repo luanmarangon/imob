@@ -56,9 +56,16 @@ $route->get("/people/people", "Person:people");
 $route->post("/people/people", "Person:people");
 $route->get("/people/people/{search}/{page}", "Person:people");
 
+$route->get("/people/people-create", "Person:peopleCreate");
+$route->post("/people/people-create", "Person:peopleCreate");
+
+$route->get("/people/people-create/{people_id}", "Person:peopleCreate");
+$route->post("/people/people-create/{people_id}", "Person:peopleCreate");
+
 
 $route->get("/people/people/{people_id}/contacts", "Person:contacts");
-$route->get("/people/people/create", "Person:create");
+$route->post("/people/people/{people_id}/contacts", "Person:contacts");
+// $route->get("/people/people/create", "Person:create");
 
 //properties
 $route->get("/properties/home", "Propertie:home");
@@ -93,27 +100,39 @@ $route->get("/settings/home", "Setting:home");
 $route->get("/settings/category", "Setting:category");
 $route->post("/settings/category", "Setting:category");
 $route->get("/settings/category/{search}/{page}", "Setting:category");
+$route->get("/settings/categoryUpdate/{category_id}", "Setting:categoryUpdate");
+$route->post("/settings/categoryUpdate/{category_id}", "Setting:categoryUpdate");
 
 $route->get("/settings/charges", "Setting:charges");
 $route->post("/settings/charges", "Setting:charges");
 $route->get("/settings/charges/{search}/{page}", "Setting:charges");
+$route->get("/settings/chargesUpdate/{charge_id}", "Setting:chargesUpdate");
+$route->post("/settings/chargesUpdate/{charge_id}", "Setting:chargesUpdate");
 
 $route->get("/settings/comfortable", "Setting:comfortable");
 $route->post("/settings/comfortable", "Setting:comfortable");
 $route->get("/settings/comfortable/{search}/{page}", "Setting:comfortable");
+$route->get("/settings/comfortableUpdate/{comfortable_id}", "Setting:comfortableUpdate");
+$route->post("/settings/comfortableUpdate/{comfortable_id}", "Setting:comfortableUpdate");
 
 $route->get("/settings/feature", "Setting:feature");
 $route->post("/settings/feature", "Setting:feature");
 $route->get("/settings/feature/{search}/{page}", "Setting:feature");
+$route->get("/settings/featureUpdate/{feature_id}", "Setting:featureUpdate");
+$route->post("/settings/featureUpdate/{feature_id}", "Setting:featureUpdate");
 
 $route->get("/settings/structures", "Setting:structures");
 $route->post("/settings/structures", "Setting:structures");
 $route->get("/settings/structures/{search}/{page}", "Setting:structures");
+$route->get("/settings/structuresUpdate/{structure_id}", "Setting:structuresUpdate");
+$route->post("/settings/structuresUpdate/{structure_id}", "Setting:structuresUpdate");
+
 
 $route->get("/settings/types", "Setting:types");
 $route->post("/settings/types", "Setting:types");
 $route->get("/settings/types/{search}/{page}", "Setting:types");
-
+$route->get("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
+$route->post("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 
 //reports
 $route->get("/relatorios", "Reports:home");
@@ -122,12 +141,11 @@ $route->get("/relatorios", "Reports:home");
 //users
 $route->get("/users/home", "Users:home");
 $route->post("/users/home", "Users:home");
-
 $route->get("/users/home/{search}/{page}", "Users:home");
 
 $route->get("/users/user", "Users:user");
 $route->post("/users/user", "Users:user");
-
+// $route->get("/users/user/{first_name}", "Users:user");
 $route->get("/users/user/{user_id}", "Users:user");
 $route->post("/users/user/{user_id}", "Users:user");
 

@@ -6,7 +6,8 @@
         <?php
         $nav = function ($icon, $href, $title) use ($app) {
             $active = ($app == $href ? "active" : null);
-            return "<a class=\"icon-{$icon} radius {$active}\" href=\"dash.php?app={$href}\">{$title}</a>";
+            $url = url("/admin/{$href}");
+            return "<a class=\"icon-{$icon} radius {$active}\" href=\"{$url}\">{$title}</a>";
         };
 
         echo $nav("laptop", "dash/home", "Dash");

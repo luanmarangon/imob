@@ -2,9 +2,10 @@
 
 namespace Source\App\Admin;
 
-use Source\Models\Owners;
+use Source\Models\People;
 use Source\Support\Pager;
 use Source\App\Admin\Admin;
+use Source\Models\Auth;
 use Source\Models\Properties;
 use Source\Models\Transactions;
 
@@ -22,14 +23,20 @@ class Transaction extends Admin
         $rentCount = (new Transactions())->find("type = :type AND end >= NOW()", "type=Aluguel")->count();
         $saleCount = (new Transactions())->find("type = :type AND end >= NOW()", "type=Venda")->count();
 
-        $moneyRent = (new Transactions())->find("type = :type AND end >= NOW()", "type=Aluguel")->order("end ASC ")->limit(1)->fetch(true);
-        $moneySale = (new Transactions())->find("type = :type AND end >= NOW()", "type=Venda")->order("end ASC ")->limit(1)->fetch(true);
+        $moneyRent = (new Transactions())->find("type = :type AND end >= NOW()", "type=Aluguel")->order("end ASC ")->limit(1)->fetch();
+        $moneySale = (new Transactions())->find("type = :type AND end >= NOW()", "type=Venda")->order("end ASC ")->limit(1)->fetch();
+        if (!empty($moneyRent)) {
+            $propertieRent = (new Properties())->findById($moneyRent->properties_id);
+        } else {
+            $propertieRent = 0;
+        }
 
-        // var_dump(
-        //     $transactions,
-        //     // $propertie
+        if (!empty($moneySale)) {
+            $propertieSale = (new Properties())->findById($moneySale->properties_id);
+        } else {
+            $propertieSale = 0;
+        }
 
-        // );
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -46,14 +53,16 @@ class Transaction extends Admin
             "rentCount" => $rentCount,
             "saleCount" => $saleCount,
             "moneyRent" => $moneyRent,
-            "moneySale" => $moneySale
+            "moneySale" => $moneySale,
+            "propertieRent" => $propertieRent,
+            "propertieSale" => $propertieSale
 
         ]);
     }
 
     public function transactions(array $data): void
     {
-
+        $user = Auth::user();
         //search redirect
         if (!empty($data["s"])) {
             $s = str_search($data["s"]);
@@ -64,7 +73,7 @@ class Transaction extends Admin
         //read
         $search = null;
         $transactions = (new Transactions())->find();
-        $owners = (new Owners())->find()->fetch(true);
+        $people = (new People())->find()->fetch(true);
         $properties = (new Properties())->find()->fetch(true);
 
         if (!empty($data["search"]) && str_search($data["search"]) != "all") {
@@ -81,7 +90,7 @@ class Transaction extends Admin
         $pager->pager($transactions->count(), 5, (!empty($data["page"]) ? $data["page"] : 1));
 
         // var_dump(
-        //     // $owners,
+        //     // $people,
         //     // $transactions,
         //     // $propertie
         // );
@@ -98,11 +107,12 @@ class Transaction extends Admin
         echo $this->view->render("widgets/transactions/transactions", [
             "app" => "transactions/transactions",
             "head" => $head,
-            "transactions" => $transactions->limit($pager->limit())->offset($pager->offset())->order("created_at")->fetch(true),
-            "owners" => $owners,
+            "transactions" => $transactions->limit($pager->limit())->offset($pager->offset())->order("status, end ASC")->fetch(true),
+            "people" => $people,
             "properties" => $properties,
             "search" => $search,
             "paginator" => $pager->render(),
+            "user" => $user
             // "moneyRent" => $moneyRent,
             // "moneySale" => $moneySale
 

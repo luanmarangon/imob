@@ -18,6 +18,11 @@ class Customer extends Admin
 
     public function home()
     {
+        $leads = (new Leads())->find()->count();
+        $countClients = (new Leads())->find("status = :status", "status=Convertido")->count();
+        $lastLeads = (new Leads())->find("status = 'lead' AND created_at >= DATE_SUB(NOW(), INTERVAL 72 HOUR)")->order("created_at DESC")->limit(3)->fetch(true);
+        $countLeads = (new Leads())->find("status = 'lead' AND created_at >= DATE_SUB(NOW(), INTERVAL 72 HOUR)")->order("created_at DESC")->count();
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
             CONF_SITE_DESC,
@@ -29,7 +34,10 @@ class Customer extends Admin
         echo $this->view->render("widgets/leads/home", [
             "app" => "clients/home",
             "head" => $head,
-
+            "leads" => $leads,
+            "countClients" => $countClients,
+            "lastLeads" => $lastLeads,
+            "countLeads" => $countLeads
 
         ]);
     }

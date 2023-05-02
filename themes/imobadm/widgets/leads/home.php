@@ -11,14 +11,20 @@
             <section class="app_control_home_stats">
                 <article class="radius">
                     <h4 class="icon-home">Total </h4>
-                    <p>244</p>
+                    <p><?= $leads; ?></p>
                 </article>
 
                 <article class="radius">
                     <h4 class="icon-home">Convertidos</h4>
-                    <p>200</p>
+                    <p><?= $countClients; ?></p>
                 </article>
+                <!-- 
+                <article class="radius">
+                    <h4 class="icon-home">Convertidos</h4>
+                    <p><?= $countClients; ?></p>
+                </article> -->
 
+                <!-- 
                 <article class="radius">
                     <h4 class="icon-calendar-check-o">Ativos</h4>
                     <p>15</p>
@@ -27,19 +33,19 @@
                 <article class="radius">
                     <h4 class="icon-retweet">Este mês</h4>
                     <p>5</p>
-                </article>
+                </article> -->
             </section>
 
 
             <section class="app_control_subs radius">
-                <h3 class="icon-heartbeat">Imóveis: {Ultimos}</h3>
-                <?php for ($i = 0; $i < 6; $i++) : ?>
+                <h3 class="icon-heartbeat">Imóveis: <?= $countLeads; ?></h3>
+                <?php foreach ($lastLeads as $last) : ?>
                 <article class="subscriber">
-                    <h5>Cliente A</h5>
-                    <p>(99) 99723-2369</p>
-                    <p><?= date("d/m/Y H\hi"); ?></p>
+                    <h5><?= $last->full_name; ?></h5>
+                    <p class="mask-phone"><?= $last->phone; ?></p>
+                    <p><?= date_fmt($last->created_at, "d/m/y \à\s H\hi"); ?></p>
                 </article>
-                <?php endfor; ?>
+                <?php endforeach; ?>
             </section>
         </div>
     </div>

@@ -5,6 +5,7 @@ namespace Source\Core;
 use PDO;
 use Source\Core\Connect;
 use Source\Support\Message;
+use Source\Models\Addresses;
 
 abstract class Model
 {
@@ -371,4 +372,12 @@ abstract class Model
         }
         return true;
     }
+
+    // public function address(): ?Addresses
+    // {
+    //     if ($this->addresses_id) {
+    //         return (new Addresses())->findById($this->addresses_id);
+    //     }
+    //     return null;
+    // }
 }

@@ -45,10 +45,6 @@ class Login extends Controller
      */
     public function login(?array $data): void
     {
-        $teste = (new User())->bootstrap("Luan", "Marangon", "imob@marangontech.cm.br", "12345678", "5", "Dev")
-            ->save();
-
-
         $user = Auth::user();
 
 
@@ -56,38 +52,14 @@ class Login extends Controller
             redirect("/admin/dash");
         }
 
-        // if (!empty($data["email"]) && !empty($data["password"])) {
-
-        //     //VALIDAÇÃO DE VARIAS TENTATIVAS
-        //     // if (request_limit("loginlogin", 3, 60 * 5)) {
-        //     //     $json["message"] = $this->message->error("ACESSO NEGADO: Aguarde por 05 minutos para tentar novamente")->render();
-        //     //     echo json_encode($json);
-        //     //     return;
-        //     // }
-
-        //     $auth = new Auth();
-        //     $login = $auth->login($data["email"], $data["password"], true, 5);
-
-        //     if ($login) {
-        //         // redirect("/admin/dash");
-        //         $json["redirect"] = url("/admin/dash");
-        //     } else {
-        //         $json["message"] = $auth->message()->render();
-        //     }
-
-        //     echo json_encode($json);
-        //     return;
-        // }
-        // if (Auth::user()) {
-        //     redirect("/app");
-        // }
 
         if (!empty($data['csrf'])) {
-            if (!csrf_verify($data)) {
-                $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
-                echo json_encode($json);
-                return;
-            }
+            // if (!csrf_verify($data)) {
+            //     $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
+            //     // echo json_encode(["msg" => var_dump($data['csrf'])]);
+            //     echo json_encode($json,);
+            //     return;
+            // }
 
             if (request_limit("weblogin", 3, 60 * 5)) {
                 $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();

@@ -8,10 +8,13 @@
 
     <div class="dash_content_app_box">
         <form class="app_form" action="" method="post">
+            <!--ACTION SPOOFING-->
+            <input type="hidden" name="action" value="create" />
+
             <div class="label_g2">
                 <label class="label">
                     <span class="legend">*Tipo de Contato:</span>
-                    <select name="contact" id="select-opcoes" required>
+                    <select name="contactType" id="select-opcoes" required>
                         <option value="">Escolha</option>
                         <option value="WhatsApp">WhatsApp</option>
                         <option value="Fixo">Fixo</option>
@@ -21,11 +24,11 @@
 
                 <label class="label" id="phone" style="display:none;">
                     <span class="legend">*Contato:</span>
-                    <input type="text" id="phone" placeholder="Digite o telefone de contato" class="mask-phone">
+                    <input type="text" id="phone" name="phone" placeholder="Digite o telefone de contato" class="mask-phone">
                 </label>
                 <label class="label" id="email" style="display:none;">
                     <span class="legend">*Contato:</span>
-                    <input type="email" id="email" placeholder="Digite o E-mail de contato" class="mask-email">
+                    <input type="email" id="email" name="email" placeholder="Digite o E-mail de contato" class="mask-email">
                 </label>
                 <label class="label">
                     <button class="btn btn-green icon-check-square-o">Cadastrar</button>
@@ -33,35 +36,38 @@
 
             </div>
         </form>
+
+
+
         <section class="app_control_subs radius">
             <h3 class="icon-bar-chart">Contatos: <?= sprintf('%02d', $count); ?></h3>
             <?php if ($peopleContacts) : ?>
-            <?php foreach ($peopleContacts as $contacts) : ?>
-            <article>
-                <?php if ($contacts->contact()->type === "WhatsApp") : ?>
-                <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
-                </div>
-                <?php elseif ($contacts->contact()->type === "Fixo") : ?>
-                <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
-                </div>
-                <?php else : ?>
-                <h4 class="icon-envelope-o"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
-                </div>
-                <?php endif; ?>
-            </article>
-            <?php endforeach; ?>
+                <?php foreach ($peopleContacts as $contacts) : ?>
+                    <article>
+                        <?php if ($contacts->contact()->type === "WhatsApp") : ?>
+                            <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                            </div>
+                        <?php elseif ($contacts->contact()->type === "Fixo") : ?>
+                            <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                            </div>
+                        <?php else : ?>
+                            <h4 class="icon-envelope-o"><?= $contacts->contact()->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                            </div>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
             <?php else : ?>
-            <br>
-            <h2>Sem Contatos cadastrados</h2>
+                <br>
+                <h2>Sem Contatos cadastrados</h2>
 
             <?php endif; ?>
 

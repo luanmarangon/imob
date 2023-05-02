@@ -17,24 +17,30 @@
                     $userPhoto = ($user->photo() ? image($user->photo, 300, 300) :
                         theme("/assets/images/avatar.jpg", CONF_VIEW_ADMIN));
                 ?>
-                    <article class="user radius">
-                        <div class="cover" style="background-image: url(<?= $userPhoto; ?>)"></div>
-                        <?php if ($user->level >= 5) : ?>
-                            <p class="level icon-life-ring">ADMIN</p>
-                        <?php else : ?>
-                            <p class="level icon-user">USUÁRIO</p>
-                        <?php endif; ?>
+                <article class="user radius">
+                    <div class="cover" style="background-image: url(<?= $userPhoto; ?>)"></div>
+                    <?php if ($user->level >= 10) : ?>
+                    <p class="level icon-life-ring">ADMIN</p>
+                    <?php else : ?>
+                    <p class="level icon-user">USUÁRIO</p>
+                    <?php endif; ?>
+                    <h4><?= $user->fullName(); ?></h4>
+                    <?php if ($user->level == "Inativo") : ?>
+                    <a class="inactive-user icon-thumbs-o-down btn btn-red"> Inativo</a>
+                    <?php else : ?>
+                    <a class="active-user icon-thumbs-o-up btn btn-green"> Ativo</a>
 
-                        <h4><?= $user->fullName(); ?></h4>
-                        <div class="info">
-                            <p><?= $user->email; ?></p>
-                            <p>Desde <?= date_fmt($user->created_at, "d/m/y \à\s H\hi"); ?></p>
-                        </div>
+                    <?php endif; ?>
+                    <div class="info">
+                        <p><?= $user->email; ?></p>
+                        <p>Desde <?= date_fmt($user->created_at, "d/m/y \à\s H\hi"); ?></p>
+                    </div>
 
-                        <div class="actions">
-                            <a class="icon-cog btn btn-blue" href="<?= url("/admin/users/user/{$user->id}"); ?>" title="">Gerenciar</a>
-                        </div>
-                    </article>
+                    <div class="actions">
+                        <a class="icon-cog btn btn-blue" href="<?= url("/admin/users/user/{$user->id}"); ?>"
+                            title="">Gerenciar</a>
+                    </div>
+                </article>
                 <?php endforeach; ?>
             </div>
 

@@ -13,29 +13,22 @@
                     <h4 class="icon-line-chart">total Imóveis</h4>
                     <p><?= $rentCount; ?></p>
                 </article>
-                <?php foreach ($moneyRent as $rent) : ?>
+                <article class="radius">
+                    <h4 class="icon-calendar-check-o">Expiração:</h4>
 
-                    <article class="radius">
-                        <h4 class="icon-calendar-check-o">Expiração:</h4>
-                        <?php if ($rentCount) : ?>
-                            <p><?= date("d-m-Y", strtotime($rent->end)); ?></p>
-                        <?php else : ?>
-                            <p>Sem Aluguel para expirar</p>
-                        <?php endif; ?>
-                    </article>
-                    <article class="radius">
-                        <h4 class="icon-money">Total Vendas</h4>
-                        <p> R$ <?= str_price($rent->value); ?></p>
-                    </article>
-                <?php endforeach; ?>
+                    <p><?= $moneyRent ?  date("d-m-Y", strtotime($moneyRent->end)) : "-------" ?>
+                    </p>
+
+                </article>
+                <article class="radius">
+                    <h4 class="icon-money">Total Vendas</h4>
+                    <p> R$ <?= $moneyRent ? str_price($moneyRent->value) : str_price(0) ?></p>
+                </article>
                 <article class="radius">
                     <h4 class="icon-home">Imóvel:</h4>
-                    <?php foreach ($properties as $propertie) : ?>
-                        <?php if ($propertie->id === $rent->properties_id) : ?>
-                            <p><?= $propertie->reference; ?></p>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                    <p><?= $moneyRent ? $propertieRent->reference : 'Sem Imóvel ' ?></p>
                 </article>
+
             </section>
             <br>
             <section class="app_control_home_stats">
@@ -43,29 +36,22 @@
                     <h4 class="icon-line-chart">total Imóveis</h4>
                     <p><?= $saleCount; ?></p>
                 </article>
-                <?php foreach ($moneySale as $sale) : ?>
+                <article class="radius">
+                    <h4 class="icon-calendar-check-o">Expiração:</h4>
 
-                    <article class="radius">
-                        <h4 class="icon-calendar-check-o">Expiração:</h4>
-                        <?php if ($saleCount) : ?>
-                            <p><?= date("d-m-Y", strtotime($sale->end)); ?></p>
-                        <?php else : ?>
-                            <p>Sem Aluguel para expirar</p>
-                        <?php endif; ?>
-                    </article>
-                    <article class="radius">
-                        <h4 class="icon-money">Total Vendas</h4>
-                        <p> R$ <?= str_price($sale->value); ?></p>
-                    </article>
-                <?php endforeach; ?>
+                    <p><?= $moneySale ?  date("d-m-Y", strtotime($moneySale->end)) : "-------" ?>
+                    </p>
+
+                </article>
+                <article class="radius">
+                    <h4 class="icon-money">Total Vendas</h4>
+                    <p> R$ <?= $moneySale ? str_price($moneySale->value) : str_price(0) ?></p>
+                </article>
                 <article class="radius">
                     <h4 class="icon-home">Imóvel:</h4>
-                    <?php foreach ($properties as $propertie) : ?>
-                        <?php if ($propertie->id === $sale->properties_id) : ?>
-                            <p><?= $propertie->reference; ?></p>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                    <p><?= $moneySale ? $propertieSale->reference : 'Sem Imóvel ' ?></p>
                 </article>
+
             </section>
 
 
@@ -74,11 +60,11 @@
             <section class="app_control_subs radius">
                 <h3 class="icon-heartbeat">Imóveis:</h3>
                 <?php for ($i = 0; $i < 10; $i++) : ?>
-                    <article class="subscriber">
-                        <h5>22.10.18 22h - Aluguel</h5>
-                        <p>R$ 500,00</p>
-                        <p>IMOB001</p>
-                    </article>
+                <article class="subscriber">
+                    <h5>22.10.18 22h - Aluguel</h5>
+                    <p>R$ 500,00</p>
+                    <p>IMOB001</p>
+                </article>
                 <?php endfor; ?>
             </section>
         </div>

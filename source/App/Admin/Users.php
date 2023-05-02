@@ -17,8 +17,8 @@ class Users extends Admin
 
     public function home(?array $data): void
     {
+        $user = Auth::user();
 
-        // $teste = (new User())->bootstrap("Jessica Fernanda", "Marangon", "jehfernanda@marangon.com.br", "12345678", "7", "ADM")->save();
         //search redirect
         if (!empty($data["s"])) {
             $s = str_search($data["s"]);
@@ -28,12 +28,18 @@ class Users extends Admin
             return;
         }
 
-
+        // if ($user->level >= 100) {
+        //     $users = (new User())->find("level <= 100");
+        // } elseif ($user->level > 6) {
+        //     $users = (new User())->find("level <= 10");
+        // } else {
+        //     $users = (new User())->find("level <= {$user->level} && level != 'inativo'");
+        // }
 
         //read
         $search = null;
-        $users = (new User())->find();
-
+        $users = (new User())->find("level <= {$user->level} ");
+        // $users = (new User())->find("level <= {$user->level}");
         if (!empty($data["search"]) && str_search($data["search"]) != "all") {
             $search = str_search($data["search"]);
             $users = (new User())->find("MATCH(first_name, last_name, email) AGAINST(:s)", "s={$search}");
@@ -76,10 +82,10 @@ class Users extends Admin
             $userCreate->password = $data["password"];
             $userCreate->level = $data["level"];
             $userCreate->genre = $data["genre"];
+            $userCreate->office = $data["office"];
             $userCreate->datebirth = date_fmt_back($data["datebirth"]);
             $userCreate->document = preg_replace("/[^0-9]/", "", $data["document"]);
             $userCreate->status = $data["status"];
-
             //upload photo
             if (!empty($_FILES["photo"])) {
                 $files = $_FILES["photo"];
@@ -114,10 +120,12 @@ class Users extends Admin
             /**
              * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
              */
-            if (Auth::user()->level < $userUpdate->level) {
-                $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
-                echo json_encode(["redirect" => url("admin/users/home")]);
-                return;
+            if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
+                if (Auth::user()->level < $userUpdate->level) {
+                    $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
+                    echo json_encode(["redirect" => url("admin/users/home")]);
+                    return;
+                }
             }
 
             if (!$userUpdate) {
@@ -132,6 +140,7 @@ class Users extends Admin
             $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
             $userUpdate->level = $data["level"];
             $userUpdate->genre = $data["genre"];
+            $userUpdate->office = $data["office"];
             $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
             $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
             $userUpdate->status = $data["status"];
@@ -155,7 +164,6 @@ class Users extends Admin
 
                 $userUpdate->photo = $image;
             }
-
             if (!$userUpdate->save()) {
                 $json["message"] = $userUpdate->message()->render();
                 echo json_encode($json);
@@ -175,11 +183,17 @@ class Users extends Admin
             /**
              * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
              */
-            if (Auth::user()->level < $userDelete->level || Auth::user()->id == $userDelete->id) {
+            if (Auth::user()->level < 10 || Auth::user()->id == $userDelete->id) {
                 $this->message->error("Você não tem permissão para deletar o perfil desse usuário ou é o perfil pertence ao seu usuário.")->flash();
                 echo json_encode(["redirect" => url("admin/users/home")]);
                 return;
             }
+
+            // if (!(Auth::user()->level >= $userDelete->level && $userDelete->level !== 'inativo')) {
+            //     $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário ou está inativo.")->flash();
+            //     echo json_encode(["redirect" => url("admin/users/home")]);
+            //     return;
+            // }
 
             if (!$userDelete) {
                 $this->message->error("Você tentou Deletar um usuário que não existe ou que já foi removido")->flash();
@@ -193,7 +207,7 @@ class Users extends Admin
             // }
 
             // $userDelete->destroy();
-            $userDelete->level = 0;
+            $userDelete->level = 'Inativo';
             $userDelete->save();
 
             $this->message->success("Usuário excluido com sucesso...")->flash();
@@ -201,6 +215,41 @@ class Users extends Admin
             echo json_encode(["redirect" => url("/admin/users/home")]);
             return;
         }
+
+        //ativar
+        if (!empty($data["action"]) && $data["action"] == "ativar") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $userActivate = (new User())->findById($data["user_id"]);
+
+            /**
+             * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
+             */
+            if (Auth::user()->level < 10 || Auth::user()->id == $userActivate->id) {
+                $this->message->error("Você não tem permissão para ativar o perfil desse usuário.")->flash();
+                echo json_encode(["redirect" => url("admin/users/home")]);
+                return;
+            }
+
+            // if (!(Auth::user()->level >= $userDelete->level && $userDelete->level !== 'inativo')) {
+            //     $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário ou está inativo.")->flash();
+            //     echo json_encode(["redirect" => url("admin/users/home")]);
+            //     return;
+            // }
+
+            if (!$userActivate) {
+                $this->message->error("Você tentou Ativar um usuário que não existe ou que já foi removido")->flash();
+                echo json_encode(["redirect" => url("/admin/users/home")]);
+                return;
+            }
+            $userActivate->level = '5';
+            $userActivate->save();
+
+            $this->message->success("Usuário Ativado com sucesso...")->flash();
+
+            echo json_encode(["redirect" => url("/admin/users/home")]);
+            return;
+        }
+
 
         $userEdit = null;
         if (!empty($data["user_id"])) {
