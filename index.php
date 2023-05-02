@@ -65,6 +65,7 @@ $route->post("/people/people-create/{people_id}", "Person:peopleCreate");
 
 $route->get("/people/people/{people_id}/contacts", "Person:contacts");
 $route->post("/people/people/{people_id}/contacts", "Person:contacts");
+$route->get("/people/people/{people_id}/contacts/{search}/{page}", "Person:contacts");
 // $route->get("/people/people/create", "Person:create");
 
 //properties

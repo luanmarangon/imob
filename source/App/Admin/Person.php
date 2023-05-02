@@ -315,7 +315,6 @@ class Person extends Admin
 
 
 
-
         $peopleEdit = null;
         if (!empty($data["people_id"])) {
             $peopleId = filter_var($data["people_id"], FILTER_SANITIZE_STRIPPED);
@@ -325,12 +324,38 @@ class Person extends Admin
         $peopleContacts = (new PeopleContacts())->find(
             "people_id = :people",
             "people={$peopleEdit->id}"
-        )->fetch(true);
+        );
 
         $count = (new PeopleContacts())->find(
             "people_id = :people",
             "people={$peopleEdit->id}"
         )->count();
+
+        //search redirect
+        // if (!empty($data["s"])) {
+        //     $s = str_search($data["s"]);
+        //     echo json_encode(["redirect" => url("/admin/people/people/{$s}/1")]);
+        //     return;
+        // }
+
+        //read
+        // $search = null;
+        // $people = (new People())->find();
+        // $peopleContacts = (new PeopleContacts())->find();
+
+        // if (!empty($data["search"]) && str_search($data["search"]) != "all") {
+        //     $search = str_search($data["search"]);
+        //     $people = (new People())->find("MATCH(first_name, last_name, cpf, rg) AGAINST(:s)", "s={$search}");
+        //     if (!$people->count()) {
+        //         $this->message->info("Sua pesquisa não retornou resultados")->flash();
+        //         redirect("/admin/people/people");
+        //     }
+        // }
+        $all = ($search ?? "all");
+        $pager = new Pager(url("/admin/people/people/{$peopleId}/contacts/{$all}/"));
+        $pager->pager($count, 6, (!empty($data["page"]) ? $data["page"] : 1));
+
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Proprietários",
@@ -344,8 +369,13 @@ class Person extends Admin
             "app" => "people/people",
             "head" => $head,
             "people" => $peopleEdit,
-            "peopleContacts" => $peopleContacts,
-            "count" => $count
+            "peopleContacts" => $peopleContacts->limit($pager->limit())->offset($pager->offset())->order("created_at")->fetch(true),
+            // "peopleContacts" => $peopleContacts,
+            "count" => $count,
+            "paginator" => $pager->render()
+            // "people" => $people->limit($pager->limit())->offset($pager->offset())->order("first_name, last_name")->fetch(true),
+
+
         ]);
     }
 }
