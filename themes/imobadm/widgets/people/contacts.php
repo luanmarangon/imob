@@ -46,12 +46,18 @@
             <?php if ($peopleContacts) : ?>
 
             <?php foreach ($peopleContacts as $contacts) : ?>
+            <!-- <?php var_dump($contacts->id); ?> -->
             <article>
                 <?php if ($contacts->contact()->type === "WhatsApp") : ?>
                 <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
                 </div>
                 <?php elseif ($contacts->contact()->type === "Fixo") : ?>
                 <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
