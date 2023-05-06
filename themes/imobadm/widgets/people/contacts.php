@@ -52,6 +52,7 @@
                 <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+<<<<<<< HEAD
                     <?php if ($contacts->contact()->status != "Inativo") : ?>
                     <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
                     <a class="btn btn-red icon-warning"
@@ -66,12 +67,21 @@
                         data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
+=======
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
+>>>>>>> 0d4b79811344cef61f3f171e10f4649caf607872
                 </div>
                 <?php elseif ($contacts->contact()->type === "Fixo") : ?>
                 <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
                     <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+<<<<<<< HEAD
                     <?php if ($contacts->contact()->status != "Inativo") : ?>
                     <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
                     <a class="btn btn-red icon-warning"
@@ -86,12 +96,21 @@
                         data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
+=======
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
+>>>>>>> 0d4b79811344cef61f3f171e10f4649caf607872
                 </div>
                 <?php else : ?>
                 <h4 class="icon-envelope-o"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
                     <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+<<<<<<< HEAD
                     <?php if ($contacts->contact()->status != "Inativo") : ?>
                     <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
                     <a class="btn btn-red icon-warning"
@@ -106,6 +125,14 @@
                         data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
+=======
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
+>>>>>>> 0d4b79811344cef61f3f171e10f4649caf607872
                 </div>
                 <?php endif; ?>
             </article>

@@ -184,10 +184,10 @@ class Person extends Admin
             $peopleDelete = (new People())->findById($data["people_id"]);
 
             /**
-             * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
+             * Condição para travar um User->Level menor de inativar os dados de um User->Level maior
              */
             if (Auth::user()->level < 10) {
-                $this->message->error("Você não tem permissão para deletar o perfil desse cliente.")->flash();
+                $this->message->error("Você não tem permissão para inativar o perfil desse cliente.")->flash();
                 echo json_encode(["redirect" => url("admin/people/people")]);
                 return;
             }
@@ -199,7 +199,7 @@ class Person extends Admin
             // }
 
             if (!$peopleDelete) {
-                $this->message->error("Você tentou Deletar um cliente que não existe ou que já foi removido")->flash();
+                $this->message->error("Você tentou inativar um cliente que não existe ou que já foi removido")->flash();
                 echo json_encode(["redirect" => url("/admin/people/people")]);
                 return;
             }
@@ -225,7 +225,7 @@ class Person extends Admin
             $peopleActivate = (new People())->findById($data["people_id"]);
 
             /**
-             * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
+             * Condição para travar um User->Level menor de inativar os dados de um User->Level maior
              */
             if (Auth::user()->level < 10) {
                 $this->message->error("Você não tem permissão para ativar o perfil desse Cliente.")->flash();
