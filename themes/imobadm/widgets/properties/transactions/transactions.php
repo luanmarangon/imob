@@ -40,9 +40,9 @@
                     <?php else : ?>
                     <p><b>Status:</b> Inativo</p>
                     <?php endif; ?>
-                    <?php foreach ($owners as $owner) : ?>
-                    <?php if ($propertie->address($propertie->id)->owners_id === $owner->id) : ?>
-                    <p><b>Proprietário:</b> <?= $owner->fullName(); ?></p>
+                    <?php foreach ($people as $person) : ?>
+                    <?php if ($propertie->address($propertie->id)->people_id === $person->id) : ?>
+                    <p><b>Proprietário:</b> <?= $person->fullName(); ?></p>
                     <?php endif; ?>
                     <?php endforeach; ?>
 

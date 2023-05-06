@@ -49,10 +49,10 @@
                 };
 
                 echo $nav("laptop", "dash/home", "Dashboard");
-                echo $nav("users", "owners/home", "Proprietarios");
+                echo $nav("users", "people/home", "Clientes");
                 echo $nav("home", "properties/home", "Imóveis");
                 echo $nav("money", "transactions/home", "Transações");
-                echo $nav("user-plus", "clients/home", "Clientes");
+                echo $nav("user-plus", "leads/home", "Leads");
                 echo $nav("cogs", "settings/home", "Configurações");
                 echo $nav("files-o", "reports/home", "Relatórios");
                 echo $nav("user", "users/home", "Usuários");

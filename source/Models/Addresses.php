@@ -12,7 +12,7 @@ class Addresses extends Model
             "addresses",
             ["id"],
             [
-                "owners_id",
+                "people_id",
                 "street",
                 "number",
                 "complement",
@@ -26,6 +26,11 @@ class Addresses extends Model
         );
     }
 
+    public function findByPeople(int $id, string $columns = "*"): ?Model
+    {
+        $find = $this->find("people_id = :id", "id={$id}", $columns);
+        return $find->fetch();
+    }
 
     //fim
 }

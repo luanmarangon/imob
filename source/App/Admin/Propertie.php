@@ -2,9 +2,9 @@
 
 namespace Source\App\Admin;
 
-use Source\Models\Owners;
 use Source\Support\Pager;
 use Source\App\Admin\Admin;
+use Source\Models\People;
 use Source\Models\Properties;
 use Source\Models\PropertiesComfortable;
 use Source\Models\PropertiesFeatures;
@@ -57,7 +57,7 @@ class Propertie extends Admin
         //read
         $search = null;
         $properties = (new Properties())->find();
-        $owners = (new Owners())->find()->fetch(true);
+        $people = (new People())->find()->fetch(true);
 
 
         if (!empty($data["search"]) && str_search($data["search"]) != "all") {
@@ -87,7 +87,7 @@ class Propertie extends Admin
             "head" => $head,
             "search" => $search,
             "properties" => $properties->limit($pager->limit())->offset($pager->offset())->order("updated_at")->fetch(true),
-            "owners" => $owners,
+            "people" => $people,
             "paginator" => $pager->render()
         ]);
     }
@@ -207,7 +207,7 @@ class Propertie extends Admin
         // if (!empty($data["s"])) {
         //     $s = str_search($data["s"]);
         //     redirect("/admin/properties/properties/{$s}/1");
-        //     // echo json_encode(["redirect" => url("/admin/owners/owners/{$s}/1")]);
+        //     // echo json_encode(["redirect" => url("/admin/people/people/{$s}/1")]);
         //     return;
         // }
 
@@ -279,7 +279,7 @@ class Propertie extends Admin
         )->fetch();
 
         $transactions = (new Transactions())->findTransactionsProperti($propertie->id)->fetch(true);
-        $owners = (new Owners())->find()->fetch(true);
+        $people = (new People())->find()->fetch(true);
 
         // var_dump($owners);
 
@@ -305,7 +305,7 @@ class Propertie extends Admin
             "head" => $head,
             "propertie" => $propertie,
             "transactions" => $transactions,
-            "owners" => $owners
+            "people" => $people
             // "propertieComfortable" => $propertieComfortable,
             // "countComfortable" => $countComfortable,
             // "propertieFeatures"  => $propertieFeatures,

@@ -10,21 +10,19 @@
         </form>
     </header>
     <section class="app_control_subs radius">
-        <!-- <article class="radius">
-            <a class="icon-plus-circle btn btn-green" href="dash.php?app=configuracoes/feature-create">Nova
-                Característica</a>
-        </article> -->
-
         <article class="radius">
             <a class="icon-plus-circle btn btn-green mostrarForm">Nova
                 Característica <span id="icon_new" class="icon-expand"></span></a>
         </article>
         <br>
         <div class="newForm">
-            <form class="app_form" action="" method="post">
+            <form class="app_form" action="<?= url("/admin/settings/feature"); ?>" method="post">
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="create" />
+
                 <label class="label">
                     <span class="legend">*Característica do Imóvel:</span>
-                    <input type="text" name="title" placeholder="O nome da característica" required />
+                    <input type="text" name="feature" placeholder="O nome da característica" required />
                 </label>
                 <div class="al-right">
                     <button class="btn btn-green icon-check-square-o">Criar Característica</button>
@@ -37,7 +35,13 @@
         <section class="app_users_home">
             <?php foreach ($features as $feature) : ?>
                 <article class="user radius">
-                    <h4><?= $feature->feature; ?></h4>
+                    <h4><?= $feature->feature; ?>
+                        <?php if ($feature->status == "Inativo") : ?>
+                            <a class="inactive icon-thumbs-o-down"></a>
+                        <?php else : ?>
+                            <a class="active icon-thumbs-o-up "></a>
+                        <?php endif; ?>
+                    </h4>
                     <div class="info">
                         <p><b>Criado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($feature->created_at)); ?></span>
                         </p>
@@ -46,7 +50,7 @@
                     </div>
 
                     <div class="actions">
-                        <a class="icon-cog btn btn-blue" href="" title="">Gerenciar</a>
+                        <a class="icon-cog btn btn-blue" href="<?= url("/admin/settings/featureUpdate/{$feature->id}"); ?>" title="">Gerenciar</a>
                     </div>
                 </article>
             <?php endforeach; ?>

@@ -17,10 +17,13 @@
         </article>
         <br>
         <div class="newForm">
-            <form class="app_form" action="" method="post">
+            <form class="app_form" action="<?= url("/admin/settings/charges"); ?>" method="post">
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="create" />
+
                 <label class="label">
                     <span class="legend">*Cobrança do Imóvel:</span>
-                    <input type="text" name="title" placeholder="O nome da cobrança" required />
+                    <input type="text" name="charge" placeholder="O nome da cobrança" required />
                 </label>
                 <div class="al-right">
                     <button class="btn btn-green icon-check-square-o">Criar Cobrança</button>
@@ -32,18 +35,28 @@
     <div class="dash_content_app_box">
         <section class="app_users_home">
             <?php foreach ($charges as $charge) : ?>
-                <article class="user radius">
-                    <h4><?= $charge->charge; ?></h4>
-                    <div class="info">
-                        <p><b>Criado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($charge->created_at)); ?></span></p>
-                        <p><b>Atualizado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($charge->updated_at)); ?>; ?></span>
-                        </p>
-                    </div>
+            <article class="user radius">
+                <h4>
+                    <?= $charge->charge; ?>
+                    <?php if ($charge->status == "Inativo") : ?>
+                    <a class="inactive icon-thumbs-o-down"></a>
+                    <?php else : ?>
+                    <a class="active icon-thumbs-o-up "></a>
+                    <?php endif; ?>
+                </h4>
+                <div class="info">
+                    <p><b>Criado:</b> <span
+                            class="mask-datetime"><?= date("d-m-Y H:i", strtotime($charge->created_at)); ?></span></p>
+                    <p><b>Atualizado:</b> <span
+                            class="mask-datetime"><?= date("d-m-Y H:i", strtotime($charge->updated_at)); ?>; ?></span>
+                    </p>
+                </div>
 
-                    <div class="actions">
-                        <a class="icon-cog btn btn-blue" href="" title="">Gerenciar</a>
-                    </div>
-                </article>
+                <div class="actions">
+                    <a class="icon-cog btn btn-blue" href="<?= url("/admin/settings/chargesUpdate/{$charge->id}"); ?>"
+                        title="">Gerenciar</a>
+                </div>
+            </article>
             <?php endforeach; ?>
         </section>
         <?= $paginator; ?>

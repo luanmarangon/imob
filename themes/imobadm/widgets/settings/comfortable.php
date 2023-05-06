@@ -11,21 +11,19 @@
     </header>
 
     <section class="app_control_subs radius">
-        <!-- <article class="radius">
-            <a class="icon-plus-circle btn btn-green" href="dash.php?app=configuracoes/comfortable-create">Novo
-                Cômodo</a>
-
-        </article> -->
         <article class="radius">
             <a class="icon-plus-circle btn btn-green mostrarForm">Novo
                 Cômodo <span id="icon_new" class="icon-expand"></span></a>
         </article>
         <br>
         <div class="newForm">
-            <form class="app_form" action="" method="post">
+            <form class="app_form" action="<?= url("/admin/settings/comfortable"); ?>" method="post">
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="create" />
+
                 <label class="label">
                     <span class="legend">*Cômodo do Imóvel:</span>
-                    <input type="text" name="title" placeholder="O nome do cômodo" required />
+                    <input type="text" name="convenient" placeholder="O nome do cômodo" required />
                 </label>
                 <div class="al-right">
                     <button class="btn btn-green icon-check-square-o">Criar Cômodo</button>
@@ -40,19 +38,28 @@
 
         <section class="app_users_home">
             <?php foreach ($comfortable  as $convenient) : ?>
-                <article class="user radius">
-                    <h4><?= $convenient->convenient; ?></h4>
-                    <div class="info">
-                        <p><b>Criado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($convenient->created_at)); ?></span>
-                        </p>
-                        <p><b>Atualizado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($convenient->updated_at)); ?>;
-                                ?></span></p>
-                    </div>
+            <article class="user radius">
+                <h4><?= $convenient->convenient; ?>
+                    <?php if ($convenient->status == "Inativo") : ?>
+                    <a class="inactive icon-thumbs-o-down"></a>
+                    <?php else : ?>
+                    <a class="active icon-thumbs-o-up "></a>
+                    <?php endif; ?>
+                </h4>
+                <div class="info">
+                    <p><b>Criado:</b> <span
+                            class="mask-datetime"><?= date("d-m-Y H:i", strtotime($convenient->created_at)); ?></span>
+                    </p>
+                    <p><b>Atualizado:</b> <span
+                            class="mask-datetime"><?= date("d-m-Y H:i", strtotime($convenient->updated_at)); ?>;
+                            ?></span></p>
+                </div>
 
-                    <div class="actions">
-                        <a class="icon-cog btn btn-blue" href="" title="">Gerenciar</a>
-                    </div>
-                </article>
+                <div class="actions">
+                    <a class="icon-cog btn btn-blue"
+                        href="<?= url("/admin/settings/comfortableUpdate/{$convenient->id}"); ?>" title="">Gerenciar</a>
+                </div>
+            </article>
             <?php endforeach; ?>
         </section>
         <?= $paginator; ?>

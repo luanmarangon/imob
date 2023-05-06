@@ -68,7 +68,7 @@
                 <section class="main_properties">
                     <div class="container">
                         <div class="row">
-                            <!-- <?= var_dump($transactionType); ?> -->
+                            <!-- <?= var_dump($properties); ?> -->
                             <?php foreach ($properties as $properti) : ?>
                             <?php if ($properti->transactionsProperties($properti->id)->type == $data) : ?>
                             <article class="col-12 col-md-6 col-lg4 mb-4">

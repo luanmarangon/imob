@@ -450,3 +450,42 @@ function request_repeat(string $field, string $value): bool
     $session->set($field, $value);
     return false;
 }
+
+// function maps_api(string $address)
+// {
+
+//     $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=' . CONF_API_GOOGLE_MAPS;
+
+//     $response = file_get_contents($url);
+//     $data = json_decode($response);
+//     if ($data->status === 'OK') {
+//         $latitude = number_format($data->results[0]->geometry->location->lat, 5, '.', '');
+//         $longitude = number_format($data->results[0]->geometry->location->lng, 5, '.', '');
+//         echo "<input type='hidden' id='latitude' value='{$latitude}'>";
+//         echo "<input type='hidden' id='longitute' value='{$longitude}'>";
+
+//         echo "Latitude: $latitude, Longitude: $longitude";
+//     } else {
+//         echo "Erro ao geocodificar o endereço.";
+//     }
+// }
+
+function maps_api(string $address)
+{
+    try {
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=' . CONF_API_GOOGLE_MAPS;
+
+        $response = file_get_contents($url);
+        $data = json_decode($response);
+
+        if (!empty($data) && $data->status === 'OK') {
+            $latitude = number_format($data->results[0]->geometry->location->lat, 5, '.', '');
+            $longitude = number_format($data->results[0]->geometry->location->lng, 5, '.', '');
+            return ['latitude' => $latitude, 'longitude' => $longitude];
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return false;
+    }
+}

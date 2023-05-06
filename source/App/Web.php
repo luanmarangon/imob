@@ -31,7 +31,6 @@ class Web extends Controller
         // }
         // var_dump($teste2);
 
-        // (new User())->bootstrap("Luan", "Marangon", "luan.limarangon@gmail.com", "M4r4ng0n210990", "Administrador", "Manager")->save();
     }
 
 
@@ -98,7 +97,6 @@ class Web extends Controller
             "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
             "type={$data['type']}"
         )->fetch();
-
         $properties = (new Properties())->find(
             "active = :active",
             "active=1"

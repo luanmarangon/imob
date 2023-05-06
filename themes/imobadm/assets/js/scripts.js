@@ -1,9 +1,8 @@
-
-
 // JQUERY INIT
 
 $(function () {
     var ajaxResponseBaseTime = 3;
+    var ajaxResponseRequestError = "<div class='message error icon-warning'>Desculpe mas não foi possível processar sua requisição...</div>";
 
     // MOBILE MENU
 
@@ -24,19 +23,120 @@ $(function () {
 
     //NOTIFICATION CENTER
 
+    function notificationsCount() {
+        var center = $(".notification_center_open");
+        $.post(center.data("count"), function (response) {
+            if (response.count) {
+                center.html(response.count);
+            } else {
+                center.html("0");
+            }
+        }, "json");
+    }
+
+    function notificationHtml(link, image, notify, date) {
+        return '<div data-notificationlink="' + link + '" class="notification_center_item radius transition">\n' +
+            '<div class="image">\n' +
+            '    <img class="rounded" src="' + image + '"/>\n' +
+            '     </div >\n' +
+            '<div class="info">\n' +
+            '    <p class="title">' + notify + '</p>\n' +
+            '    <p class="time icon-clock-o">' + date + '</p>\n' +
+            '</div>\n' +
+            '    </div >';
+    }
+
+    notificationsCount();
+
+    setInterval(function () {
+        notificationsCount();
+    }, 1000 * 50);
+
     $(".notification_center_open").click(function (e) {
         e.preventDefault();
 
+        var notify = $(this).data("notify");
         var center = $(".notification_center");
-        center.css("display", "block").animate({ right: 0 }, 200, function (e) {
-            $("body").css("overflow", "hidden");
-        });
+
+        $.post(notify, function (response) {
+            if (response.message) {
+                ajaxMessage(response.message, ajaxResponseBaseTime);
+            }
+
+            var centerHtml = "";
+            if (response.notifications) {
+                $.each(response.notifications, function (e, notify) {
+                    centerHtml += notificationHtml(notify.link, notify.image, notify.title, notify.created_at);
+                });
+                center.html(centerHtml);
+
+                center.css("display", "block").animate({ right: 0 }, 200, function (e) {
+                    $("body").css("overflow", "hidden");
+                });
+            }
+        }, "json");
 
         center.one("mouseleave", function () {
             $(this).animate({ right: '-320' }, 200, function (e) {
                 $("body").css("overflow", "auto");
                 $(this).css("display", "none");
             });
+        });
+        notificationsCount();
+    });
+
+    $(".notification_center").on("click", "[data-notificationlink]", function () {
+        window.location.href = $(this).data("notificationlink")
+    })
+
+    //DATA SET
+
+    $("[data-post]").click(function (e) {
+        e.preventDefault();
+
+        var clicked = $(this);
+        var data = clicked.data();
+        var load = $(".ajax_load");
+
+        if (data.confirm) {
+            var deleteConfirm = confirm(data.confirm);
+            if (!deleteConfirm) {
+                return;
+            }
+        }
+
+        $.ajax({
+            url: data.post,
+            type: "POST",
+            data: data,
+            dataType: "json",
+            beforeSend: function () {
+                load.fadeIn(200).css("display", "flex");
+            },
+            success: function (response) {
+                //redirect
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                } else {
+                    load.fadeOut(200);
+                }
+
+                //reload
+                if (response.reload) {
+                    window.location.reload();
+                } else {
+                    load.fadeOut(200);
+                }
+
+                //message
+                if (response.message) {
+                    ajaxMessage(response.message, ajaxResponseBaseTime);
+                }
+            },
+            error: function () {
+                ajaxMessage(ajaxResponseRequestError, 5);
+                load.fadeOut();
+            }
         });
     });
 
@@ -64,7 +164,6 @@ $(function () {
                 var load_title = $(".ajax_load_box_title");
                 load_title.text("Enviando (" + loaded + "%)");
 
-                form.find("input[type='file']").val(null);
                 if (completed >= 100) {
                     load_title.text("Aguarde, carregando...");
                 }
@@ -74,6 +173,7 @@ $(function () {
                 if (response.redirect) {
                     window.location.href = response.redirect;
                 } else {
+                    form.find("input[type='file']").val(null);
                     load.fadeOut(200);
                 }
 
@@ -101,8 +201,7 @@ $(function () {
                 }
             },
             error: function () {
-                var message = "<div class='message error icon-warning'>Desculpe mas não foi possível processar sua requisição...</div>";
-                ajaxMessage(message, 5);
+                ajaxMessage(ajaxResponseRequestError, 5);
                 load.fadeOut();
             }
         });
@@ -119,6 +218,7 @@ $(function () {
         });
 
         $(".ajax_response").append(ajaxMessage);
+        ajaxMessage.effect("bounce");
     }
 
     // AJAX RESPONSE MONITOR
@@ -136,7 +236,7 @@ $(function () {
     // MAKS
     var options = {
         translation: {
-            "X": { pattern: /[X0-9]/ }
+            "X": { pattern: /[0-9X]/ }
         }, reverse: true
     };
 
@@ -166,70 +266,9 @@ $(function () {
         }
     });
 
-    // TINYMCE INIT
-
-    tinyMCE.init({
-        selector: "textarea.mce",
-        language: 'pt_BR',
-        menubar: false,
-        theme: "modern",
-        height: 132,
-        skin: 'light',
-        entity_encoding: "raw",
-        theme_advanced_resizing: true,
-        plugins: [
-            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-            "save table contextmenu directionality emoticons template paste textcolor media"
-        ],
-        toolbar: "styleselect | pastetext | removeformat |  bold | italic | underline | strikethrough | bullist | numlist | alignleft | aligncenter | alignright |  link | unlink | fsphpimage | code | fullscreen",
-        style_formats: [
-            { title: 'Normal', block: 'p' },
-            { title: 'Titulo 3', block: 'h3' },
-            { title: 'Titulo 4', block: 'h4' },
-            { title: 'Titulo 5', block: 'h5' },
-            { title: 'Código', block: 'pre', classes: 'brush: php;' }
-        ],
-        link_class_list: [
-            { title: 'None', value: '' },
-            { title: 'Blue CTA', value: 'btn btn_cta_blue' },
-            { title: 'Green CTA', value: 'btn btn_cta_green' },
-            { title: 'Yellow CTA', value: 'btn btn_cta_yellow' },
-            { title: 'Red CTA', value: 'btn btn_cta_red' }
-        ],
-        setup: function (editor) {
-            editor.addButton('fsphpimage', {
-                title: 'Enviar Imagem',
-                icon: 'image',
-                onclick: function () {
-                    $('.mce_upload').fadeIn(200, function (e) {
-                        $("body").click(function (e) {
-                            if ($(e.target).attr("class") === "mce_upload") {
-                                $('.mce_upload').fadeOut(200);
-                            }
-                        });
-                    }).css("display", "flex");
-                }
-            });
-        },
-        link_title: false,
-        target_list: false,
-        theme_advanced_blockformats: "h1,h2,h3,h4,h5,p,pre",
-        media_dimensions: false,
-        media_poster: false,
-        media_alt_source: false,
-        media_embed: false,
-        extended_valid_elements: "a[href|target=_blank|rel|class]",
-        imagemanager_insert_template: '<img src="{$url}" title="{$title}" alt="{$title}" />',
-        image_dimensions: false,
-        relative_urls: false,
-        remove_script_host: false,
-        paste_as_text: true
-    });
-
     /**
-     * MASK-CONTACT SELECT PROPERTIES
-     */
+    * MASK-CONTACT SELECT PROPERTIES
+    */
 
     $(document).ready(function () {
         var select = document.getElementById("select-opcoes");
@@ -290,26 +329,26 @@ $(function () {
      * JS Consulta CEP
      */
 
-    $(document).ready(function () {
-        $('#btn-consultar').click(function () {
-            var cep = $('#cep').val().replace(/\D/g, '');
+    // $(document).ready(function () {
+    //     $('#btn-consultar').click(function () {
+    //         var cep = $('#cep').val().replace(/\D/g, '');
 
-            if (cep.length === 8) {
-                $.getJSON('https://viacep.com.br/ws/' + cep + '/json/', function (data) {
-                    if (!('erro' in data)) {
-                        $('#logradouro').val(data.logradouro);
-                        $('#bairro').val(data.bairro);
-                        $('#cidade').val(data.localidade);
-                        $('#uf').val(data.uf);
-                    } else {
-                        alert('CEP não encontrado, informe o cep novamente ou preencha manualmente o endereço');
-                    }
-                });
-            } else {
-                alert("CEP inválido, informe um CEP válido.");
-            }
-        });
-    });
+    //         if (cep.length === 8) {
+    //             $.getJSON('https://viacep.com.br/ws/' + cep + '/json/', function (data) {
+    //                 if (!('erro' in data)) {
+    //                     $('#logradouro').val(data.logradouro);
+    //                     $('#bairro').val(data.bairro);
+    //                     $('#cidade').val(data.localidade);
+    //                     $('#uf').val(data.uf);
+    //                 } else {
+    //                     alert('CEP não encontrado, informe o cep novamente ou preencha manualmente o endereço');
+    //                 }
+    //             });
+    //         } else {
+    //             alert("CEP inválido, informe um CEP válido.");
+    //         }
+    //     });
+    // });
 
     // $(document).ready(function () {
     //     // $('#cep').mask('00000-000'); // adiciona máscara de CEP
@@ -341,8 +380,9 @@ $(function () {
                     if (!('erro' in data)) {
                         $('#logradouro').val(data.logradouro);
                         $('#bairro').val(data.bairro);
-                        $('#cidade').val(data.localidade);
-                        $('#uf').val(data.uf);
+                        // $('#cidade').val(data.localidade);
+                        // $('#uf').val(data.uf);
+                        $('#cidade').val(data.localidade + '-' + data.uf);
                     } else {
                         alert('CEP não encontrado, informe o CEP novamente ou preencha manualmente o endereço.');
                     }
@@ -362,5 +402,65 @@ $(function () {
             // }
         });
     });
+});
 
-})
+// TINYMCE INIT
+
+tinyMCE.init({
+    selector: "textarea.mce",
+    language: 'pt_BR',
+    menubar: false,
+    theme: "modern",
+    height: 132,
+    skin: 'light',
+    entity_encoding: "raw",
+    theme_advanced_resizing: true,
+    plugins: [
+        "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+        "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+        "save table contextmenu directionality emoticons template paste textcolor media"
+    ],
+    toolbar: "styleselect | pastetext | removeformat |  bold | italic | underline | strikethrough | bullist | numlist | alignleft | aligncenter | alignright |  link | unlink | fsphpimage | code | fullscreen",
+    style_formats: [
+        { title: 'Normal', block: 'p' },
+        { title: 'Titulo 3', block: 'h3' },
+        { title: 'Titulo 4', block: 'h4' },
+        { title: 'Titulo 5', block: 'h5' },
+        { title: 'Código', block: 'pre', classes: 'brush: php;' }
+    ],
+    link_class_list: [
+        { title: 'None', value: '' },
+        { title: 'Blue CTA', value: 'btn btn_cta_blue' },
+        { title: 'Green CTA', value: 'btn btn_cta_green' },
+        { title: 'Yellow CTA', value: 'btn btn_cta_yellow' },
+        { title: 'Red CTA', value: 'btn btn_cta_red' }
+    ],
+    setup: function (editor) {
+        editor.addButton('fsphpimage', {
+            title: 'Enviar Imagem',
+            icon: 'image',
+            onclick: function () {
+                $('.mce_upload').fadeIn(200, function (e) {
+                    $("body").click(function (e) {
+                        if ($(e.target).attr("class") === "mce_upload") {
+                            $('.mce_upload').fadeOut(200);
+                        }
+                    });
+                }).css("display", "flex");
+            }
+        });
+    },
+    link_title: false,
+    target_list: false,
+    theme_advanced_blockformats: "h1,h2,h3,h4,h5,p,pre",
+    media_dimensions: false,
+    media_poster: false,
+    media_alt_source: false,
+    media_embed: false,
+    extended_valid_elements: "a[href|target=_blank|rel|class]",
+    imagemanager_insert_template: '<img src="{$url}" title="{$title}" alt="{$title}" />',
+    image_dimensions: false,
+    relative_urls: false,
+    remove_script_host: false,
+    paste_as_text: true
+});

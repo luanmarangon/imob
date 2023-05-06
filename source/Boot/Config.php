@@ -69,8 +69,13 @@ define("CONF_SOCIAL_GOOGLE_PAGE", "#");
 define("CONF_SOCIAL_GOOGLE_AUTHOR", "#");
 define("CONF_SOCIAL_INSTAGRAM_PAGE", "luan_marangon");
 define("CONF_SOCIAL_YOUTUBE", "#");
-define("CONF_API_GOOGLE_MAPS", "AIzaSyChwUAYltIcuV82BhrVuiGkzrByR8ve19Y");
+// define("CONF_API_GOOGLE_MAPS", "AIzaSyChwUAYltIcuV82BhrVuiGkzrByR8ve19Y");
 
+
+/**
+ * API
+ */
+define("CONF_API_GOOGLE_MAPS", "AIzaSyChwUAYltIcuV82BhrVuiGkzrByR8ve19Y");
 
 /**
  * DATES
