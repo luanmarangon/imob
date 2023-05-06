@@ -309,7 +309,40 @@ class Person extends Admin
         }
 
 
+        //delete
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $contactDelete = (new Contacts())->findById($data["contacts_id"]);
+            // var_dump($data);
+            /**
+             * Condição para travar um User->Level menor de inativar os dados de um User->Level maior
+             */
+            if (Auth::user()->level < 10) {
+                $this->message->error("Você não tem permissão para inativar o perfil desse usuário ou é o perfil pertence ao seu usuário.")->flash();
+                echo json_encode(["redirect" => url("/admin/people/people")]);
+                return;
+            }
 
+            if (!$contactDelete) {
+                $this->message->error("Você tentou inativar um usuário que não existe ou que já foi removido")->flash();
+                echo json_encode(["redirect" => url("/admin/people/people")]);
+                return;
+            }
+
+            // if ($userDelete->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userDelete->photo}")) {
+            //     unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userDelete->photo}");
+            //     (new Thumb())->flush($userDelete->photo);
+            // }
+
+            // $userDelete->destroy();
+            $contactDelete->status = 'Inativo';
+            $contactDelete->save();
+
+            $this->message->success("Usuário excluido com sucesso...")->flash();
+
+            echo json_encode(["redirect" => url("/admin/people/people")]);
+            return;
+        }
 
 
 
