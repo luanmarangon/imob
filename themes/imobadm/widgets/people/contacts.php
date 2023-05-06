@@ -63,13 +63,25 @@
                 <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
                 </div>
                 <?php else : ?>
                 <h4 class="icon-envelope-o"><?= $contacts->contact()->contact; ?></h4>
                 <div>
                     <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <a class="icon-pencil btn btn-red" href="" title="">Inativar</a>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <?php if($contacts->contact()->status != "Inativo") :?>
+                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                        <?php else: ?>
+                            <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                            <?php endif;?>
                 </div>
                 <?php endif; ?>
             </article>
