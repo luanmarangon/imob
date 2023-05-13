@@ -57,13 +57,13 @@
                     <a class="btn btn-red icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Inativar</a>
                     <?php else : ?>
                     <a class="btn btn-green icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
                 </div>
@@ -77,13 +77,13 @@
                     <a class="btn btn-red icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Inativar</a>
                     <?php else : ?>
                     <a class="btn btn-green icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
                 </div>
@@ -97,13 +97,13 @@
                     <a class="btn btn-red icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Inativar</a>
                     <?php else : ?>
                     <a class="btn btn-green icon-warning"
                         data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
                         data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir o usuário e todos os dados relacionados a ele? Essa ação não pode ser feita!"
+                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
                         data-user_id="<?= $contacts->id; ?>">Ativar</a>
                     <?php endif; ?>
                 </div>

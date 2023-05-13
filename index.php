@@ -97,6 +97,10 @@ $route->get("/leads/leads", "Customer:leads");
 $route->post("/leads/leads", "Customer:leads");
 $route->get("/leads/leads/{search}/{page}", "Customer:leads");
 
+$route->get("/leads/convert/{leads_id}", "Customer:convert");
+$route->post("/leads/convert/{leads_id}", "Customer:convert");
+
+
 //settings
 $route->get("/settings/home", "Setting:home");
 

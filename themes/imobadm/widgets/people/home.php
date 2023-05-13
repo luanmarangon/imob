@@ -10,23 +10,63 @@
         <div class="app_control_home">
             <section class="app_control_subs radius">
                 <article class="radius">
-                    <h3 class="icon-user">Total Proprietários</h3>
+                    <h3 class="icon-users">Total Proprietários</h3>
                     <h3><?= sprintf('%02d', $people); ?></h3>
                 </article>
 
             </section>
-
+            <br>
 
             <section class="app_control_subs radius">
-                <h3 class="icon-heartbeat">Proprietários: {Ultimos}</h3>
-                <?php for ($i = 0; $i < 10; $i++) : ?>
+                <h3 class="icon-line-chart">Clientes: <?= $countPeople ? $countPeople : 0; ?></h3>
+                <?php if ($lastPeople) : ?>
+                <?php foreach ($lastPeople as $people) : ?>
                 <article class="subscriber">
-                    <h5>22.10.18 22h - Jessica Fernanda Vieira Marangon</h5>
-                    <p>(18) 99748-2397</p>
-                    <p>Martinópolis-SP</p>
+                    <h3><a
+                            href="<?= url("admin/people/people/{$people->first_name}/1") ?>"><?= $people->fullName(); ?></a>
+                    </h3>
+                    <h3><?= date_fmt($people->created_at, "d/m/y \à\s H\hi"); ?></h3>
                 </article>
-                <?php endfor; ?>
+                <?php endforeach; ?>
+                <?php else : ?>
+                <article class="subscriber">
+                    <h3>Desculpe, não há clientes cadastrados neste mês. Por favor, verifique novamente mais tarde ou
+                        tente cadastrar um novo cliente.</h3>
+                </article>
+                <?php endif; ?>
             </section>
+
+            <!-- <section class="dash_content_app_box">
+                <h3 class="icon-users">Proprietários <?= $countPeople; ?></h3>
+                <br>
+                <div class="app_users_home">
+                    <?php if (!$lastPeople) : ?>
+                    <?php foreach ($lastPeople as $people) : ?>
+                    <article class="user radius">
+                        <h4><?= $people->fullName(); ?></h4>
+                        <div class="info">
+                            <p>Desde <?= date_fmt($people->created_at, "d/m/y \à\s H\hi"); ?></p>
+                            <p><?= $people->addressPeople($people->id)->city; ?>-<?= $people->addressPeople($people->id)->state; ?>
+                        </div>
+                    </article>
+                    <?php endforeach; ?>
+                </div>
+            </section> -->
+            <!-- <?php else : ?>
+            <div class="app_control_home">
+                <section class="app_control_subs radius">
+                    <article class="radius">
+                        <h3 class="icon-user">Total Proprietários</h3>
+                        <h3><?= sprintf('%02d', $people); ?></h3>
+                    </article>
+
+                </section>
+            </div>
+
+
+            <?php endif; ?> -->
+
+
         </div>
     </div>
 </section>

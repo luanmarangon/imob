@@ -852,6 +852,8 @@ p {
     font-weight: var(--weight-strong);
 }
 
+
+
 .app_control_subscribers article .email {
     font-size: var(--font-min);
     color: #cccccc;
@@ -1110,6 +1112,17 @@ p {
 .inactive {
     color: var(--color-red);
 }
+
+.subscriber a {
+    text-decoration: none;
+    transition: font-size 0.3s ease-in-out;
+}
+
+.subscriber a:hover {
+    text-decoration: underline;
+    font-size: 115%;
+}
+
 
 /*RWD*/
 /*1280w*/
