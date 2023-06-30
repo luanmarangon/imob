@@ -10,6 +10,9 @@ use Source\Models\Tributes;
 use Source\Models\Properties;
 use Source\Models\Structures;
 use Source\Models\Comfortable;
+use Source\Models\CustomerService;
+use Source\Models\Interest;
+use Source\Models\Leads;
 use Source\Models\Transactions;
 use Source\Models\PropertiesStructures;
 use Source\Models\PropertiesComfortable;
@@ -62,8 +65,95 @@ class Web extends Controller
         ]);
     }
 
-    public function contact()
+    public function interest(array $data): void
     {
+        // var_dump($data);
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $interest = (new Interest());
+        $interest->name = $data['name'];
+        $interest->email = $data['email'];
+        $interest->phone = $data['phone'];
+        $interest->message = $data['message'];
+        $interest->transactions_id = $data['transaction'];
+
+
+
+        // $test = (new Leads())->find(
+        //     "full_name = :name or email = :mail or phone = :phone",
+        //     "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
+        // )->fetch();
+
+        // if ($test) {
+        //     $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
+        //     echo json_encode(["reload" => true]);
+        //     return;
+        // }
+
+        if (!$interest->save()) {
+            // var_dump($interest);
+
+            $json["message"] = $interest->message()->render();
+            echo json_encode($json);
+            return;
+        }
+
+        $this->message->success("Seu registro foi enviado com sucesso! Agradecemos por compartilhar as informações necessárias. Faremos o devido processamento e entraremos em contato, caso necessário.")->flash();
+        echo json_encode(["reload" => true]);
+        return;
+    }
+
+    public function optin(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $lead = (new Leads());
+        $lead->full_name = $data['name'];
+        $lead->email = $data['email'];
+        $lead->phone = $data['phone'];
+        $lead->status = "Lead";
+
+        $test = (new Leads())->find(
+            "full_name = :name or email = :mail or phone = :phone",
+            "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
+        )->fetch();
+
+        if ($test) {
+            $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
+        if (!$lead->save()) {
+            $json["message"] = $lead->message()->render();
+            echo json_encode($json);
+            return;
+        }
+
+        $this->message->success("Seu registro foi enviado com sucesso! Agradecemos por compartilhar as informações necessárias. Faremos o devido processamento e entraremos em contato, caso necessário.")->flash();
+        echo json_encode(["reload" => true]);
+        return;
+    }
+
+    public function contact(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        if ($data) {
+            $contact = (new CustomerService());
+            $contact->name = $data["name"];
+            $contact->email = $data["email"];
+            $contact->phone = $data["phone"];
+            $contact->message = $data["message"];
+            $contact->status = "N";
+
+            if (!$contact->save()) {
+                $json["message"] = $contact->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Contato enviado com sucesso...")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,

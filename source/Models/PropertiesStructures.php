@@ -10,7 +10,7 @@ class PropertiesStructures extends Model
 
     public function __construct()
     {
-        parent::__construct("properties_structures", ["properties_id", "structures_id"], ["footage"]);
+        parent::__construct("properties_structures", [], ["properties_id", "structures_id", "footage"]);
     }
 
     public function structures(): ?Structures

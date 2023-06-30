@@ -8,19 +8,21 @@
         <p>Preencha o formulário abaixo e vamos lhe direcionar para alguém que entende sua necessidade!</p>
 
         <div class="row text-start">
-            <form action="">
+            <form action="<?= url("/contato"); ?>" method="post">
+                <div class="ajax_response"><?= flash(); ?></div>
+                <?= csrf_input(); ?>
                 <h2 class="icon-envelope text-black-50 ">Envie um e-mail</h2>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Insira seu Nome">
+                    <input type="text" name="name" class="form-control" placeholder="Insira seu Nome">
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Insira seu melhor e-mail">
+                    <input type="email" name="email" class="form-control mask-email" placeholder="Insira seu melhor e-mail">
                 </div>
                 <div class="form-group">
-                    <input type="tel" class="form-control" placeholder="Insira seu telefone">
+                    <input type="tel" name="phone" class="form-control mask-phone" placeholder="Insira seu telefone">
                 </div>
                 <div class="form-group">
-                    <textarea name="teste" rows="5" class="form-control" placeholder="Escreva sua mensagem"></textarea>
+                    <textarea name="message" rows="5" class="form-control" placeholder="Escreva sua mensagem"></textarea>
                 </div>
                 <div class="form-group text-end">
                     <button class="btn btn-front">Enviar Contato</button>

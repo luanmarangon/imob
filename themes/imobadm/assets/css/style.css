@@ -199,9 +199,10 @@ p {
     background: var(--color-red);
 }
 
+
 /*FORM*/
 
-.app_form {}
+/* .app_form {} */
 
 .app_form .label {
     display: block;
@@ -269,7 +270,14 @@ p {
         flex-basis: calc(50% - 10px);
     }
 
-    .app_form .label_g2 .label:first-child {
+    .app_form .label_g2 .label:first-child,
+    .app_form .label_g2 .label:nth-child(2),
+    .app_form .label_g2 .label:nth-child(3),
+    .app_form .label_g2 .label:nth-child(4) {
+        margin-right: 20px;
+    }
+
+    .app_form .label:first-child {
         margin-right: 20px;
     }
 }
@@ -1122,6 +1130,39 @@ p {
     text-decoration: underline;
     font-size: 115%;
 }
+
+.ui-datepicker-calendar {
+    display: none;
+}
+
+.checkbox-columns {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.5%;
+    font-size: 1.05em;
+}
+
+.checkbox-column {
+    width: 33.33%;
+    box-sizing: border-box;
+    padding-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox-column label {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkbox-column input[type="checkbox"] {
+    margin-left: 5px;
+}
+
 
 
 /*RWD*/

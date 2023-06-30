@@ -22,6 +22,11 @@ $route = new Router(url(), ":");
 $route->namespace("Source\App");
 $route->get("/", "Web:home");
 $route->get("/contato", "Web:contact");
+$route->post("/contato", "Web:contact");
+$route->get("/optin", "Web:optin");
+$route->post("/optin", "Web:optin");
+$route->get("/interest", "Web:interest");
+$route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
 $route->get("/destaques", "Web:emphasis");
 $route->get("/propriedades/{id}", "Web:property");
@@ -74,6 +79,15 @@ $route->post("/people/people/{people_id}/contacts/{contacts_id}", "Person:contac
 $route->get("/properties/home", "Propertie:home");
 $route->get("/properties/properties", "Propertie:properties");
 $route->post("/properties/properties", "Propertie:properties");
+
+$route->get("/properties/properties-create", "Propertie:propertiesCreate");
+$route->post("/properties/properties-create", "Propertie:propertiesCreate");
+
+$route->get("/properties/properties/{propertie_id}", "Propertie:propertiesCreate");
+$route->post("//properties/properties/{propertie_id}", "Propertie:propertiesCreate");
+
+
+
 $route->get("/properties/properties/{search}/{page}", "Propertie:properties");
 $route->get("/properties/properties/{reference}/details/home", "Propertie:details");
 $route->get("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");

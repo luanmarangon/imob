@@ -146,21 +146,8 @@ $v->layout("_theme"); ?>
             <article class="col-12 col-md-6 col-lg4 mb-4">
                 <div class="card main_properties_item">
                     <div class="img-responsive-16by9">
-                        <?php if (!empty($properti->imagesProperties($properti->id)->path)) : ?>
-                        <img src="<?= image($properti->imagesProperties($properti->id)->path, 1280); ?>"
-                            class="card-img-top"
-                            alt="<?= $properti->imagesProperties($properti->id)->identification; ?>"
-                            title="<?= $properti->imagesProperties($properti->id)->identification; ?>">
-                        <?php else : ?>
-                        <img src="<?= image("images/semImagem.png", 1280); ?>" class="card-img-top" alt="Sem Imagem"
-                            title="Sem Imagem">
-                        <!-- <img src="<?= theme("/assets/images/semImagem.png"); ?>" class="card-img-top" alt="Sem Imagem"
-                            title="Sem Imagem"> -->
-
-
-                        <?php endif; ?>
-
-
+                        <?php $propertiImage = ($properti->imagesProperties($properti->id)->path ? image($properti->imagesProperties($properti->id)->path, 1280) : theme("/assets/images/semImagem.png", CONF_VIEW_THEME)); ?>
+                        <img src="<?= $propertiImage; ?>">
                     </div>
 
                     <div class="card-body">
@@ -227,15 +214,8 @@ $v->layout("_theme"); ?>
             <article class="col-12 col-md-6 col-lg4 mb-4">
                 <div class="card main_properties_item">
                     <div class="img-responsive-16by9">
-                        <?php if (!empty($properti->imagesProperties($properti->id)->path)) : ?>
-                        <img src="<?= image($properti->imagesProperties($properti->id)->path, 1280); ?>"
-                            class="card-img-top"
-                            alt="<?= $properti->imagesProperties($properti->id)->identification; ?>"
-                            title="<?= $properti->imagesProperties($properti->id)->identification; ?>">
-                        <?php else : ?>
-                        <img src="<?= theme("/assets/images/semImagem.png"); ?>" width="500px" class="card-img-top"
-                            alt="Sem Imagem" title="Sem Imagem">
-                        <?php endif; ?>
+                        <?php $propertiImage = ($properti->imagesProperties($properti->id)->path ? image($properti->imagesProperties($properti->id)->path, 1280) : theme("/assets/images/semImagem.png", CONF_VIEW_THEME)); ?>
+                        <img src="<?= $propertiImage; ?>">
                     </div>
 
                     <div class="card-body">

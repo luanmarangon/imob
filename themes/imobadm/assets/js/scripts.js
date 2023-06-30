@@ -233,38 +233,43 @@ $(function () {
         $(this).effect("bounce").fadeOut(1);
     });
 
-    // MAKS
-    var options = {
-        translation: {
-            "X": { pattern: /[0-9X]/ }
-        }, reverse: true
-    };
 
-    $(".mask-date").mask('00/00/0000', { placeholder: "00/00/0000" });
-    $(".mask-datetime").mask('00/00/0000 00:00');
-    $(".mask-month").mask('00/0000', { reverse: true });
-    $(".mask-doc").mask('000.000.000-00', { reverse: true });
-    $(".mask-card").mask('0000  0000  0000  0000', { reverse: true });
-    $(".mask-money").mask('000.000.000.000.000,00', { reverse: true, placeholder: "0,00" });
-    $(".mask-cpf").mask("000.000.000-00", { reverse: true });
-    $(".mask-cnpj").mask("00.000.000/0000-00");
-    $(".mask-cep").mask("00.000-000");
-    // $("#price").mask("999.999.990,00", { reverse: true })
-    $(".mask-rg").mask("999.999.999-X", options)
-    $(".mask-phone").mask("(99) 0000-00009")
-    // $(".mask-phone").mask("(99) 0000-00009", { placeholder: "(XX) XXXXX-XXXX" })
-    $(".mask-phone").blur(function (event) {
-        if ($(this).val().length == 15) {
-            $(".mask-phone").mask("(99) 00000-0009")
-        } else {
-            $(".mask-phone").mask("(99) 0000-00009")
-        }
-    })
-    $('.mask-email').mask("A", {
-        translation: {
-            "A": { pattern: /[\w@\-.+]/, recursive: true }
-        }
-    });
+
+    /**
+     * Removido e colocado no shared mask.js
+     */
+    // // MAKS
+    // var options = {
+    //     translation: {
+    //         "X": { pattern: /[0-9X]/ }
+    //     }, reverse: true
+    // };
+
+    // $(".mask-date").mask('00/00/0000', { placeholder: "00/00/0000" });
+    // $(".mask-datetime").mask('00/00/0000 00:00');
+    // $(".mask-month").mask('00/0000', { reverse: true });
+    // $(".mask-doc").mask('000.000.000-00', { reverse: true });
+    // $(".mask-card").mask('0000  0000  0000  0000', { reverse: true });
+    // $(".mask-money").mask('000.000.000.000.000,00', { reverse: true, placeholder: "0,00" });
+    // $(".mask-cpf").mask("000.000.000-00", { reverse: true });
+    // $(".mask-cnpj").mask("00.000.000/0000-00");
+    // $(".mask-cep").mask("00.000-000");
+    // // $("#price").mask("999.999.990,00", { reverse: true })
+    // $(".mask-rg").mask("999.999.999-X", options)
+    // $(".mask-phone").mask("(99) 0000-00009")
+    // // $(".mask-phone").mask("(99) 0000-00009", { placeholder: "(XX) XXXXX-XXXX" })
+    // $(".mask-phone").blur(function (event) {
+    //     if ($(this).val().length == 15) {
+    //         $(".mask-phone").mask("(99) 00000-0009")
+    //     } else {
+    //         $(".mask-phone").mask("(99) 0000-00009")
+    //     }
+    // })
+    // $('.mask-email').mask("A", {
+    //     translation: {
+    //         "A": { pattern: /[\w@\-.+]/, recursive: true }
+    //     }
+    // });
 
     /**
     * MASK-CONTACT SELECT PROPERTIES
@@ -402,6 +407,133 @@ $(function () {
             // }
         });
     });
+
+    // // Obtém a referência para a div original
+    // var divOriginal = document.getElementById('features');
+
+    // // Obtém a referência para o botão "Adicionar"
+    // var btnAdd = document.getElementById('btnAdd');
+
+    // // Adiciona um evento de clique ao botão "Adicionar"
+    // btnAdd.addEventListener('click', function () {
+    //     // Cria uma nova div
+    //     var divDuplicada = document.createElement('div');
+
+    //     // Copia o conteúdo da div original para a div duplicada
+    //     divDuplicada.innerHTML = divOriginal.innerHTML;
+
+    //     // Adiciona a div duplicada após a div original
+    //     divOriginal.parentNode.insertBefore(divDuplicada, divOriginal.nextSibling);
+    // });
+
+
+    // // Obtém a referência para a div original
+    // var divOriginal = document.getElementById('attributes');
+
+    // // Obtém a referência para o botão "Adicionar"
+    // var btnAdd = document.getElementById('btnAdd');
+
+    // // Adiciona um evento de clique ao botão "Adicionar"
+    // btnAdd.addEventListener('click', function () {
+    //     // Cria uma nova div
+    //     var divDuplicada = document.createElement('div');
+    //     divDuplicada.style.borderRadius = '1px';
+    //     divDuplicada.style.border = 'dotted var(--color-default)';
+    //     divDuplicada.style.padding = '2%';
+    //     divDuplicada.style.marginTop = '2%';
+
+    //     // Copia o conteúdo da div original para a div duplicada
+    //     divDuplicada.innerHTML = divOriginal.innerHTML;
+
+    //     // Cria um link de remoção
+    //     var linkRemover = document.createElement('a');
+    //     linkRemover.href = '#';
+    //     linkRemover.className = 'btn btn-red';
+    //     linkRemover.style.marginBottom = "2%";
+    //     linkRemover.textContent = 'Remover';
+    //     linkRemover.addEventListener('click', function () {
+    //         // Remove a div correspondente ao link de remoção
+    //         divDuplicada.parentNode.removeChild(divDuplicada);
+    //     });
+
+    //     // Adiciona o link de remoção à div duplicada
+    //     divDuplicada.appendChild(linkRemover);
+
+    //     // Adiciona a div duplicada após a div original
+    //     divOriginal.parentNode.insertBefore(divDuplicada, divOriginal.nextSibling);
+    // });
+
+    // Obtém uma lista de todos os botões "Adicionar"
+    var btnAdds = document.getElementsByClassName('btnAdd');
+
+    // Percorre a lista de botões "Adicionar"
+    for (var i = 0; i < btnAdds.length; i++) {
+        var btnAdd = btnAdds[i];
+
+        // Obtém a div original correspondente ao botão "Adicionar"
+        var divOriginal = btnAdd.parentNode.nextElementSibling;
+
+        // Adiciona um evento de clique ao botão "Adicionar"
+        btnAdd.addEventListener('click', createDuplicateDivHandler(divOriginal));
+    }
+
+    // Função que retorna um manipulador de evento para criar a div duplicada
+    function createDuplicateDivHandler(divOriginal) {
+        return function () {
+            // Cria uma nova div duplicada
+            var divDuplicada = document.createElement('div');
+            divDuplicada.style.borderRadius = '1px';
+            divDuplicada.style.border = 'dotted var(--color-default)';
+            divDuplicada.style.padding = '2%';
+            divDuplicada.style.marginTop = '2%';
+
+            // Copia o conteúdo da div original para a div duplicada
+            divDuplicada.innerHTML = divOriginal.innerHTML;
+
+            // Cria um link de remoção
+            var linkRemover = document.createElement('a');
+            linkRemover.href = '#';
+            linkRemover.className = 'btn btn-red';
+            linkRemover.style.marginBottom = '2%';
+            linkRemover.textContent = 'Remover';
+            linkRemover.addEventListener('click', function () {
+                // Remove a div correspondente ao link de remoção
+                divDuplicada.parentNode.removeChild(divDuplicada);
+            });
+
+            // Adiciona o link de remoção à div duplicada
+            divDuplicada.appendChild(linkRemover);
+
+            // Adiciona a div duplicada após a div original
+            divOriginal.parentNode.insertBefore(divDuplicada, divOriginal.nextSibling);
+        };
+    }
+
+    /**Analisar datePicker */
+
+    // $(document).ready(function () {
+    //     $("#datepicker").datepicker({
+    //         changeMonth: false,
+    //         changeYear: true,
+    //         showButtonPanel: true,
+    //         dateFormat: 'yy',
+    //         onClose: function (dateText, inst) {
+    //             var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+    //             $(this).datepicker('setDate', new Date(year, 0, 1));
+    //         }
+    //     });
+
+    //     $("#datepicker").focus(function () {
+    //         $(".ui-datepicker-month").hide();
+    //         $(".ui-datepicker-calendar").hide();
+    //         $(".ui-datepicker-current").hide();
+    //     });
+    // });
+
+
+
+
+
 });
 
 // TINYMCE INIT
