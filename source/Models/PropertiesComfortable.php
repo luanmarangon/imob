@@ -10,13 +10,14 @@ class PropertiesComfortable extends Model
 {
     public function __construct()
     {
-        parent::__construct("properties_comfortable", ["properties_id", "comfortable_id",], ["quantity"]);
+        parent::__construct("properties_comfortable", ["properties_id", "comfortable_id"], ["properties_id", "comfortable_id", "quantity"]);
     }
 
     public function comfortable(): ?Comfortable
     {
         return (new Comfortable())->findById($this->comfortable_id);
     }
+
 
 
 

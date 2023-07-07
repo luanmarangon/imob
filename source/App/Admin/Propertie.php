@@ -163,31 +163,41 @@ class Propertie extends Admin
             /**Incio Comfortable */
             /**Criar testes */
             $propertieComfortableCreate = new PropertiesComfortable();
-            $comfortablePropertie = [];
-            $comfortableQuantity = [];
+            // $comfortablePropertie = [];
+            // $comfortableQuantity = [];
 
-            $i = 0;
-            while (isset($data['comfortable'][$i]) && isset($data['quantityComfortable'][$i])) {
-                if (!empty($data['comfortable'][$i]) && !empty($data['quantityComfortable'][$i])) {
-                    $comfortable = $data['comfortable'][$i];
-                    $quantity = $data['quantityComfortable'][$i];
+            // $i = 0;
+            // while (isset($data['comfortable'][$i]) && isset($data['quantityComfortable'][$i])) {
+            //     if (!empty($data['comfortable'][$i]) && !empty($data['quantityComfortable'][$i])) {
+            //         $comfortable = $data['comfortable'][$i];
+            //         $quantity = $data['quantityComfortable'][$i];
 
-                    // Verificar se o valor já existe no array
-                    if (!in_array($comfortable, $comfortablePropertie)) {
-                        $comfortablePropertie[] = $comfortable;
-                        $comfortableQuantity[] = $quantity;
-                    }
-                }
-                $i++;
-            }
+            //         // Verificar se o valor já existe no array
+            //         if (!in_array($comfortable, $comfortablePropertie)) {
+            //             $comfortablePropertie[] = $comfortable;
+            //             $comfortableQuantity[] = $quantity;
+            //         }
+            //     }
+            //     $i++;
+            // }
 
-            foreach ($comfortablePropertie as $index => $comfortable) {
-                $quantity = $comfortableQuantity[$index];
-                $propertieComfortableCreate->properties_id = $propertieId;
-                $propertieComfortableCreate->comfortable_id = $comfortable;
-                $propertieComfortableCreate->quantity = $quantity;
-                // var_dump($propertieComfortableCreate);
-            }
+            // foreach ($comfortablePropertie as $index => $comfortable) {
+            //     $quantity = $comfortableQuantity[$index];
+            //     $propertieComfortableCreate->properties_id = $propertieId;
+            //     $propertieComfortableCreate->comfortable_id = $comfortable;
+            //     $propertieComfortableCreate->quantity = $quantity;
+            //     // var_dump($propertieComfortableCreate);
+            // }
+            /**
+             * TESTE
+             */
+
+            $propertieComfortableCreate->properties_id = 11;
+            $propertieComfortableCreate->comfortable_id = 1;
+            $propertieComfortableCreate->quantity = 100;
+
+
+
             /**Fim Comfortable */
 
             /**Inicio Structures */
@@ -264,11 +274,15 @@ class Propertie extends Admin
                 echo json_encode($json);
                 return;
             }
+
             if (!$propertieCreate->save()) {
                 $json["message"] = $propertieCreate->message()->render();
                 echo json_encode($json);
                 return;
             }
+
+            echo "aqui";
+            // var_dump($propertieComfortableCreate);               
 
 
             if (!$propertieComfortableCreate->save()) {
@@ -277,29 +291,29 @@ class Propertie extends Admin
                 echo json_encode($json);
                 return;
             }
-            echo "aqui";
-            // if (!$propertieStructuresCreate->save()) {
-            //     $json["message"] = $propertieStructuresCreate->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
 
-            // if (!$propertieTributesCreate->save()) {
-            //     // var_dump($propertieTributesCreate);
-            //     $json["message"] = $propertieTributesCreate->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
+            if (!$propertieStructuresCreate->save()) {
+                $json["message"] = $propertieStructuresCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
 
-            // if (!$propertieFeaturesCreate->save()) {
-            //     $json["message"] = $propertieFeaturesCreate->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
+            if (!$propertieTributesCreate->save()) {
+                // var_dump($propertieTributesCreate);
+                $json["message"] = $propertieTributesCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            if (!$propertieFeaturesCreate->save()) {
+                $json["message"] = $propertieFeaturesCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+            // var_dump($propertieCreate->id);
 
             $this->message->success("Imovel cadastrado com sucesso...")->flash();
             echo json_encode(["redirect" => url("/admin/properties/properties/{$propertieCreate->id}")]);
-
             return;
         }
         //update

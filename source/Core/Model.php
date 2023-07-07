@@ -112,6 +112,24 @@ abstract class Model
         return $this->message;
     }
 
+    // public function join(string $table, string $condition): self
+    // {
+    //     $this->query .= " JOIN {$table} ON {$condition}";
+    //     return $this;
+    // }
+
+    public function join(string $table, string $condition, ?string $where = null): self
+    {
+        $this->query .= " JOIN {$table} ON {$condition}";
+
+        if ($where) {
+            $this->query .= " WHERE {$where}";
+        }
+
+        return $this;
+    }
+
+
     /**
      * @param null|string $terms
      * @param null|string $params

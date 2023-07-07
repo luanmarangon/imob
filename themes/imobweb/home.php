@@ -139,10 +139,12 @@ $v->layout("_theme"); ?>
             <a href="<?= url("/filtro/Venda"); ?>" class="text-front">Ver mais</a>
         </div>
         <div class="row">
-
-
+            <?php if ($sale) : ?>
+            <?php foreach ($sale as $s) : ?>
+            <?php if ($s) : ?>
             <?php foreach ($properties as $properti) : ?>
-            <?php if ($properti->transactionsProperties($properti->id)->type == "Venda") : ?>
+            <?php if ($s->properties_id === $properti->id) : ?>
+
             <article class="col-12 col-md-6 col-lg4 mb-4">
                 <div class="card main_properties_item">
                     <div class="img-responsive-16by9">
@@ -164,39 +166,18 @@ $v->layout("_theme"); ?>
                         <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
                             Imóvel</a>
                     </div>
-
-
-                    <div class="card-footer d-flex text-muted">
-                        <?php foreach ($propertiComfortable as $propertiComfor) : ?>
-                        <?php if ($propertiComfor->properties_id == $properti->id) : ?>
-                        <?php if ($propertiComfor->comfortable()->convenient == "Quarto" || $propertiComfor->comfortable()->convenient == "Garage") : ?>
-                        <?php if (!empty($propertiComfor->quantity)) : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/{$propertiComfor->comfortable()->convenient}.png"); ?>"
-                                class="img-fluid" alt="<?= $propertiComfor->comfortable()->convenient; ?>">
-                            <p class="text-muted">
-                                <?= $propertiComfor->quantity; ?>
-                            </p>
-                            <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                        <?php foreach ($propertiStructures as $structures) : ?>
-                        <?php if ($structures->properties_id == $properti->id && $structures->structures()->structure == "Area Total") : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/util-area.png"); ?>" class="img-fluid" alt="">
-                            <p class="text-muted"><?= $structures->footage; ?></p>
-                        </div>
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
                 </div>
             </article>
+
             <?php endif; ?>
             <?php endforeach; ?>
-
+            <?php endif; ?>
+            <?php endforeach; ?>
+            <?php else : ?>
+            <div class="modal_aviso">
+                <h1>Desculpe, não há imóveis disponíveis para anunciar no momento.</h1>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -209,8 +190,15 @@ $v->layout("_theme"); ?>
         </div>
         <div class="row">
 
+            <?php if ($rent) : ?>
+            <?php foreach ($rent as $r) : ?>
+            <?php if ($r) : ?>
+
             <?php foreach ($properties as $properti) : ?>
-            <?php if ($properti->transactionsProperties($properti->id)->type == "Aluguel") : ?>
+
+            <?php if ($r->properties_id === $properti->id) : ?>
+            <!-- <?php var_dump($r); ?> -->
+
             <article class="col-12 col-md-6 col-lg4 mb-4">
                 <div class="card main_properties_item">
                     <div class="img-responsive-16by9">
@@ -232,52 +220,19 @@ $v->layout("_theme"); ?>
                         <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
                             Imóvel</a>
                     </div>
-
-
-                    <div class="card-footer d-flex text-muted">
-                        <?php foreach ($propertiComfortable as $propertiComfor) : ?>
-                        <?php if ($propertiComfor->properties_id == $properti->id) : ?>
-                        <?php if ($propertiComfor->comfortable()->convenient == "Quarto" || $propertiComfor->comfortable()->convenient == "Garage") : ?>
-                        <?php if (!empty($propertiComfor->quantity)) : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/{$propertiComfor->comfortable()->convenient}.png"); ?>"
-                                class="img-fluid" alt="<?= $propertiComfor->comfortable()->convenient; ?>">
-                            <p class="text-muted">
-                                <?= $propertiComfor->quantity; ?>
-                            </p>
-                            <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                        <?php foreach ($propertiStructures as $structures) : ?>
-                        <?php if ($structures->properties_id == $properti->id && $structures->structures()->structure == "Area Total") : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/util-area.png"); ?>" class="img-fluid" alt="">
-                            <p class="text-muted"><?= $structures->footage; ?></p>
-                        </div>
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
                 </div>
             </article>
+
+
             <?php endif; ?>
             <?php endforeach; ?>
-
-
+            <?php endif; ?>
+            <?php endforeach; ?>
+            <?php else : ?>
+            <div class="modal_aviso">
+                <h1>Desculpe, não há imóveis disponíveis para anunciar no momento.</h1>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
-
-
-<!-- DIV de Homologação -->
-<!-- <div style="border: 2px solid red">
-
-                        <?= var_dump(
-                            $properti->id,
-                            $properti->imagesProperties($properti->id)->path,
-                            $properti->imagesProperties($properti->id)->identification
-                        ); ?>
-
-                    </div> -->

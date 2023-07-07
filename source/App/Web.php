@@ -2,6 +2,7 @@
 
 namespace Source\App;
 
+use Source\App\Admin\Transaction;
 use Source\Models\Auth;
 use Source\Models\Images;
 use Source\Core\Controller;
@@ -16,6 +17,7 @@ use Source\Models\Leads;
 use Source\Models\Transactions;
 use Source\Models\PropertiesStructures;
 use Source\Models\PropertiesComfortable;
+use Source\Models\PropertiesFeatures;
 use Source\Models\User;
 
 class Web extends Controller
@@ -43,9 +45,24 @@ class Web extends Controller
             "active = :active",
             "active=1"
         )
-            ->limit(8)
-            ->order("updated_at ASC")
+            // ->limit(10)
+            // ->order("updated_at ASC")
             ->fetch(true);
+
+        /**Validar o order updated_at ASC */
+
+
+        $sale = (new Transactions())->find(
+            "type = :type AND status = :status ",
+            "type=Venda&status=Ativo"
+        )->fetch(true);
+
+        $rent = (new Transactions())->find(
+            "type = :type AND status = :status ",
+            "type=Aluguel&status=Ativo"
+        )->fetch(true);
+
+        // var_dump($properties);
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
@@ -61,7 +78,9 @@ class Web extends Controller
             "head" => $head,
             "properties" => $properties,
             "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures
+            "propertiStructures" => $propertiStructures,
+            "sale" => $sale,
+            "rent" => $rent
         ]);
     }
 
@@ -183,16 +202,24 @@ class Web extends Controller
             }
         }
 
+        // $transactionType = (new Transactions())->find(
+        //     "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
+        //     "type={$data['type']}"
+        // )->fetch();
+
         $transactionType = (new Transactions())->find(
-            "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
-            "type={$data['type']}"
-        )->fetch();
+            "type = :type AND status = :status",
+            "type={$data['type']}&status=Ativo"
+        )->fetch(true);
+
+        // var_dump($transactionType);
+
         $properties = (new Properties())->find(
             "active = :active",
             "active=1"
         )
             ->limit(8)
-            ->order("updated_at ASC")
+            // ->order("updated_at ASC")
             ->fetch(true);
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
@@ -257,26 +284,36 @@ class Web extends Controller
             "properties={$properti->id}"
         )
             ->limit(8)
-            ->order("created_at ASC")
+            ->order("identification ASC")
             ->fetch(true);
 
-        $propertiComfortable = (new PropertiesComfortable())->find(
-            "properties_id = :properties",
-            "properties={$properti->id}"
-        )
-            ->order("quantity DESC")
+        $propertiComfortable = (new PropertiesComfortable())
+            ->find()
+            ->join("comfortable", "comfortable.id = properties_comfortable.comfortable_id", "properties_id = {$properti->id}")
+            ->order("comfortable.convenient ASC")
             ->fetch(true);
 
-        $propertiStructures  = (new PropertiesStructures())->find(
-            "properties_id = :properties",
-            "properties={$properti->id}"
-        )->fetch(true);
+        $propertiFeatures = (new PropertiesFeatures())
+            ->find()
+            ->join("features", "features.id = properties_features.features_id", "properties_id = {$properti->id}")
+            ->order("features.feature ASC")
+            ->fetch(true);
+
+        $propertiStructures  = (new PropertiesStructures())
+            ->find()
+            ->join("structures", "structures.id = properties_structures.structures_id", "properties_id = {$properti->id}")
+            ->order("structures.structure ASC")
+            ->fetch(true);
 
         $propertiTributes = (new Tributes())->find(
             "properties_id = :properties AND exercise = year(NOW())",
             "properties={$properti->id}"
         )->fetch(true);
 
+        /**Inicio Testes */
+        // var_dump($propertiStructures);
+
+        /**Fim Testes */
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -290,6 +327,7 @@ class Web extends Controller
             "properti" => $properti,
             "propertiesImages" => $propertiesImages,
             "propertiComfortable" => $propertiComfortable,
+            "propertiFeatures" => $propertiFeatures,
             "propertiStructures" => $propertiStructures,
             "propertiTributes" => $propertiTributes
 

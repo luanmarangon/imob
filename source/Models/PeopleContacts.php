@@ -8,7 +8,7 @@ class PeopleContacts extends Model
 {
     public function __construct()
     {
-        parent::__construct("people_contacts", ["id"], ["people_id", "contacts_id"]);
+        parent::__construct("people_contacts", [""], ["people_id", "contacts_id"]);
     }
 
     //validar uso

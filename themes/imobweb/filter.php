@@ -68,9 +68,11 @@
                 <section class="main_properties">
                     <div class="container">
                         <div class="row">
-                            <!-- <?= var_dump($properties); ?> -->
+                            <?php if ($transactionType) : ?>
+                            <?php foreach ($transactionType as $t) : ?>
+                            <?php if ($t) : ?>
                             <?php foreach ($properties as $properti) : ?>
-                            <?php if ($properti->transactionsProperties($properti->id)->type == $data) : ?>
+                            <?php if ($t->properties_id === $properti->id) : ?>
                             <article class="col-12 col-md-6 col-lg4 mb-4">
                                 <div class="card main_properties_item">
                                     <div class="img-responsive-16by9">
@@ -135,7 +137,13 @@
                             </article>
                             <?php endif; ?>
                             <?php endforeach; ?>
-
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                            <?php else : ?>
+                            <div class="modal_aviso">
+                                <h1>Desculpe, não há imóveis disponíveis para anunciar no momento.</h1>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </section>
