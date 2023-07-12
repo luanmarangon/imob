@@ -28,6 +28,9 @@ $route->post("/optin", "Web:optin");
 $route->get("/interest", "Web:interest");
 $route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
+/*Consulta dos Filtros  */
+// $route->post("/filtro/{type}", "Web:filter");
+
 $route->get("/destaques", "Web:emphasis");
 $route->get("/propriedades/{id}", "Web:property");
 $route->get("/alugar", "Web:rent");

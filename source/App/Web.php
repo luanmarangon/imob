@@ -2,31 +2,46 @@
 
 namespace Source\App;
 
-use Source\App\Admin\Transaction;
 use Source\Models\Auth;
+use Source\Models\User;
+use Source\Core\Connect;
+use Source\Models\Leads;
 use Source\Models\Images;
 use Source\Core\Controller;
 use Source\Models\Category;
+use Source\Models\Interest;
 use Source\Models\Tributes;
 use Source\Models\Properties;
 use Source\Models\Structures;
 use Source\Models\Comfortable;
-use Source\Models\CustomerService;
-use Source\Models\Interest;
-use Source\Models\Leads;
 use Source\Models\Transactions;
+use Source\Models\Report\Access;
+use Source\Models\Report\Online;
+use Source\App\Admin\Transaction;
+use Source\Core\Session;
+use Source\Models\CustomerService;
+use Source\Models\PropertiesFeatures;
 use Source\Models\PropertiesStructures;
 use Source\Models\PropertiesComfortable;
-use Source\Models\PropertiesFeatures;
-use Source\Models\User;
 
 class Web extends Controller
 {
     public function __construct()
     {
+        // COLOCANDO PARA TESTE DE CONEXAO DE BCO DE DADOS
+        // Connect::getInstance();
+
         //  COLOCANDO O SISTEMA EM MANUTENÇÃO
         // redirect("/ops/manutencao");
         parent::__construct(__DIR__ . "/../../themes/" . CONF_VIEW_THEME . "/");
+
+        $teste = (new Session());
+        $teste = (filter_input(INPUT_GET, "route", FILTER_SANITIZE_SPECIAL_CHARS));
+        var_dump($teste);
+
+
+        (new Access())->report();
+        (new Online())->report();
 
         // $teste = (new PropertiesComfortable())->find("properties_id = :id", "id=3")->fetch(true);
         // $teste2 = (new Comfortable())->find()->fetch(true);
@@ -246,13 +261,18 @@ class Web extends Controller
     public function emphasis()
     {
 
-        $properties = (new Properties())->find(
-            "active = :active",
-            "active=1"
-        )
-            ->limit(8)
-            ->order("updated_at ASC")
+        $properties = (new Properties())->find()
+            // ->limit(8)
+            // ->order("updated_at ASC")
             ->fetch(true);
+
+        $transactionProperties = (new Transactions())->find(
+            "status = :status",
+            "status=Ativo"
+        )->fetch(true);
+
+        // var_dump($transactionProperties);
+
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
@@ -267,6 +287,7 @@ class Web extends Controller
         echo $this->view->render("emphasis", [
             "head" => $head,
             "properties" => $properties,
+            "transactionProperties" => $transactionProperties,
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
         ]);

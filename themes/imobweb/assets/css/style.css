@@ -442,6 +442,52 @@ body {
   display: none;
 }
 
+
+.property-highlight {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  margin: 10px;
+  /* Outros estilos gerais para a div do imóvel */
+  transition: box-shadow 0.3s ease;
+}
+
+.property-highlight.sale {
+  background-color: #FDDCDC;
+  color: #FF0000;
+}
+
+.property-highlight.rent {
+  background-color: #DCE6FF;
+  color: #0000FF;
+}
+
+.property-highlight.sale::before {
+  content: "À Venda";
+  display: block;
+  font-weight: bold;
+}
+
+.property-highlight.rent::before {
+  content: "Para Aluguel";
+  display: block;
+  font-weight: bold;
+}
+
+.property-highlight.sale:hover,
+.property-highlight.rent:hover {
+  opacity: 0.8;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  /* Outros estilos para o hover */
+}
+
+
+
+
+/**/
+
+
 /*BOOTSTRAP CUSTOM*/
 .dropdown-item.active,
 .dropdown-item:active {

@@ -8,6 +8,7 @@ use Source\Models\people;
 use Source\App\Admin\Admin;
 use Source\Models\Properties;
 use Source\Models\Transactions;
+use Source\Models\Report\Online;
 
 class Dash extends Admin
 {
@@ -39,26 +40,26 @@ class Dash extends Admin
 
         //Real time access
 
-        // if (!empty($data["refresh"])) {
-        //     $list = null;
-        //     $items = (new Online())->findByActive();
-        //     if ($items) {
-        //         foreach ($items as $item) {
-        //             $list[] = [
-        //                 "dates" => date_fmt($item->created_at, "H\hi") . " - " . date_fmt($item->updated_at, "H\hi"),
-        //                 "user" => ($item->user ? $item->user()->fullName() : "Visitante"),
-        //                 "pages" => $item->pages,
-        //                 "url" => $item->url
-        //             ];
-        //         }
-        //     }
+        if (!empty($data["refresh"])) {
+            $list = null;
+            $items = (new Online())->findByActive();
+            if ($items) {
+                foreach ($items as $item) {
+                    $list[] = [
+                        "dates" => date_fmt($item->created_at, "H\hi") . " - " . date_fmt($item->updated_at, "H\hi"),
+                        "user" => ($item->user ? $item->user()->fullName() : "Visitante"),
+                        "pages" => $item->pages,
+                        "url" => $item->url
+                    ];
+                }
+            }
 
-        //     echo json_encode([
-        //         "count" => (new Online())->findByActive(true),
-        //         "list" => $list
-        //     ]);
-        //     return;
-        // }
+            echo json_encode([
+                "count" => (new Online())->findByActive(true),
+                "list" => $list
+            ]);
+            return;
+        }
 
 
         $head = $this->seo->render(
@@ -92,8 +93,8 @@ class Dash extends Admin
             //     "users" => (new User())->find("level < 5")->count(),
             //     "admins" => (new User())->find("level >= 5")->count(),
             // ],
-            // "online" => (new Online())->findByActive(),
-            // "onlineCount" => (new Online())->findByActive(true)
+            "online" => (new Online())->findByActive(),
+            "onlineCount" => (new Online())->findByActive(true)
         ]);
     }
 
