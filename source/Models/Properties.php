@@ -66,6 +66,125 @@ class Properties extends Model
         return $find;
     }
 
+    // Pesquisa entender e melhorar
+
+    // public function searchProperties($category, $typesData, $locationData, $featuresData): self
+    // {
+    //     $this->query = "SELECT *
+    //                     FROM properties p
+    //                     LEFT JOIN addresses a ON p.addresses_id = a.id
+    //                     LEFT JOIN properties_features pf ON p.id = pf.properties_id
+    //                     WHERE p.categories_id = :category
+    //                     AND p.types_id = :typesData
+    //                     AND a.city LIKE :locationData
+    //                     AND pf.features_id = :featuresData";
+
+    //     $this->params = [
+    //         'category' => $category,
+    //         'typesData' => $typesData,
+    //         'locationData' => '%' . $locationData . '%',
+    //         'featuresData' => $featuresData
+    //     ];
+
+    //     return $this;
+    // }
+
+    // Em testes
+    // public function searchProperties($category, $typesData, $locationData, $featuresData): self
+    // {
+    //     $typeIds = implode(',', $typesData); // Convertendo o array em uma string separada por vírgulas
+    //     $location = '%' . implode('%', $locationData) . '%'; // Concatenando os valores do array com % para fazer a busca parcial
+    //     $featureIds = implode(',', $featuresData); // Convertendo o array em uma string separada por vírgulas
+
+    //     $this->query = "SELECT *
+    //                 FROM properties p
+    //                 LEFT JOIN addresses a ON p.addresses_id = a.id
+    //                 LEFT JOIN properties_features pf ON p.id = pf.properties_id
+    //                 WHERE p.categories_id = :category
+    //                 AND p.types_id IN ({$typeIds}) -- Utilizando IN para comparar com múltiplos valores
+    //                 AND a.city LIKE :locationData
+    //                 AND pf.features_id IN ({$featureIds}) -- Utilizando IN para comparar com múltiplos valores";
+
+    //     $this->params = [
+    //         'category' => $category,
+    //         'locationData' => $location,
+    //     ];
+
+    //     return $this;
+    // }
+
+    // public function searchProperties($category, $typesData, $locationData, $featuresData): self
+    // {
+    //     $typeIds = implode(',', $typesData); // Convertendo o array em uma string separada por vírgulas
+    //     $locationPatterns = array_map(function ($location) {
+    //         return "'%" . $location . "%'";
+    //     }, $locationData); // Adicionando % no início e no final de cada valor do array
+    //     $locationLike = implode(' OR a.city LIKE ', $locationPatterns); // Criando a string para o operador LIKE
+    //     $featureIds = implode(',', $featuresData); // Convertendo o array em uma string separada por vírgulas
+
+    //     $this->query = "SELECT *
+    //                 FROM properties p
+    //                 LEFT JOIN addresses a ON p.addresses_id = a.id
+    //                 LEFT JOIN properties_features pf ON p.id = pf.properties_id
+    //                 WHERE p.categories_id = :category
+    //                 AND p.types_id IN ({$typeIds})
+    //                 AND (a.city LIKE {$locationLike}) -- Utilizando o operador LIKE com OR
+    //                 AND pf.features_id IN ({$featureIds})";
+
+    //     $this->params = [
+    //         'category' => $category,
+    //     ];
+
+    //     return $this;
+    // }
+
+    public function searchProperties($category = null, $typesData = null, $locationData = null, $featuresData = null): self
+    {
+        $this->query = "SELECT *
+                        FROM properties p
+                        LEFT JOIN addresses a ON p.addresses_id = a.id
+                        LEFT JOIN properties_features pf ON p.id = pf.properties_id
+                        WHERE ";
+        /*Observação ao remover o category está entrando o and após o where resolver isso*/
+
+
+        // $this->params = [
+        //     'category' => $category,
+        // ];
+        // $this->query = "SELECT *
+        //                 FROM properties p
+        //                 LEFT JOIN addresses a ON p.addresses_id = a.id
+        //                 LEFT JOIN properties_features pf ON p.id = pf.properties_id
+        //                 WHERE p.categories_id = :category";
+
+        // $this->params = [
+        //     'category' => $category,
+        // ];
+        if (!empty($category)) {
+            // $category = implode(',', $typesData);
+            $this->query .= " p.categories_id = {$category}";
+        }
+        if (!empty($typesData)) {
+            $typeIds = implode(',', $typesData);
+            $this->query .= " AND p.types_id IN ({$typeIds})";
+        }
+
+        if (!empty($locationData)) {
+            $locationPatterns = array_map(function ($location) {
+                return "'%" . $location . "%'";
+            }, $locationData);
+            $locationLike = implode(' OR a.city LIKE ', $locationPatterns);
+            $this->query .= " AND (a.city LIKE {$locationLike})";
+        }
+
+        if (!empty($featuresData)) {
+            $featureIds = implode(',', $featuresData);
+            $this->query .= " AND pf.features_id IN ({$featureIds})";
+        }
+
+        return $this;
+    }
+
 
     //aqui!!!!
 

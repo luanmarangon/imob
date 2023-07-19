@@ -28,11 +28,15 @@ $route->post("/optin", "Web:optin");
 $route->get("/interest", "Web:interest");
 $route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
+$route->post("/filtro/{type}", "Web:filter");
 /*Consulta dos Filtros  */
-// $route->post("/filtro/{type}", "Web:filter");
+$route->get("/pesquisa", "Web:propertySearch");
+$route->post("/pesquisa", "Web:propertySearch");
 
 $route->get("/destaques", "Web:emphasis");
+$route->post("/destaques", "Web:emphasis");
 $route->get("/propriedades/{id}", "Web:property");
+$route->post("/propriedades/{id}", "Web:property");
 $route->get("/alugar", "Web:rent");
 $route->get("/comprar", "Web:purchase");
 $route->get("/termos", "Web:terms");

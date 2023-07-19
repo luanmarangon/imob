@@ -21,7 +21,7 @@ abstract class Model
     /** @var string */
     protected $query;
 
-    /** @var string */
+    /** @var string|array */
     protected $params;
 
     /** @var string */
@@ -121,6 +121,17 @@ abstract class Model
     public function join(string $table, string $condition, ?string $where = null): self
     {
         $this->query .= " JOIN {$table} ON {$condition}";
+
+        if ($where) {
+            $this->query .= " WHERE {$where}";
+        }
+
+        return $this;
+    }
+
+    public function distinct(string $column, ?string $where = null): self
+    {
+        $this->query = "SELECT DISTINCT {$column} FROM {$this->entity}";
 
         if ($where) {
             $this->query .= " WHERE {$where}";

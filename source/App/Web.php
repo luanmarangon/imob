@@ -2,6 +2,7 @@
 
 namespace Source\App;
 
+use Source\App\Admin\Propertie;
 use Source\Models\Auth;
 use Source\Models\User;
 use Source\Core\Connect;
@@ -19,10 +20,13 @@ use Source\Models\Report\Access;
 use Source\Models\Report\Online;
 use Source\App\Admin\Transaction;
 use Source\Core\Session;
+use Source\Models\Addresses;
 use Source\Models\CustomerService;
+use Source\Models\Features;
 use Source\Models\PropertiesFeatures;
 use Source\Models\PropertiesStructures;
 use Source\Models\PropertiesComfortable;
+use Source\Models\Type;
 
 class Web extends Controller
 {
@@ -35,9 +39,10 @@ class Web extends Controller
         // redirect("/ops/manutencao");
         parent::__construct(__DIR__ . "/../../themes/" . CONF_VIEW_THEME . "/");
 
-        $teste = (new Session());
-        $teste = (filter_input(INPUT_GET, "route", FILTER_SANITIZE_SPECIAL_CHARS));
-        var_dump($teste);
+        // $teste = (new Session());
+        // $teste = (filter_input(INPUT_GET, "route", FILTER_SANITIZE_SPECIAL_CHARS));
+
+        // var_dump($teste);
 
 
         (new Access())->report();
@@ -66,6 +71,17 @@ class Web extends Controller
 
         /**Validar o order updated_at ASC */
 
+        /**Filtros */
+
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $types = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);
+
+
+
+        // var_dump($addresses);
 
         $sale = (new Transactions())->find(
             "type = :type AND status = :status ",
@@ -95,7 +111,11 @@ class Web extends Controller
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
             "sale" => $sale,
-            "rent" => $rent
+            "rent" => $rent,
+            "category" => $category,
+            "types" => $types,
+            "features" => $features,
+            "addresses" => $addresses
         ]);
     }
 
@@ -201,8 +221,10 @@ class Web extends Controller
         ]);
     }
 
-    public function filter(array $data)
+    public function filter(array $data): void
     {
+
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
         // var_dump($data);
         if (empty($data)) {
             redirect("/error");
@@ -216,6 +238,15 @@ class Web extends Controller
                 $type = "Comprar";
             }
         }
+
+        /**Filtros */
+
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $typesProperties = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);
+
 
         // $transactionType = (new Transactions())->find(
         //     "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
@@ -239,6 +270,7 @@ class Web extends Controller
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+        // return;
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -254,9 +286,118 @@ class Web extends Controller
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
             "type" => $type,
-            "data" => $data['type']
+            "data" => $data['type'],
+            "category" => $category,
+            "typesProperties" => $typesProperties,
+            "features" => $features,
+            "addresses" => $addresses
         ]);
     }
+
+    public function propertySearch(array $data): void
+    {
+
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        // var_dump($data);
+
+        if (!empty($data)) {
+            $category = null;
+
+            $locationData = [];
+            $locationData = null;
+
+            $typesData = [];
+            $typesData  = null;
+
+            $featuresData = [];
+            $featuresData  = null;
+            var_dump($category);
+            if (!empty($data['category'])) {
+                // $category = [];
+                $category = $data['category'];
+                // var_dump($category);
+            }
+            if (!empty($data['location'])) {
+                // $locationData = [];
+                $locationData = $data['location'];
+                // var_dump($locationData);
+            }
+
+            if (!empty($data['typeProperties'])) {
+                // $typesData = [];
+                $typesData = $data['typeProperties'];
+                // var_dump($data['typeProperties']);
+            }
+
+            if (!empty($data['feature'])) {
+                // $featuresData = [];
+                $featuresData = $data['feature'];
+                // var_dump($featuresData);
+            }
+
+            $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData);
+
+
+            // $propertiCategory = (new Properties())->find(
+            //     "categories_id = :category",
+            //     "category={$category}"
+            // )->fetch(true);
+
+            var_dump($propertiCategory);
+
+            /**Gerar a consulta no SQL para apresentar somente os dados do Search */
+
+            // $transactionType = (new Transactions())->find(
+            //     "type = :type AND status = :status",
+            //     "type={$data['type']}&status=Ativo"
+            // )->fetch(true);
+
+            // $properties = (new Properties())->find(
+            //     "active = :active",
+            //     "active=1"
+            // )
+            //     ->limit(8)
+            //     ->fetch(true);
+
+            // $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+            // $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+
+        }
+        /**Redirecionamento para o destaques */
+        // redirect("/destaques");
+
+        /**Filtros */
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $typesProperties = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);;
+
+
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/filtro"),
+            theme("/assets/images/share.png")
+        );
+
+        echo $this->view->render("propertySearch", [
+            "head" => $head,
+            // "transactionType" => $transactionType,
+            // "properties" => $properties,
+            // "propertiComfortable" => $propertiComfortable,
+            // "propertiStructures" => $propertiStructures,
+            // "type" => $type,
+            // "data" => $data['type'],
+            "category" => $category,
+            "typesProperties" => $typesProperties,
+            "features" => $features,
+            "addresses" => $addresses
+        ]);
+    }
+
 
     public function emphasis()
     {
