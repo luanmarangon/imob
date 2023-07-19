@@ -7,6 +7,7 @@ use Source\Models\User;
 use Source\Support\Pager;
 use Source\Support\Thumb;
 use Source\Support\Upload;
+use Source\App\Admin\Admin;
 
 class Users extends Admin
 {

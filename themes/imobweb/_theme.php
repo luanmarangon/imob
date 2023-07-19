@@ -81,18 +81,21 @@
                 <p>Deixe seu nome e seu melhor e-mail nos campos abaixo e nós vamos lhe informar sobre os melhores
                     negócios de todos os lançamentos do sul da ilha</p>
 
-                <form action="#">
-                    <input type="text" class="form-control" placeholder="Digite seu nome" size="50">
-                    <input type="email" class="form-control" placeholder="Digite seu melhor e-mail" size="50">
-                    <input type="tel" class="form-control" placeholder="Digite seu whatsapp" size="50">
+                <form action="<?= url("/optin"); ?>" method="post">
+                    <div class="ajax_response"><?= flash(); ?></div>
+                    <?= csrf_input(); ?>
+                    <input type="text" name="name" class="form-control" placeholder="Digite seu nome" size="50">
+                    <input type="email" name="email" class="form-control" placeholder="Digite seu melhor e-mail" size="50" required>
+                    <input type="tel" name="phone" class="form-control mask-phone" placeholder="Digite seu whatsapp" size="50" required>
                     <button type="submit" class="btn btn-front">Me Avise</button>
+                    <!-- <div class="ajax_response"><?= flash(); ?></div> -->
                 </form>
             </div>
         </div>
     </article>
 
     <!--FOOTER-->
-    <section class="main_footer bg-light" style="background: url(assets/images/footer.png) repeat-x bottom center; background-size: 10%;">
+    <section class="main_footer bg-light">
         <div class="container pt-5" style="padding-bottom: 120px;">
             <div class="row justify-content-around text-muted">
                 <div class="col-12 col-md-3 col-lg-3">

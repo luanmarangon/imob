@@ -4,12 +4,21 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-
 .light {
   background-color: var(--color-light);
 }
 
 /*HEADER*/
+
+/* teste */
+/* .main_header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 1200px;
+} */
+
 .main_header .header-bar i {
   font-size: 1.6em;
 }
@@ -247,7 +256,7 @@ body {
 }
 
 .main_property .main_property_content_location .main_property_content_location_maps {
-  width: 700px;
+  width: 850px;
   height: 500px;
   justify-content: center;
   /* border: 1px solid var(--color-default); */
@@ -333,6 +342,82 @@ body {
   background-color: #fff !important;
 }
 
+.modal_aviso {
+  padding: 10px;
+  background-color: var(--color-default);
+  color: #ffff;
+  text-align: center;
+}
+
+/*AJAX RESPONSES MESSAGES*/
+
+.ajax_response {
+  position: fixed;
+  padding: 20px 20px 0 0;
+  z-index: 998;
+
+  top: 0;
+  right: 0;
+  width: 300px;
+  max-width: 100%;
+}
+
+.ajax_response .message {
+  color: #ffffff;
+  font-size: var(--font-min);
+  font-weight: var(--weight-normal);
+  overflow: hidden;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 15px 20px 15px;
+  background: #333333;
+  margin-bottom: 15px;
+  position: relative;
+
+  -webkit-border-radius: var(--radius-normal);
+  -moz-border-radius: var(--radius-normal);
+  border-radius: var(--radius-normal);
+
+  cursor: pointer;
+}
+
+.ajax_response .message:before {
+  flex-basis: 0;
+  margin: -5px 15px 0 0 !important;
+  font-size: calc(var(--font-max) * 1.2);
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ajax_response .message_time {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 4%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.ajax_response .message.success {
+  background: var(--color-green);
+}
+
+.ajax_response .message.info {
+  background: var(--color-blue);
+}
+
+.ajax_response .message.warning {
+  background: var(--color-yellow);
+}
+
+.ajax_response .message.error {
+  background: var(--color-red);
+}
+
+
 /*TERMS PAGE*/
 .terms_page_header {
   text-align: center;
@@ -365,6 +450,52 @@ body {
 .main_filter .advanced_filter {
   display: none;
 }
+
+
+.property-highlight {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  margin: 10px;
+  /* Outros estilos gerais para a div do imóvel */
+  transition: box-shadow 0.3s ease;
+}
+
+.property-highlight.sale {
+  background-color: #FDDCDC;
+  color: #FF0000;
+}
+
+.property-highlight.rent {
+  background-color: #DCE6FF;
+  color: #0000FF;
+}
+
+.property-highlight.sale::before {
+  content: "À Venda";
+  display: block;
+  font-weight: bold;
+}
+
+.property-highlight.rent::before {
+  content: "Para Aluguel";
+  display: block;
+  font-weight: bold;
+}
+
+.property-highlight.sale:hover,
+.property-highlight.rent:hover {
+  opacity: 0.8;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  /* Outros estilos para o hover */
+}
+
+
+
+
+/**/
+
 
 /*BOOTSTRAP CUSTOM*/
 .dropdown-item.active,

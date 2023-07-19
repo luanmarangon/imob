@@ -18,50 +18,62 @@ $v->layout("_theme"); ?>
 <div class="main_filter">
     <div class="container my-5">
         <div>
-            <form action="#" class="row form-inline w-100" method="post" enctype="multipart/form-data">
+            <form action="/filtro" class="row form-inline w-100" method="post" enctype="multipart/form-data">
 
-                <?php
-                for ($i = 0; $i < 2; $i++) {   ?>
+
                 <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Comprar ou Alugar?</b></label>
+                    <label for="search" class="mb-2"><b>Categorias</b></label>
                     <select name="search" id="search" class="selectpicker" title="Escolha...">
-                        <option value=" ">Comprar</option>
-                        <option value=" ">Alugar</option>
+                        <?php foreach ($category as $c) : ?>
+                            <option value="<?= $c->id; ?>"><?= $c->category; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-                <?php
-                }
-                ?>
-                <?php
-                for ($i = 0; $i < 2; $i++) {   ?>
+
                 <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Tipo?</b></label>
-                    <select name="search" id="search" class="selectpicker" title="Escolha..." multiple
-                        data-actions-box="true">
-                        <option value=" ">Comprar</option>
-                        <option value=" ">Alugar</option>
+                    <label for="search" class="mb-2"><b>Tipo</b></label>
+                    <select name="search" id="search" class="selectpicker" title="Escolha...">
+                        <?php foreach ($types as $t) : ?>
+                            <option value="<?= $t->id; ?>"><?= $t->type; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-                <?php
-                }
-                ?>
-                <div class="col-6 mt-3">
-                    <!-- <a href="#" class="text-front advanced_filter_btn">Filtro Avançado &darr;</a> -->
-                    <a class="btn btn-front advanced_hidden mb-2">Filtro Avançado &darr;</a>
+
+                <div class="form-group col-12 col-sm-6 col-lg-3">
+                    <label for="search" class="mb-2"><b>Localidade</b></label>
+                    <select name="search" id="localidade[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                        <?php foreach ($addresses as $a) : ?>
+                            <option value="<?= $a->id; ?>"><?= $a->city; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
+
+                <div class="form-group col-12 col-sm-6 col-lg-3">
+                    <label for="search" class="mb-2"><b>Características</b></label>
+                    <select name="search" id="search" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                        <?php foreach ($features as $f) : ?>
+                            <option value="<?= $f->id; ?>"><?= $f->feature; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- <div class="col-6 mt-3"> -->
+                <!-- <a href="#" class="text-front advanced_filter_btn">Filtro Avançado &darr;</a> -->
+                <!-- <a class="btn btn-front advanced_hidden mb-2">Filtro Avançado &darr;</a> -->
+                <!-- </div> -->
 
                 <!-- filtros avancados -->
                 <div class="row form-inline w-100 advanced_filter">
                     <hr>
                     <?php
                     for ($i = 0; $i < 4; $i++) {   ?>
-                    <div class="form-group col-12 col-sm-6 col-lg-3">
-                        <label for="search" class="mb-2"><b>Comprar ou Alugar?</b></label>
-                        <select name="search" id="search" class="selectpicker" title="Escolha...">
-                            <option value=" ">Comprar</option>
-                            <option value=" ">Alugar</option>
-                        </select>
-                    </div>
+                        <div class="form-group col-12 col-sm-6 col-lg-3">
+                            <label for="search" class="mb-2"><b>Comprar ou Alugar?</b></label>
+                            <select name="search" id="search" class="selectpicker" title="Escolha...">
+                                <option value=" ">Comprar</option>
+                                <option value=" ">Alugar</option>
+                            </select>
+                        </div>
                     <?php
                     }
                     ?>
@@ -139,77 +151,43 @@ $v->layout("_theme"); ?>
             <a href="<?= url("/filtro/Venda"); ?>" class="text-front">Ver mais</a>
         </div>
         <div class="row">
+            <?php if ($sale) : ?>
+                <?php foreach ($sale as $s) : ?>
+                    <?php if ($s) : ?>
+                        <?php foreach ($properties as $properti) : ?>
+                            <?php if ($s->properties_id === $properti->id) : ?>
 
+                                <article class="col-12 col-md-6 col-lg4 mb-4">
+                                    <div class="card main_properties_item">
+                                        <div class="img-responsive-16by9">
+                                            <?php $propertiImage = ($properti->imagesProperties($properti->id)->path ? image($properti->imagesProperties($properti->id)->path, 1280) : theme("/assets/images/semImagem.png", CONF_VIEW_THEME)); ?>
+                                            <img src="<?= $propertiImage; ?>">
+                                        </div>
 
-            <?php foreach ($properties as $properti) : ?>
-            <?php if ($properti->transactionsProperties($properti->id)->type == "Venda") : ?>
-            <article class="col-12 col-md-6 col-lg4 mb-4">
-                <div class="card main_properties_item">
-                    <div class="img-responsive-16by9">
-                        <?php if (!empty($properti->imagesProperties($properti->id)->path)) : ?>
-                        <img src="<?= image($properti->imagesProperties($properti->id)->path, 1280); ?>"
-                            class="card-img-top"
-                            alt="<?= $properti->imagesProperties($properti->id)->identification; ?>"
-                            title="<?= $properti->imagesProperties($properti->id)->identification; ?>">
-                        <?php else : ?>
-                        <img src="<?= image("images/semImagem.png", 1280); ?>" class="card-img-top" alt="Sem Imagem"
-                            title="Sem Imagem">
-                        <!-- <img src="<?= theme("/assets/images/semImagem.png"); ?>" class="card-img-top" alt="Sem Imagem"
-                            title="Sem Imagem"> -->
+                                        <div class="card-body">
+                                            <h2 class="main_properties_item_title text-front"><span class="reference"><?= $properti->reference; ?> -</span> Linda Casa no
+                                                <?= $properti->address()->district ?> </h2>
+                                            <p class="main_properties_item_category">Imóvel
+                                                <?= $properti->category()->category; ?></p>
+                                            <p class="main_properties_item_type"><?= $properti->type()->type; ?> -
+                                                <?= $properti->address()->city ?>-<?= $properti->address()->state ?> <i class="icon-icon-location-arrow"></i></p>
+                                            <p class="main_properties_item_price text-front">R$
+                                                <?= str_price($properti->transactionsProperties($properti->id)->value); ?></p>
+                                            <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
+                                                Imóvel</a>
+                                        </div>
+                                    </div>
+                                </article>
 
-
-                        <?php endif; ?>
-
-
-                    </div>
-
-                    <div class="card-body">
-                        <h2 class="main_properties_item_title text-front"><span
-                                class="reference"><?= $properti->reference; ?> -</span> Linda Casa no
-                            <?= $properti->address()->district ?> </h2>
-                        <p class="main_properties_item_category">Imóvel
-                            <?= $properti->category()->category; ?></p>
-                        <p class="main_properties_item_type"><?= $properti->type()->type; ?> -
-                            <?= $properti->address()->city ?>-<?= $properti->address()->state ?> <i
-                                class="icon-icon-location-arrow"></i></p>
-                        <p class="main_properties_item_price text-front">R$
-                            <?= str_price($properti->transactionsProperties($properti->id)->value); ?></p>
-                        <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
-                            Imóvel</a>
-                    </div>
-
-
-                    <div class="card-footer d-flex text-muted">
-                        <?php foreach ($propertiComfortable as $propertiComfor) : ?>
-                        <?php if ($propertiComfor->properties_id == $properti->id) : ?>
-                        <?php if ($propertiComfor->comfortable()->convenient == "Quarto" || $propertiComfor->comfortable()->convenient == "Garage") : ?>
-                        <?php if (!empty($propertiComfor->quantity)) : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/{$propertiComfor->comfortable()->convenient}.png"); ?>"
-                                class="img-fluid" alt="<?= $propertiComfor->comfortable()->convenient; ?>">
-                            <p class="text-muted">
-                                <?= $propertiComfor->quantity; ?>
-                            </p>
                             <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php foreach ($propertiStructures as $structures) : ?>
-                        <?php if ($structures->properties_id == $properti->id && $structures->structures()->structure == "Area Total") : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/util-area.png"); ?>" class="img-fluid" alt="">
-                            <p class="text-muted"><?= $structures->footage; ?></p>
-                        </div>
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <div class="modal_aviso">
+                    <h1>Desculpe, não há imóveis disponíveis para anunciar no momento.</h1>
                 </div>
-            </article>
             <?php endif; ?>
-            <?php endforeach; ?>
-
         </div>
     </div>
 </section>
@@ -222,82 +200,47 @@ $v->layout("_theme"); ?>
         </div>
         <div class="row">
 
-            <?php foreach ($properties as $properti) : ?>
-            <?php if ($properti->transactionsProperties($properti->id)->type == "Aluguel") : ?>
-            <article class="col-12 col-md-6 col-lg4 mb-4">
-                <div class="card main_properties_item">
-                    <div class="img-responsive-16by9">
-                        <?php if (!empty($properti->imagesProperties($properti->id)->path)) : ?>
-                        <img src="<?= image($properti->imagesProperties($properti->id)->path, 1280); ?>"
-                            class="card-img-top"
-                            alt="<?= $properti->imagesProperties($properti->id)->identification; ?>"
-                            title="<?= $properti->imagesProperties($properti->id)->identification; ?>">
-                        <?php else : ?>
-                        <img src="<?= theme("/assets/images/semImagem.png"); ?>" width="500px" class="card-img-top"
-                            alt="Sem Imagem" title="Sem Imagem">
-                        <?php endif; ?>
-                    </div>
+            <?php if ($rent) : ?>
+                <?php foreach ($rent as $r) : ?>
+                    <?php if ($r) : ?>
 
-                    <div class="card-body">
-                        <h2 class="main_properties_item_title text-front"><span
-                                class="reference"><?= $properti->reference; ?> -</span> Linda Casa no
-                            <?= $properti->address()->district ?> </h2>
-                        <p class="main_properties_item_category">Imóvel
-                            <?= $properti->category()->category; ?></p>
-                        <p class="main_properties_item_type"><?= $properti->type()->type; ?> -
-                            <?= $properti->address()->city ?>-<?= $properti->address()->state ?> <i
-                                class="icon-icon-location-arrow"></i></p>
-                        <p class="main_properties_item_price text-front">R$
-                            <?= str_price($properti->transactionsProperties($properti->id)->value); ?></p>
-                        <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
-                            Imóvel</a>
-                    </div>
+                        <?php foreach ($properties as $properti) : ?>
+
+                            <?php if ($r->properties_id === $properti->id) : ?>
+                                <!-- <?php var_dump($r); ?> -->
+
+                                <article class="col-12 col-md-6 col-lg4 mb-4">
+                                    <div class="card main_properties_item">
+                                        <div class="img-responsive-16by9">
+                                            <?php $propertiImage = ($properti->imagesProperties($properti->id)->path ? image($properti->imagesProperties($properti->id)->path, 1280) : theme("/assets/images/semImagem.png", CONF_VIEW_THEME)); ?>
+                                            <img src="<?= $propertiImage; ?>">
+                                        </div>
+
+                                        <div class="card-body">
+                                            <h2 class="main_properties_item_title text-front"><span class="reference"><?= $properti->reference; ?> -</span> Linda Casa no
+                                                <?= $properti->address()->district ?> </h2>
+                                            <p class="main_properties_item_category">Imóvel
+                                                <?= $properti->category()->category; ?></p>
+                                            <p class="main_properties_item_type"><?= $properti->type()->type; ?> -
+                                                <?= $properti->address()->city ?>-<?= $properti->address()->state ?> <i class="icon-icon-location-arrow"></i></p>
+                                            <p class="main_properties_item_price text-front">R$
+                                                <?= str_price($properti->transactionsProperties($properti->id)->value); ?></p>
+                                            <a href="<?= url("/propriedades/{$properti->id}"); ?>" class="btn btn-front w-100">Ver
+                                                Imóvel</a>
+                                        </div>
+                                    </div>
+                                </article>
 
 
-                    <div class="card-footer d-flex text-muted">
-                        <?php foreach ($propertiComfortable as $propertiComfor) : ?>
-                        <?php if ($propertiComfor->properties_id == $properti->id) : ?>
-                        <?php if ($propertiComfor->comfortable()->convenient == "Quarto" || $propertiComfor->comfortable()->convenient == "Garage") : ?>
-                        <?php if (!empty($propertiComfor->quantity)) : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/{$propertiComfor->comfortable()->convenient}.png"); ?>"
-                                class="img-fluid" alt="<?= $propertiComfor->comfortable()->convenient; ?>">
-                            <p class="text-muted">
-                                <?= $propertiComfor->quantity; ?>
-                            </p>
                             <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php foreach ($propertiStructures as $structures) : ?>
-                        <?php if ($structures->properties_id == $properti->id && $structures->structures()->structure == "Area Total") : ?>
-                        <div class="col-4 main_properties_item_features text-center">
-                            <img src="<?= theme("/assets/images/icons/util-area.png"); ?>" class="img-fluid" alt="">
-                            <p class="text-muted"><?= $structures->footage; ?></p>
-                        </div>
-                        <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <div class="modal_aviso">
+                    <h1>Desculpe, não há imóveis disponíveis para anunciar no momento.</h1>
                 </div>
-            </article>
             <?php endif; ?>
-            <?php endforeach; ?>
-
-
         </div>
     </div>
 </section>
-
-
-<!-- DIV de Homologação -->
-<!-- <div style="border: 2px solid red">
-
-                        <?= var_dump(
-                            $properti->id,
-                            $properti->imagesProperties($properti->id)->path,
-                            $properti->imagesProperties($properti->id)->identification
-                        ); ?>
-
-                    </div> -->

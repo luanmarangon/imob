@@ -12,7 +12,8 @@
 
             <input type="email" name="email" class="control" value="<?= ($cookie ?? null); ?>" placeholder="Login">
             <div class="password">
-                <input id="password" type="password" class="control" name="password" placeholder="Informe sua senha:" required />
+                <input id="password" type="password" class="control" name="password" placeholder="Informe sua senha:"
+                    required />
                 <!-- <input  type="password" class="control" placeholder="Senha"> -->
                 <button class="toggle" type="button" onclick="togglePassword(this)"></button>
             </div>
@@ -21,6 +22,8 @@
                 <span>Lembrar dados?</span>
             </label>
             <button class="control">LOGIN</button>
+            <a href="<?= url("/"); ?>">Home</a>
+            <h3></h3>
         </form>
     </div>
 </div>

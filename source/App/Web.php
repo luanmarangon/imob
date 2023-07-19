@@ -2,26 +2,51 @@
 
 namespace Source\App;
 
+use Source\App\Admin\Propertie;
 use Source\Models\Auth;
+use Source\Models\User;
+use Source\Core\Connect;
+use Source\Models\Leads;
 use Source\Models\Images;
 use Source\Core\Controller;
 use Source\Models\Category;
+use Source\Models\Interest;
 use Source\Models\Tributes;
 use Source\Models\Properties;
 use Source\Models\Structures;
 use Source\Models\Comfortable;
 use Source\Models\Transactions;
+use Source\Models\Report\Access;
+use Source\Models\Report\Online;
+use Source\App\Admin\Transaction;
+use Source\Core\Session;
+use Source\Models\Addresses;
+use Source\Models\CustomerService;
+use Source\Models\Features;
+use Source\Models\PropertiesFeatures;
 use Source\Models\PropertiesStructures;
 use Source\Models\PropertiesComfortable;
-use Source\Models\User;
+use Source\Models\Type;
 
 class Web extends Controller
 {
     public function __construct()
     {
+        // COLOCANDO PARA TESTE DE CONEXAO DE BCO DE DADOS
+        // Connect::getInstance();
+
         //  COLOCANDO O SISTEMA EM MANUTENÇÃO
         // redirect("/ops/manutencao");
         parent::__construct(__DIR__ . "/../../themes/" . CONF_VIEW_THEME . "/");
+
+        // $teste = (new Session());
+        // $teste = (filter_input(INPUT_GET, "route", FILTER_SANITIZE_SPECIAL_CHARS));
+
+        // var_dump($teste);
+
+
+        (new Access())->report();
+        (new Online())->report();
 
         // $teste = (new PropertiesComfortable())->find("properties_id = :id", "id=3")->fetch(true);
         // $teste2 = (new Comfortable())->find()->fetch(true);
@@ -40,9 +65,35 @@ class Web extends Controller
             "active = :active",
             "active=1"
         )
-            ->limit(8)
-            ->order("updated_at ASC")
+            // ->limit(10)
+            // ->order("updated_at ASC")
             ->fetch(true);
+
+        /**Validar o order updated_at ASC */
+
+        /**Filtros */
+
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $types = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);
+
+
+
+        // var_dump($addresses);
+
+        $sale = (new Transactions())->find(
+            "type = :type AND status = :status ",
+            "type=Venda&status=Ativo"
+        )->fetch(true);
+
+        $rent = (new Transactions())->find(
+            "type = :type AND status = :status ",
+            "type=Aluguel&status=Ativo"
+        )->fetch(true);
+
+        // var_dump($properties);
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
@@ -58,12 +109,105 @@ class Web extends Controller
             "head" => $head,
             "properties" => $properties,
             "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures
+            "propertiStructures" => $propertiStructures,
+            "sale" => $sale,
+            "rent" => $rent,
+            "category" => $category,
+            "types" => $types,
+            "features" => $features,
+            "addresses" => $addresses
         ]);
     }
 
-    public function contact()
+    public function interest(array $data): void
     {
+        // var_dump($data);
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $interest = (new Interest());
+        $interest->name = $data['name'];
+        $interest->email = $data['email'];
+        $interest->phone = $data['phone'];
+        $interest->message = $data['message'];
+        $interest->transactions_id = $data['transaction'];
+
+
+
+        // $test = (new Leads())->find(
+        //     "full_name = :name or email = :mail or phone = :phone",
+        //     "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
+        // )->fetch();
+
+        // if ($test) {
+        //     $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
+        //     echo json_encode(["reload" => true]);
+        //     return;
+        // }
+
+        if (!$interest->save()) {
+            // var_dump($interest);
+
+            $json["message"] = $interest->message()->render();
+            echo json_encode($json);
+            return;
+        }
+
+        $this->message->success("Seu registro foi enviado com sucesso! Agradecemos por compartilhar as informações necessárias. Faremos o devido processamento e entraremos em contato, caso necessário.")->flash();
+        echo json_encode(["reload" => true]);
+        return;
+    }
+
+    public function optin(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $lead = (new Leads());
+        $lead->full_name = $data['name'];
+        $lead->email = $data['email'];
+        $lead->phone = $data['phone'];
+        $lead->status = "Lead";
+
+        $test = (new Leads())->find(
+            "full_name = :name or email = :mail or phone = :phone",
+            "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
+        )->fetch();
+
+        if ($test) {
+            $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
+        if (!$lead->save()) {
+            $json["message"] = $lead->message()->render();
+            echo json_encode($json);
+            return;
+        }
+
+        $this->message->success("Seu registro foi enviado com sucesso! Agradecemos por compartilhar as informações necessárias. Faremos o devido processamento e entraremos em contato, caso necessário.")->flash();
+        echo json_encode(["reload" => true]);
+        return;
+    }
+
+    public function contact(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        if ($data) {
+            $contact = (new CustomerService());
+            $contact->name = $data["name"];
+            $contact->email = $data["email"];
+            $contact->phone = $data["phone"];
+            $contact->message = $data["message"];
+            $contact->status = "N";
+
+            if (!$contact->save()) {
+                $json["message"] = $contact->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Contato enviado com sucesso...")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -77,8 +221,10 @@ class Web extends Controller
         ]);
     }
 
-    public function filter(array $data)
+    public function filter(array $data): void
     {
+
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
         // var_dump($data);
         if (empty($data)) {
             redirect("/error");
@@ -93,20 +239,38 @@ class Web extends Controller
             }
         }
 
+        /**Filtros */
+
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $typesProperties = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);
+
+
+        // $transactionType = (new Transactions())->find(
+        //     "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
+        //     "type={$data['type']}"
+        // )->fetch();
+
         $transactionType = (new Transactions())->find(
-            "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
-            "type={$data['type']}"
-        )->fetch();
+            "type = :type AND status = :status",
+            "type={$data['type']}&status=Ativo"
+        )->fetch(true);
+
+        // var_dump($transactionType);
+
         $properties = (new Properties())->find(
             "active = :active",
             "active=1"
         )
             ->limit(8)
-            ->order("updated_at ASC")
+            // ->order("updated_at ASC")
             ->fetch(true);
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+        // return;
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -122,20 +286,134 @@ class Web extends Controller
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
             "type" => $type,
-            "data" => $data['type']
+            "data" => $data['type'],
+            "category" => $category,
+            "typesProperties" => $typesProperties,
+            "features" => $features,
+            "addresses" => $addresses
         ]);
     }
+
+    public function propertySearch(array $data): void
+    {
+
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        // var_dump($data);
+
+        if (!empty($data)) {
+            $category = null;
+
+            $locationData = [];
+            $locationData = null;
+
+            $typesData = [];
+            $typesData  = null;
+
+            $featuresData = [];
+            $featuresData  = null;
+            var_dump($category);
+            if (!empty($data['category'])) {
+                // $category = [];
+                $category = $data['category'];
+                // var_dump($category);
+            }
+            if (!empty($data['location'])) {
+                // $locationData = [];
+                $locationData = $data['location'];
+                // var_dump($locationData);
+            }
+
+            if (!empty($data['typeProperties'])) {
+                // $typesData = [];
+                $typesData = $data['typeProperties'];
+                // var_dump($data['typeProperties']);
+            }
+
+            if (!empty($data['feature'])) {
+                // $featuresData = [];
+                $featuresData = $data['feature'];
+                // var_dump($featuresData);
+            }
+
+            $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData);
+
+
+            // $propertiCategory = (new Properties())->find(
+            //     "categories_id = :category",
+            //     "category={$category}"
+            // )->fetch(true);
+
+            var_dump($propertiCategory);
+
+            /**Gerar a consulta no SQL para apresentar somente os dados do Search */
+
+            // $transactionType = (new Transactions())->find(
+            //     "type = :type AND status = :status",
+            //     "type={$data['type']}&status=Ativo"
+            // )->fetch(true);
+
+            // $properties = (new Properties())->find(
+            //     "active = :active",
+            //     "active=1"
+            // )
+            //     ->limit(8)
+            //     ->fetch(true);
+
+            // $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+            // $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+
+        }
+        /**Redirecionamento para o destaques */
+        // redirect("/destaques");
+
+        /**Filtros */
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $typesProperties = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);;
+
+
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/filtro"),
+            theme("/assets/images/share.png")
+        );
+
+        echo $this->view->render("propertySearch", [
+            "head" => $head,
+            // "transactionType" => $transactionType,
+            // "properties" => $properties,
+            // "propertiComfortable" => $propertiComfortable,
+            // "propertiStructures" => $propertiStructures,
+            // "type" => $type,
+            // "data" => $data['type'],
+            "category" => $category,
+            "typesProperties" => $typesProperties,
+            "features" => $features,
+            "addresses" => $addresses
+        ]);
+    }
+
 
     public function emphasis()
     {
 
-        $properties = (new Properties())->find(
-            "active = :active",
-            "active=1"
-        )
-            ->limit(8)
-            ->order("updated_at ASC")
+        $properties = (new Properties())->find()
+            // ->limit(8)
+            // ->order("updated_at ASC")
             ->fetch(true);
+
+        $transactionProperties = (new Transactions())->find(
+            "status = :status",
+            "status=Ativo"
+        )->fetch(true);
+
+        // var_dump($transactionProperties);
+
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
@@ -150,6 +428,7 @@ class Web extends Controller
         echo $this->view->render("emphasis", [
             "head" => $head,
             "properties" => $properties,
+            "transactionProperties" => $transactionProperties,
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
         ]);
@@ -167,26 +446,36 @@ class Web extends Controller
             "properties={$properti->id}"
         )
             ->limit(8)
-            ->order("created_at ASC")
+            ->order("identification ASC")
             ->fetch(true);
 
-        $propertiComfortable = (new PropertiesComfortable())->find(
-            "properties_id = :properties",
-            "properties={$properti->id}"
-        )
-            ->order("quantity DESC")
+        $propertiComfortable = (new PropertiesComfortable())
+            ->find()
+            ->join("comfortable", "comfortable.id = properties_comfortable.comfortable_id", "properties_id = {$properti->id}")
+            ->order("comfortable.convenient ASC")
             ->fetch(true);
 
-        $propertiStructures  = (new PropertiesStructures())->find(
-            "properties_id = :properties",
-            "properties={$properti->id}"
-        )->fetch(true);
+        $propertiFeatures = (new PropertiesFeatures())
+            ->find()
+            ->join("features", "features.id = properties_features.features_id", "properties_id = {$properti->id}")
+            ->order("features.feature ASC")
+            ->fetch(true);
+
+        $propertiStructures  = (new PropertiesStructures())
+            ->find()
+            ->join("structures", "structures.id = properties_structures.structures_id", "properties_id = {$properti->id}")
+            ->order("structures.structure ASC")
+            ->fetch(true);
 
         $propertiTributes = (new Tributes())->find(
             "properties_id = :properties AND exercise = year(NOW())",
             "properties={$properti->id}"
         )->fetch(true);
 
+        /**Inicio Testes */
+        // var_dump($propertiStructures);
+
+        /**Fim Testes */
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -200,6 +489,7 @@ class Web extends Controller
             "properti" => $properti,
             "propertiesImages" => $propertiesImages,
             "propertiComfortable" => $propertiComfortable,
+            "propertiFeatures" => $propertiFeatures,
             "propertiStructures" => $propertiStructures,
             "propertiTributes" => $propertiTributes
 

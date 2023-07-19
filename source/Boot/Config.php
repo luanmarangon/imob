@@ -76,6 +76,7 @@ define("CONF_SOCIAL_YOUTUBE", "#");
  * API
  */
 define("CONF_API_GOOGLE_MAPS", "AIzaSyChwUAYltIcuV82BhrVuiGkzrByR8ve19Y");
+// define("CONF_API_GOOGLE_MAPS_LINK", "https://maps.googleapis.com/maps/api/geocode/json?address=");
 
 /**
  * DATES

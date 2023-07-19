@@ -22,9 +22,21 @@ $route = new Router(url(), ":");
 $route->namespace("Source\App");
 $route->get("/", "Web:home");
 $route->get("/contato", "Web:contact");
+$route->post("/contato", "Web:contact");
+$route->get("/optin", "Web:optin");
+$route->post("/optin", "Web:optin");
+$route->get("/interest", "Web:interest");
+$route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
+$route->post("/filtro/{type}", "Web:filter");
+/*Consulta dos Filtros  */
+$route->get("/pesquisa", "Web:propertySearch");
+$route->post("/pesquisa", "Web:propertySearch");
+
 $route->get("/destaques", "Web:emphasis");
+$route->post("/destaques", "Web:emphasis");
 $route->get("/propriedades/{id}", "Web:property");
+$route->post("/propriedades/{id}", "Web:property");
 $route->get("/alugar", "Web:rent");
 $route->get("/comprar", "Web:purchase");
 $route->get("/termos", "Web:terms");
@@ -74,6 +86,15 @@ $route->post("/people/people/{people_id}/contacts/{contacts_id}", "Person:contac
 $route->get("/properties/home", "Propertie:home");
 $route->get("/properties/properties", "Propertie:properties");
 $route->post("/properties/properties", "Propertie:properties");
+
+$route->get("/properties/properties-create", "Propertie:propertiesCreate");
+$route->post("/properties/properties-create", "Propertie:propertiesCreate");
+
+$route->get("/properties/properties/{propertie_id}", "Propertie:propertiesCreate");
+$route->post("//properties/properties/{propertie_id}", "Propertie:propertiesCreate");
+
+
+
 $route->get("/properties/properties/{search}/{page}", "Propertie:properties");
 $route->get("/properties/properties/{reference}/details/home", "Propertie:details");
 $route->get("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");
@@ -96,6 +117,10 @@ $route->get("/clients/client/{clients_id}/contacts", "Customer:clientContacts");
 $route->get("/leads/leads", "Customer:leads");
 $route->post("/leads/leads", "Customer:leads");
 $route->get("/leads/leads/{search}/{page}", "Customer:leads");
+
+$route->get("/leads/convert/{leads_id}", "Customer:convert");
+$route->post("/leads/convert/{leads_id}", "Customer:convert");
+
 
 //settings
 $route->get("/settings/home", "Setting:home");

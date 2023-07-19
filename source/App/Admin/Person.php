@@ -23,6 +23,15 @@ class Person extends Admin
     public function home(?array $data): void
     {
         $people = (new People())->find()->count();
+        // $lastPeople = (new People())->find()->order("created_at DESC")->limit(9)->fetch(true);
+        // $lastCount = (new People())->find("created_at = :c", "c=")->count();
+
+        // $lastPeople = (new People())->find("created_at >= DATE_SUB(NOW(), INTERVAL 720 HOUR)")->order("created_at DESC")->limit(3)->fetch(true);
+        // $countPeople = (new People())->find("created_at >= DATE_SUB(NOW(), INTERVAL 720 HOUR)")->order("created_at DESC")->count();
+        $lastPeople = (new People())->find("MONTH(created_at) = MONTH(NOW())")->order("created_at DESC")->limit(6)->fetch(true);
+        $countPeople = (new People())->find("MONTH(created_at) = MONTH(NOW())")->order("created_at DESC")->count();
+
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Proprietários",
@@ -35,7 +44,9 @@ class Person extends Admin
         echo $this->view->render("widgets/people/home", [
             "app" => "people/home",
             "head" => $head,
-            "people" => $people
+            "people" => $people,
+            "lastPeople" => $lastPeople,
+            "countPeople" => $countPeople
         ]);
     }
 
@@ -302,7 +313,7 @@ class Person extends Admin
                 }
             }
 
-            $this->message->success("Contato cadastrado com sucesso...")->flash();
+            $this->message->success("Contato criado com sucesso!")->flash();
             echo json_encode(["redirect" => url("/admin/people/people/{$people}/contacts")]);
 
             return;
@@ -318,13 +329,13 @@ class Person extends Admin
              * Condição para travar um User->Level menor de inativar os dados de um User->Level maior
              */
             if (Auth::user()->level < 10) {
-                $this->message->error("Você não tem permissão para inativar o perfil desse usuário ou é o perfil pertence ao seu usuário.")->flash();
+                $this->message->error("Por favor, entre em contato com a administração para solicitar permissão para realizar essa operação de inativar.")->flash();
                 echo json_encode(["redirect" => url("/admin/people/people")]);
                 return;
             }
 
             if (!$contactDelete) {
-                $this->message->error("Você tentou inativar um usuário que não existe ou que já foi removido")->flash();
+                $this->message->error("Ação inválida. O contato que você tentou inativar não existe ou já foi removido.")->flash();
                 echo json_encode(["redirect" => url("/admin/people/people")]);
                 return;
             }
@@ -338,7 +349,42 @@ class Person extends Admin
             $contactDelete->status = 'Inativo';
             $contactDelete->save();
 
-            $this->message->success("Usuário excluido com sucesso...")->flash();
+            $this->message->success("Contato excluído com sucesso!")->flash();
+
+            echo json_encode(["redirect" => url("/admin/people/people")]);
+            return;
+        }
+
+        //ativar
+        if (!empty($data["action"]) && $data["action"] == "active") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $contactActive = (new Contacts())->findById($data["contacts_id"]);
+            // var_dump($data);
+            /**
+             * Condição para travar um User->Level menor de inativar os dados de um User->Level maior
+             */
+            if (Auth::user()->level < 10) {
+                $this->message->error("Por favor, entre em contato com a administração para solicitar permissão para realizar essa operação de inativar.")->flash();
+                echo json_encode(["redirect" => url("/admin/people/people")]);
+                return;
+            }
+
+            if (!$contactActive) {
+                $this->message->error("Ação inválida. O contato que você tentou inativar não existe ou já foi removido.")->flash();
+                echo json_encode(["redirect" => url("/admin/people/people")]);
+                return;
+            }
+
+            // if ($userDelete->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userDelete->photo}")) {
+            //     unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userDelete->photo}");
+            //     (new Thumb())->flush($userDelete->photo);
+            // }
+
+            // $userDelete->destroy();
+            $contactActive->status = 'Ativo';
+            $contactActive->save();
+
+            $this->message->success("Contato ativado com sucesso!")->flash();
 
             echo json_encode(["redirect" => url("/admin/people/people")]);
             return;

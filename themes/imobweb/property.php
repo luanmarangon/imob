@@ -53,6 +53,7 @@
                             <?= $propertiTributes ? str_price($propertiTributes) : "Não Informado"; ?></p>
                         <p class="main_property_content_price_big">Valor de
                             <?= $properti->transactionsProperties($properti->id)->type; ?>:
+                            R$
                             <?= str_price($properti->transactionsProperties($properti->id)->value); ?><?= $properti->transactionsProperties($properti->id)->type === "Aluguel" ? "/ mês" : ""; ?>
                         </p>
                     </div>
@@ -79,41 +80,89 @@
                         </p>
                     </div>
                     <div class="main_property_content_features">
-                        <h2 class="text-front">Características</h2>
-                        <table class="table table-striped">
-                            <tbody>
-                                <?php foreach ($propertiComfortable as $comfortable) : ?>
-                                    <tr>
-                                        <td><?= $comfortable->comfortable()->convenient; ?>
-                                        </td>
-                                        <td><?= $comfortable->quantity; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                        <h2 class="text-front">Cômodos do imóvel</h2>
+                        <?php if ($propertiComfortable) : ?>
+                            <?php foreach ($propertiComfortable as $comfortable) : ?>
+                                <!-- <?php if ($comfortable->properties_id === $properti->id) : ?> -->
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td><?= $comfortable->comfortable()->convenient; ?>
+                                            </td>
+                                            <td><?= $comfortable->quantity; ?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- <?php endif; ?> -->
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="modal_aviso">
+                                <p>No momento não possuímos informações disponíveis. Por favor, verifique novamente mais
+                                    tarde.</p>
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+
+                    <div class="main_property_content_structure">
+                        <h2 class="text-front">Características do imóvel</h2>
+                        <?php if ($propertiFeatures) : ?>
+                            <?php foreach ($propertiFeatures as $features) : ?>
+                                <!-- <?php if ($features->properties_id === $properti->id) : ?> -->
+                                <div class="d-flex">
+                                    <div class="main_property_content_structure_item icon-check">
+                                        <?= $features->features()->feature; ?>
+                                    </div>
+                                </div>
+                                <!-- <?php endif; ?> -->
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="modal_aviso">
+                                <p>No momento não possuímos informações disponíveis. Por favor, verifique novamente mais
+                                    tarde.</p>
+                            </div>
+                        <?php endif; ?>
+
                     </div>
 
                     <div class="main_property_content_structure">
                         <h2 class="text-front">Estrutura</h2>
+                        <?php if ($propertiStructures) : ?>
+                            <!-- <?php var_dump($propertiStructures); ?> -->
+                            <?php foreach ($propertiStructures as $structures) : ?>
+                                <!-- <?php if ($structures->properties_id === $properti->id) : ?> -->
+                                <div class="d-flex">
+                                    <div class="main_property_content_structure_item icon-check">
+                                        <?= $structures->structures()->structure; ?></div>
+                                    <div class="main_property_content_structure_item icon-check">
+                                        <?= $structures->footage; ?>
+                                    </div>
+                                </div>
+                                <!-- <?php endif; ?> -->
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="modal_aviso">
+                                <p>No momento não possuímos informações disponíveis. Por favor, verifique novamente mais
+                                    tarde.</p>
+                            </div>
+                        <?php endif; ?>
 
-
-                        <?php foreach ($propertiStructures as $structures) : ?>
-                            <!-- <div class="d-flex"> -->
-                            <button class="main_property_content_structure_item icon-check"><?= $structures->structures()->structure; ?></button>
-                            <!-- <label for=""><?= $structures->structures()->structure; ?> : </label> -->
-                            <button class="main_property_content_structure_item icon-check"><?= $structures->footage; ?></button>
-                            <!-- </div> -->
-                        <?php endforeach; ?>
 
                     </div>
 
                     <div class="main_property_content_location">
                         <h2 class="text-front">Localização</h2>
                         <hr>
-                        <input type="hidden" id="latitude" value="<?= $properti->address()->latitude ?>">
-                        <input type="hidden" id="longitute" value="<?= $properti->address()->longitude ?>">
-                        <div class="main_property_content_location_maps" id="map"></div>
-
+                        <?php if ($properti->address()->latitude && $properti->address()->longitude) : ?>
+                            <input type="hidden" id="latitude" value="<?= $properti->address()->latitude ?>">
+                            <input type="hidden" id="longitute" value="<?= $properti->address()->longitude ?>">
+                            <div class="main_property_content_location_maps" id="map"></div>
+                        <?php else : ?>
+                            <div class="modal_aviso">
+                                <p>No momento não possuímos informações disponíveis. Por favor, verifique novamente mais
+                                    tarde.</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
 
@@ -127,23 +176,26 @@
 
                     <div class="main_property_contact">
                         <h2 class="bg-front text-white">Entre em Contato</h2>
-                        <form action="">
-                            <input type="hidden" name="" value="<?= $properti->reference; ?>">
+                        <form action="<?= url("/interest"); ?>" method="post">
+                            <div class="ajax_response"><?= flash(); ?></div>
+                            <?= csrf_input(); ?>
+                            <input type="hidden" name="reference" value="<?= $properti->reference; ?>">
+                            <input type="hidden" name="transaction" value="<?= $properti->transactionsProperties($properti->id)->id; ?>">
                             <div class="form-group">
                                 <label for="">Seu Nome:</label>
-                                <input type="text" class="form-control" placeholder="Informe seu nome completo" required>
+                                <input type="text" name="name" class="form-control" placeholder="Informe seu nome completo" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Seu Telefone:</label>
-                                <input type="text" id="phone" class="form-control" placeholder="Informe seu telefone com DDD" required>
+                                <input type="text" name="phone" class="form-control mask-phone" placeholder="Informe seu telefone com DDD" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Seu E-mail:</label>
-                                <input type="email" class="form-control" placeholder="Informe seu melhor e-mail" required>
+                                <input type="email" name="email" class="form-control mask-email" placeholder="Informe seu melhor e-mail" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Sua Mensagem:</label>
-                                <textarea name="" rows="5" class="form-control">Quero ter mais informações sobre este imóvel. Imóvel <?= $properti->category()->category; ?> - <?= $properti->type()->type; ?> - <?= $properti->address()->city ?>/<?= $properti->address()->state ?> (#<?= $properti->reference ?>)</textarea>
+                                <textarea rows="5" name="message" class="form-control">Quero ter mais informações sobre este imóvel. Imóvel <?= $properti->category()->category; ?> - <?= $properti->type()->type; ?> - <?= $properti->address()->city ?>/<?= $properti->address()->state ?> (#<?= $properti->reference ?>)</textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-front w-100 mt-3">Enviar</button>
