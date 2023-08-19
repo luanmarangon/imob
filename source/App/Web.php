@@ -221,44 +221,89 @@ class Web extends Controller
         ]);
     }
 
-    public function filter(array $data): void
+    // public function filter(array $data): void
+    // {
+
+    //     $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+    //     // var_dump($data);
+    //     if (empty($data)) {
+    //         redirect("/error");
+    //     }
+    //     if ($data['type'] != 'Aluguel' && $data['type'] != 'Venda') {
+    //         redirect("/error");
+    //     } else {
+    //         if ($data['type'] == 'Aluguel') {
+    //             $type = "Alugar";
+    //         } else {
+    //             $type = "Comprar";
+    //         }
+    //     }
+
+    //     /**Filtros */
+
+    //     $category = (new Category())->find()->fetch(true);
+    //     $comfortable = (new Comfortable())->find()->fetch(true);
+    //     $features = (new Features())->find()->fetch(true);
+    //     $typesProperties = (new Type())->find()->fetch(true);
+    //     $addresses = (new Addresses())->distinct("city")->fetch(true);
+
+
+    //     // $transactionType = (new Transactions())->find(
+    //     //     "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
+    //     //     "type={$data['type']}"
+    //     // )->fetch();
+
+    //     $transactionType = (new Transactions())->find(
+    //         "type = :type AND status = :status",
+    //         "type={$data['type']}&status=Ativo"
+    //     )->fetch(true);
+
+    //     // var_dump($transactionType);
+
+    //     $properties = (new Properties())->find(
+    //         "active = :active",
+    //         "active=1"
+    //     )
+    //         ->limit(8)
+    //         // ->order("updated_at ASC")
+    //         ->fetch(true);
+
+    //     $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+    //     $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+    //     // return;
+
+    //     $head = $this->seo->render(
+    //         CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+    //         CONF_SITE_DESC,
+    //         url("/filtro"),
+    //         theme("/assets/images/share.png")
+    //     );
+
+    //     echo $this->view->render("filter", [
+    //         "head" => $head,
+    //         "transactionType" => $transactionType,
+    //         "properties" => $properties,
+    //         "propertiComfortable" => $propertiComfortable,
+    //         "propertiStructures" => $propertiStructures,
+    //         "type" => $type,
+    //         "data" => $data['type'],
+    //         "category" => $category,
+    //         "typesProperties" => $typesProperties,
+    //         "features" => $features,
+    //         "addresses" => $addresses
+    //     ]);
+    // }
+
+    public function propertySearch(array $data): void
     {
 
         $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-        // var_dump($data);
-        if (empty($data)) {
-            redirect("/error");
-        }
-        if ($data['type'] != 'Aluguel' && $data['type'] != 'Venda') {
-            redirect("/error");
+
+        if ($data['type'] === 'Aluguel') {
+            $type = "Aluguel";
         } else {
-            if ($data['type'] == 'Aluguel') {
-                $type = "Alugar";
-            } else {
-                $type = "Comprar";
-            }
+            $type = "Venda";
         }
-
-        /**Filtros */
-
-        $category = (new Category())->find()->fetch(true);
-        $comfortable = (new Comfortable())->find()->fetch(true);
-        $features = (new Features())->find()->fetch(true);
-        $typesProperties = (new Type())->find()->fetch(true);
-        $addresses = (new Addresses())->distinct("city")->fetch(true);
-
-
-        // $transactionType = (new Transactions())->find(
-        //     "type = :type AND year(end) < year(now()) AND month(end) < month(now()) and day(end) < day(now())",
-        //     "type={$data['type']}"
-        // )->fetch();
-
-        $transactionType = (new Transactions())->find(
-            "type = :type AND status = :status",
-            "type={$data['type']}&status=Ativo"
-        )->fetch(true);
-
-        // var_dump($transactionType);
 
         $properties = (new Properties())->find(
             "active = :active",
@@ -270,7 +315,116 @@ class Web extends Controller
 
         $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
         $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
-        // return;
+
+        if (empty($data['category']) && empty($data['location']) && empty($data['typeProperties']) && empty($data['feature'])) {
+
+            $transactionType = (new Transactions())->find(
+                "type = :type AND status = :status",
+                "type={$data['type']}&status=Ativo"
+            )->fetch(true);
+        } else {
+
+            if ($data['category'] === "") {
+
+                $category = (new Category())->find("", "", "id")->fetch(true);
+                $data['category'] = null;
+            }
+
+
+
+            $category = !empty($data['category']) ? $data['category'] : $category;
+            $locationData = !empty($data['location']) ? $data['location'] : null;
+            $typesData = !empty($data['typeProperties']) ? $data['typeProperties'] : null;
+            $featuresData = !empty($data['feature']) ? $data['feature'] : null;
+
+            // excluir essa Function searchProperties
+            // $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData)->fetch(true);
+            $transactionType = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData)->fetch(true);
+        }
+
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/pesquisa"),
+            theme("/assets/images/share.png")
+        );
+
+        echo $this->view->render("propertySearch", [
+            "head" => $head,
+            "transactionType" => $transactionType,
+            "properties" => $properties,
+            "propertiComfortable" => $propertiComfortable,
+            "propertiStructures" => $propertiStructures,
+
+        ]);
+    }
+
+    public function filter(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+        if ($data['type'] === 'Aluguel') {
+            $type = "Aluguel";
+        } else {
+            $type = "Venda";
+        }
+
+        $properties = (new Properties())->find(
+            "active = :active",
+            "active=1"
+        )
+            ->limit(8)
+            // ->order("updated_at ASC")
+            ->fetch(true);
+
+        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
+        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+
+
+        /**Filtros */
+        $category = (new Category())->find()->fetch(true);
+        $comfortable = (new Comfortable())->find()->fetch(true);
+        $features = (new Features())->find()->fetch(true);
+        $typesProperties = (new Type())->find()->fetch(true);
+        $addresses = (new Addresses())->distinct("city")->fetch(true);
+
+        $transactionType = (new Transactions())->find(
+            "type = :type AND status = :status",
+            "type={$data['type']}&status=Ativo"
+        )->fetch(true);
+
+        //create
+        // if (!empty($data["action"]) && $data["action"] == "search") {
+        // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        // if (empty($data['category']) && empty($data['location']) && empty($data['typeProperties']) && empty($data['feature'])) {
+
+        //     $transactionType = (new Transactions())->find(
+        //         "type = :type AND status = :status",
+        //         "type={$data['type']}&status=Ativo"
+        //     )->fetch(true);
+        // } else {
+
+        //     if ($data['category'] === "") {
+
+        //         $category = (new Category())->find("", "", "id")->fetch(true);
+        //         $data['category'] = null;
+        //     }
+
+
+
+        //     $category = !empty($data['category']) ? $data['category'] : $category;
+        //     $locationData = !empty($data['location']) ? $data['location'] : null;
+        //     $typesData = !empty($data['typeProperties']) ? $data['typeProperties'] : null;
+        //     $featuresData = !empty($data['feature']) ? $data['feature'] : null;
+
+        //     // excluir essa Function searchProperties
+        //     // $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData)->fetch(true);
+        //     $transactionType = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData)->fetch(true);
+        // }
+
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -286,110 +440,6 @@ class Web extends Controller
             "propertiComfortable" => $propertiComfortable,
             "propertiStructures" => $propertiStructures,
             "type" => $type,
-            "data" => $data['type'],
-            "category" => $category,
-            "typesProperties" => $typesProperties,
-            "features" => $features,
-            "addresses" => $addresses
-        ]);
-    }
-
-    public function propertySearch(array $data): void
-    {
-
-        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-        // var_dump($data);
-
-        if (!empty($data)) {
-            $category = null;
-
-            $locationData = [];
-            $locationData = null;
-
-            $typesData = [];
-            $typesData  = null;
-
-            $featuresData = [];
-            $featuresData  = null;
-            var_dump($category);
-            if (!empty($data['category'])) {
-                // $category = [];
-                $category = $data['category'];
-                // var_dump($category);
-            }
-            if (!empty($data['location'])) {
-                // $locationData = [];
-                $locationData = $data['location'];
-                // var_dump($locationData);
-            }
-
-            if (!empty($data['typeProperties'])) {
-                // $typesData = [];
-                $typesData = $data['typeProperties'];
-                // var_dump($data['typeProperties']);
-            }
-
-            if (!empty($data['feature'])) {
-                // $featuresData = [];
-                $featuresData = $data['feature'];
-                // var_dump($featuresData);
-            }
-
-            $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData);
-
-
-            // $propertiCategory = (new Properties())->find(
-            //     "categories_id = :category",
-            //     "category={$category}"
-            // )->fetch(true);
-
-            var_dump($propertiCategory);
-
-            /**Gerar a consulta no SQL para apresentar somente os dados do Search */
-
-            // $transactionType = (new Transactions())->find(
-            //     "type = :type AND status = :status",
-            //     "type={$data['type']}&status=Ativo"
-            // )->fetch(true);
-
-            // $properties = (new Properties())->find(
-            //     "active = :active",
-            //     "active=1"
-            // )
-            //     ->limit(8)
-            //     ->fetch(true);
-
-            // $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
-            // $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
-
-        }
-        /**Redirecionamento para o destaques */
-        // redirect("/destaques");
-
-        /**Filtros */
-        $category = (new Category())->find()->fetch(true);
-        $comfortable = (new Comfortable())->find()->fetch(true);
-        $features = (new Features())->find()->fetch(true);
-        $typesProperties = (new Type())->find()->fetch(true);
-        $addresses = (new Addresses())->distinct("city")->fetch(true);;
-
-
-
-
-        $head = $this->seo->render(
-            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
-            CONF_SITE_DESC,
-            url("/filtro"),
-            theme("/assets/images/share.png")
-        );
-
-        echo $this->view->render("propertySearch", [
-            "head" => $head,
-            // "transactionType" => $transactionType,
-            // "properties" => $properties,
-            // "propertiComfortable" => $propertiComfortable,
-            // "propertiStructures" => $propertiStructures,
-            // "type" => $type,
             // "data" => $data['type'],
             "category" => $category,
             "typesProperties" => $typesProperties,
