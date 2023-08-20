@@ -165,6 +165,16 @@ $route->post("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 //reports
 $route->get("/relatorios", "Reports:home");
 
+//customer success
+$route->get("/cs", "ContactCenter:cs");
+$route->get("/cs/home", "ContactCenter:home");
+$route->get("/cs/contato", "ContactCenter:contact");
+$route->post("/cs/contato", "ContactCenter:contact");
+$route->get("/cs/contato/{search}/{page}", "ContactCenter:contact");
+// $route->get("/cs/contato/", "ContactCenter:response");
+$route->get("/cs/resposta/{id}", "ContactCenter:response");
+$route->post("/cs/resposta/{id}", "ContactCenter:response");
+
 
 //users
 $route->get("/users/home", "Users:home");

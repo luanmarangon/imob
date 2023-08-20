@@ -43,7 +43,7 @@ class Email
         $this->mail->Port = CONF_MAIL_PORT;
         $this->mail->Username = CONF_MAIL_USER;
         $this->mail->Password = CONF_MAIL_PASS;
-        
+
         //debug
         $this->mail->SMTPDebug = 2;
     }
@@ -158,8 +158,8 @@ class Email
                 $email = $this->bootstrap(
                     $send->subject,
                     $send->body,
-                    $send-> recipient_email,
-                    $send-> recipient_name
+                    $send->recipient_email,
+                    $send->recipient_name
                 );
 
                 if ($email->send($send->from_email, $send->from_name)) {

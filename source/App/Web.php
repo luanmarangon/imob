@@ -195,7 +195,7 @@ class Web extends Controller
             $contact->name = $data["name"];
             $contact->email = $data["email"];
             $contact->phone = $data["phone"];
-            $contact->message = $data["message"];
+            $contact->messageContact = $data["message"];
             $contact->status = "N";
 
             if (!$contact->save()) {
