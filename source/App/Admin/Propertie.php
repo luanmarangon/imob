@@ -35,6 +35,24 @@ class Propertie extends Admin
         )->count();
 
 
+        // Teste
+        // $teste = new Properties();
+        // $teste->addresses_id = 104;
+        // $teste->categories_id = 1;
+        // $teste->types_id = 2;
+        // $teste->reference = "LUAN";
+        // $teste->description = "Teste Home";
+        // $teste->active = 1;
+
+        // var_dump($teste);
+
+        // $teste->save();
+        // var_dump($teste);
+
+
+
+
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
             CONF_SITE_DESC,
@@ -69,7 +87,11 @@ class Propertie extends Admin
 
         if (!empty($data["search"]) && str_search($data["search"]) != "all") {
             $search = str_search($data["search"]);
+            // var_dump($search);
+            // exit();
             $properties = (new Properties())->find("MATCH(reference) AGAINST(:s)", "s={$search}");
+            // $address = (new Addresses())->find("MATCH(zipcode) AGAINST(:s)", "s={$search}");
+            // var_dump($address);
             if (!$properties->count()) {
                 $this->message->info("Sua pesquisa não retornou resultados")->flash();
                 redirect("/admin/properties/properties");
@@ -94,6 +116,7 @@ class Propertie extends Admin
             "head" => $head,
             "search" => $search,
             "properties" => $properties->limit($pager->limit())->offset($pager->offset())->order("updated_at")->fetch(true),
+            // "address" => $address->limit($pager->limit())->offset($pager->offset())->order("updated_at")->fetch(true),
             "people" => $people,
             "paginator" => $pager->render()
         ]);
@@ -143,242 +166,255 @@ class Propertie extends Admin
             $addressCreate->latitude = $addressAPI['latitude'];
             $addressCreate->longitude = $addressAPI['longitude'];
 
-            /**Fim Address */
+            $queryAddresses = (new Addresses())->find("latitude = :lat and longitude = :log", "lat={$addressCreate->latitude}&log={$addressCreate->longitude}")->fetch(true);
 
-            /**Inicio Propertie */
-            $propertieCreate = new Properties();
-            $propertieCreate->addresses_id = $addressCreate->lastId();
-            $propertieCreate->categories_id = $data['category'];
-            $propertieCreate->types_id = $data['type'];
-
-            /**Reference */
-            $propertieId = $propertieCreate->lastId();
-            $propertieCreate->reference = "IMOB" . sprintf("%03d", $propertieId);
-
-            /**Description */
-            $propertieCreate->description = $data['description'];
-            $propertieCreate->active = 1;
-            /**Fim Propertie */
-
-            /**Incio Comfortable */
-            /**Criar testes */
-            $propertieComfortableCreate = new PropertiesComfortable();
-            // $comfortablePropertie = [];
-            // $comfortableQuantity = [];
-
-            // $i = 0;
-            // while (isset($data['comfortable'][$i]) && isset($data['quantityComfortable'][$i])) {
-            //     if (!empty($data['comfortable'][$i]) && !empty($data['quantityComfortable'][$i])) {
-            //         $comfortable = $data['comfortable'][$i];
-            //         $quantity = $data['quantityComfortable'][$i];
-
-            //         // Verificar se o valor já existe no array
-            //         if (!in_array($comfortable, $comfortablePropertie)) {
-            //             $comfortablePropertie[] = $comfortable;
-            //             $comfortableQuantity[] = $quantity;
-            //         }
-            //     }
-            //     $i++;
+            // trava para nao duplicar endereço
+            // if ($queryAddresses) {
+            //     $this->message->warning("Endereço já cadastrado. Por favor, consulte o endereço antes de cadastrá-lo.")->flash();
+            //     echo json_encode(["redirect" => url("/admin/properties/properties")]);
+            //     return;
             // }
-
-            // foreach ($comfortablePropertie as $index => $comfortable) {
-            //     $quantity = $comfortableQuantity[$index];
-            //     $propertieComfortableCreate->properties_id = $propertieId;
-            //     $propertieComfortableCreate->comfortable_id = $comfortable;
-            //     $propertieComfortableCreate->quantity = $quantity;
-            //     // var_dump($propertieComfortableCreate);
-            // }
-            /**
-             * TESTE
-             */
-
-            $propertieComfortableCreate->properties_id = 11;
-            $propertieComfortableCreate->comfortable_id = 1;
-            $propertieComfortableCreate->quantity = 100;
-
-
-
-            /**Fim Comfortable */
-
-            /**Inicio Structures */
-            $propertieStructuresCreate = new PropertiesStructures();
-            $structuresPropertie = [];
-            $structuresFootage = [];
-
-            $i = 0;
-            while (isset($data['structure'][$i]) && isset($data['footageStructure'][$i])) {
-                if (!empty($data['structure'][$i]) && !empty($data['footageStructure'][$i])) {
-                    $structure = $data['structure'][$i];
-                    $footage = $data['footageStructure'][$i];
-
-                    // Verificar se o valor já existe no array
-                    if (!in_array($structure, $structuresPropertie)) {
-                        $structuresPropertie[] = $structure;
-                        $structuresFootage[] = $footage;
-                    }
-                }
-                $i++;
-            }
-
-            foreach ($structuresPropertie as $index => $structures) {
-                $footage = $structuresFootage[$index];
-                $propertieStructuresCreate->properties_id = $propertieId;
-                $propertieStructuresCreate->structures_id = $structures;
-                $propertieStructuresCreate->footage = $footage;
-            }
-            /**Fim Structures */
-
-            /**inicio Tributes */
-            $propertieTributesCreate = new Tributes();
-            $tributesData = [];
-
-            $i = 0;
-            while (isset($data['tribute'][$i]) && isset($data['yearTribute'][$i]) && isset($data['valueTribute'][$i])) {
-                if (!empty($data['tribute'][$i]) && !empty($data['yearTribute'][$i]) && !empty($data['valueTribute'][$i])) {
-                    $tribute = $data['tribute'][$i];
-                    $exercise = $data['yearTribute'][$i];
-                    $value = $data['valueTribute'][$i];
-
-                    $tributesData[] = [
-                        'tribute' => $tribute,
-                        'exercise' => $exercise,
-                        'value' => $value,
-                    ];
-                }
-                $i++;
-            }
-
-            foreach ($tributesData as $tributeData) {
-                $propertieTributesCreate->properties_id = $propertieId;
-                $propertieTributesCreate->charges_id = $tributeData['tribute'];
-                $propertieTributesCreate->exercise = $tributeData['exercise'];
-                $propertieTributesCreate->value = $tributeData['value'];
-            }
-            /**Fim Tributes */
-
-            /**Inicio Features */
-            $propertieFeaturesCreate = new PropertiesFeatures();
-            $featuresData = [];
-
-            $featuresData[] = $data['feature'];
-
-            foreach ($featuresData as $feature) {
-                $propertieFeaturesCreate->properties_id = $propertieId;
-                $propertieFeaturesCreate->features_id = $feature;
-                // var_dump($propertieFeaturesCreate);
-            }
-            /**Fim Features */
 
             if (!$addressCreate->save()) {
                 $json["message"] = $addressCreate->message()->render();
                 echo json_encode($json);
                 return;
             }
+            /**Fim Address */
+
+            /**Inicio Propertie */
+            $propertieCreate = new Properties();
+            // $propertieCreate->addresses_id = $addressCreate->lastId();
+            $propertieCreate->addresses_id = $addressCreate->id;
+            $propertieCreate->categories_id = $data['category'];
+            $propertieCreate->types_id = $data['type'];
+
+            /**Reference */
+            // ajustar isso pois ira pegar o ultimo ID se houver destroy irá gerar value diferente
+            $propertieId = $propertieCreate->lastId();
+            $propertieCreate->reference = "IMOB" . sprintf("%03d", $propertieId);
+
+            /**Description */
+            $propertieCreate->description = $data['description'];
+            $propertieCreate->active = 1;
+
 
             if (!$propertieCreate->save()) {
+                $addressCreate->destroy();
                 $json["message"] = $propertieCreate->message()->render();
                 echo json_encode($json);
                 return;
             }
+            /**Fim Propertie */
 
-            echo "aqui";
-            // var_dump($propertieComfortableCreate);               
+            /**   VALIDADO ATÉ AQUI               ^ */
+            /**Minimo para cadastrar um Propertie |*/
 
 
-            if (!$propertieComfortableCreate->save()) {
-                var_dump($propertieComfortableCreate);
-                $json["message"] = $propertieComfortableCreate->message()->render();
-                echo json_encode($json);
-                return;
+            /**Incio Comfortable */
+            if (!empty($data['comfortable[]'])) {
+                /**Criar testes */
+                $propertieComfortableCreate = new PropertiesComfortable();
+                $comfortablePropertie = [];
+                $comfortableQuantity = [];
+
+                $i = 0;
+                while (isset($data['comfortable'][$i]) && isset($data['quantityComfortable'][$i])) {
+                    if (!empty($data['comfortable'][$i]) && !empty($data['quantityComfortable'][$i])) {
+                        $comfortable = $data['comfortable'][$i];
+                        $quantity = $data['quantityComfortable'][$i];
+
+                        // Verificar se o valor já existe no array
+                        if (!in_array($comfortable, $comfortablePropertie)) {
+                            $comfortablePropertie[] = $comfortable;
+                            $comfortableQuantity[] = $quantity;
+                        }
+                    }
+                    $i++;
+                }
+
+                foreach ($comfortablePropertie as $index => $comfortable) {
+                    $quantity = $comfortableQuantity[$index];
+                    $propertieComfortableCreate->properties_id = $propertieCreate->id;
+                    $propertieComfortableCreate->comfortable_id = $comfortable;
+                    $propertieComfortableCreate->quantity = $quantity;
+                    // var_dump($propertieComfortableCreate);
+                }
+
+                if (!$propertieComfortableCreate->save()) {
+                    // var_dump($propertieComfortableCreate);
+                    $json["message"] = $propertieComfortableCreate->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
             }
+            /**Fim Comfortable */
 
-            if (!$propertieStructuresCreate->save()) {
-                $json["message"] = $propertieStructuresCreate->message()->render();
-                echo json_encode($json);
-                return;
-            }
+            /**Inicio Structures */
+            if (!empty($data['structure[]'])) {
 
-            if (!$propertieTributesCreate->save()) {
-                // var_dump($propertieTributesCreate);
-                $json["message"] = $propertieTributesCreate->message()->render();
-                echo json_encode($json);
-                return;
-            }
+                $propertieStructuresCreate = new PropertiesStructures();
+                $structuresPropertie = [];
+                $structuresFootage = [];
 
-            if (!$propertieFeaturesCreate->save()) {
-                $json["message"] = $propertieFeaturesCreate->message()->render();
-                echo json_encode($json);
-                return;
+                $i = 0;
+                while (isset($data['structure'][$i]) && isset($data['footageStructure'][$i])) {
+                    if (!empty($data['structure'][$i]) && !empty($data['footageStructure'][$i])) {
+                        $structure = $data['structure'][$i];
+                        $footage = $data['footageStructure'][$i];
+
+                        // Verificar se o valor já existe no array
+                        if (!in_array($structure, $structuresPropertie)) {
+                            $structuresPropertie[] = $structure;
+                            $structuresFootage[] = $footage;
+                        }
+                    }
+                    $i++;
+                }
+
+                foreach ($structuresPropertie as $index => $structures) {
+                    $footage = $structuresFootage[$index];
+                    $propertieStructuresCreate->properties_id = $propertieCreate->id;
+                    $propertieStructuresCreate->structures_id = $structures;
+                    $propertieStructuresCreate->footage = $footage;
+                }
+
+                if (!$propertieStructuresCreate->save()) {
+                    $json["message"] = $propertieStructuresCreate->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
             }
-            // var_dump($propertieCreate->id);
+            /**Fim Structures */
+
+            /**inicio Tributes */
+            if (!empty($fata['tribute[]'])) {
+
+                $propertieTributesCreate = new Tributes();
+                $tributesData = [];
+
+                $i = 0;
+                while (isset($data['tribute'][$i]) && isset($data['yearTribute'][$i]) && isset($data['valueTribute'][$i])) {
+                    if (!empty($data['tribute'][$i]) && !empty($data['yearTribute'][$i]) && !empty($data['valueTribute'][$i])) {
+                        $tribute = $data['tribute'][$i];
+                        $exercise = $data['yearTribute'][$i];
+                        $value = $data['valueTribute'][$i];
+
+                        $tributesData[] = [
+                            'tribute' => $tribute,
+                            'exercise' => $exercise,
+                            'value' => $value,
+                        ];
+                    }
+                    $i++;
+                }
+
+                foreach ($tributesData as $tributeData) {
+                    $propertieTributesCreate->properties_id = $propertieCreate->id;
+                    $propertieTributesCreate->charges_id = $tributeData['tribute'];
+                    $propertieTributesCreate->exercise = $tributeData['exercise'];
+                    $propertieTributesCreate->value = $tributeData['value'];
+                }
+
+                if (!$propertieTributesCreate->save()) {
+                    // var_dump($propertieTributesCreate);
+                    $json["message"] = $propertieTributesCreate->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
+            }
+            /**Fim Tributes */
+
+            // /**Inicio Features */
+            if (!empty($data['feature[]'])) {
+
+                // $propertieFeaturesCreate = new PropertiesFeatures();
+                // $featuresData = [];
+
+                // $featuresData[] = $data['feature'];
+
+                // foreach ($featuresData as $feature) {
+                //     $propertieFeaturesCreate->properties_id = $propertieCreate->id;
+                //     $propertieFeaturesCreate->features_id = $feature;
+                //     // var_dump($propertieFeaturesCreate);
+                // }
+
+                // if (!$propertieFeaturesCreate->save()) {
+                //     $json["message"] = $propertieFeaturesCreate->message()->render();
+                //     echo json_encode($json);
+                //     return;
+                // }
+                // var_dump($propertieCreate->id);
+            }
+            /**Fim Features */
 
             $this->message->success("Imovel cadastrado com sucesso...")->flash();
-            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertieCreate->id}")]);
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertieCreate->reference}/1")]);
             return;
         }
         //update
-        if (!empty($data["action"]) && $data["action"] == "update") {
-            // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-            // $userUpdate = (new User())->findById($data["user_id"]);
+        // if (!empty($data["action"]) && $data["action"] == "update") {
+        //     // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        //     // $userUpdate = (new User())->findById($data["user_id"]);
 
-            // /**
-            //  * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
-            //  */
-            // if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
-            //     if (Auth::user()->level < $userUpdate->level) {
-            //         $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
-            //         echo json_encode(["redirect" => url("admin/users/home")]);
-            //         return;
-            //     }
-            // }
+        //     // /**
+        //     //  * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
+        //     //  */
+        //     // if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
+        //     //     if (Auth::user()->level < $userUpdate->level) {
+        //     //         $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
+        //     //         echo json_encode(["redirect" => url("admin/users/home")]);
+        //     //         return;
+        //     //     }
+        //     // }
 
-            // if (!$userUpdate) {
-            //     $this->message->error("Você tentou gerenciar um usuário que não existe ou foi removido")->flash();
-            //     echo json_encode(["redirect" => url("admin/users/home")]);
-            //     return;
-            // }
+        //     // if (!$userUpdate) {
+        //     //     $this->message->error("Você tentou gerenciar um usuário que não existe ou foi removido")->flash();
+        //     //     echo json_encode(["redirect" => url("admin/users/home")]);
+        //     //     return;
+        //     // }
 
-            // $userUpdate->first_name = $data["first_name"];
-            // $userUpdate->last_name = $data["last_name"];
-            // $userUpdate->email = $data["email"];
-            // $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
-            // $userUpdate->level = $data["level"];
-            // $userUpdate->genre = $data["genre"];
-            // $userUpdate->office = $data["office"];
-            // $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
-            // $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
-            // $userUpdate->status = $data["status"];
+        //     // $userUpdate->first_name = $data["first_name"];
+        //     // $userUpdate->last_name = $data["last_name"];
+        //     // $userUpdate->email = $data["email"];
+        //     // $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
+        //     // $userUpdate->level = $data["level"];
+        //     // $userUpdate->genre = $data["genre"];
+        //     // $userUpdate->office = $data["office"];
+        //     // $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
+        //     // $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
+        //     // $userUpdate->status = $data["status"];
 
-            // //upload cover
-            // if (!empty($_FILES["photo"])) {
-            //     if ($userUpdate->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}")) {
-            //         unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}");
-            //         (new Thumb())->flush($userUpdate->photo);
-            //     }
+        //     // //upload cover
+        //     // if (!empty($_FILES["photo"])) {
+        //     //     if ($userUpdate->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}")) {
+        //     //         unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}");
+        //     //         (new Thumb())->flush($userUpdate->photo);
+        //     //     }
 
-            //     $files = $_FILES["photo"];
-            //     $upload = new Upload();
-            //     $image = $upload->image($files, $userUpdate->fullName(), 600);
+        //     //     $files = $_FILES["photo"];
+        //     //     $upload = new Upload();
+        //     //     $image = $upload->image($files, $userUpdate->fullName(), 600);
 
-            //     if (!$image) {
-            //         $json["message"] = $upload->message()->render();
-            //         echo json_encode($json);
-            //         return;
-            //     }
+        //     //     if (!$image) {
+        //     //         $json["message"] = $upload->message()->render();
+        //     //         echo json_encode($json);
+        //     //         return;
+        //     //     }
 
-            //     $userUpdate->photo = $image;
-            // }
-            // if (!$userUpdate->save()) {
-            //     $json["message"] = $userUpdate->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
+        //     //     $userUpdate->photo = $image;
+        //     // }
+        //     // if (!$userUpdate->save()) {
+        //     //     $json["message"] = $userUpdate->message()->render();
+        //     //     echo json_encode($json);
+        //     //     return;
+        //     // }
 
-            // $this->message->success("Usuário atualizado com sucesso...")->flash();
-            // echo json_encode(["reload" => true]);
+        //     // $this->message->success("Usuário atualizado com sucesso...")->flash();
+        //     // echo json_encode(["reload" => true]);
 
-            // return;
-        }
+        //     // return;
+        // }
 
 
         $propertieEdit = null;

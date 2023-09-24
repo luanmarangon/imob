@@ -14,26 +14,26 @@
     <div class="dash_content_app_box">
         <section class="app_control_plans">
             <?php foreach ($leads as $lead) : ?>
-            <article class="radius">
-                <div>
-                    <h4 class="icon-user"><?= $lead->full_name; ?></h4>
-                    <p><b>Celular:</b> <span class="mask-phone"><?= $lead->phone; ?></span></p>
-                    <p><b>E-mail:</b> <?= $lead->email; ?></p>
-                </div>
-                <!-- <div>
+                <article class="radius">
+                    <div>
+                        <h4 class="icon-user"><?= $lead->full_name; ?></h4>
+                        <p><b>Celular:</b> <span class="mask-phone"><?= $lead->phone; ?></span></p>
+                        <p><b>E-mail:</b> <?= $lead->email; ?></p>
+                    </div>
+                    <!-- <div>
                         <p><b>Status:</b> <a class="icon-info btn btn-blue" href="#">Leads</a></p>
                     </div> -->
-                <div class="actions">
-                    <?php if ($lead->status === 'Lead') : ?>
-                    <a class="icon-pencil btn btn-blue" href="<?= url("admin/leads/convert/{$lead->id}") ?>"
-                        title="">Converter</a>
-                    <a class="icon-ban btn btn-red" href="<?= url("admin/leads/convert/{$lead->id}") ?>"
-                        title="">Desativar</a>
-                    <?php else : ?>
-                    <a class="icon-check btn btn-green" href="" title="">Convertido</a>
-                    <?php endif; ?>
-                </div>
-            </article>
+                    <div class="actions">
+                        <?php if ($lead->status === 'Lead') : ?>
+                            <a class="icon-pencil btn btn-blue" href="<?= url("admin/leads/convert/{$lead->id}") ?>" title="">Converter</a>
+                            <a class="icon-ban btn btn-red" href="<?= url("admin/leads/inactive/{$lead->id}") ?>" title="">Desativar</a>
+                        <?php else : ?>
+                            <!-- <a class="icon-pencil btn btn-blue" href="<?= url("admin/leads/convert/{$lead->id}") ?>" title="">Converter</a> -->
+                            <span class="icon-ban btn btn-dark" href="<?= url("admin/leads/inactive/{$lead->id}") ?>" title="">Lead Inativo</span>
+                            <!-- <a class="icon-check btn btn-green" href="" title="">Convertido</a> -->
+                        <?php endif; ?>
+                    </div>
+                </article>
             <?php endforeach; ?>
         </section>
         <?= $paginator; ?>

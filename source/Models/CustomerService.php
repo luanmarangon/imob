@@ -8,6 +8,6 @@ class CustomerService extends Model
 {
     public function __construct()
     {
-        parent::__construct("customer_service", ["id"], ["name", "email", "phone", "message"]);
+        parent::__construct("customer_service", ["id"], ["name", "email", "phone", "messageContact", "status"]);
     }
 }

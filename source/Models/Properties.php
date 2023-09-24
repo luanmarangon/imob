@@ -16,7 +16,7 @@ class Properties extends Model
 {
     public function __construct()
     {
-        parent::__construct("properties", ["id"], ["addresses_id", "categories_id", "types_id", "description", "reference", "active"]);
+        parent::__construct("properties", ["id"], ["addresses_id", "categories_id", "types_id", "reference", "description", "active"]);
     }
 
     public function category(): ?Category
@@ -138,32 +138,29 @@ class Properties extends Model
     //     return $this;
     // }
 
-    public function searchProperties($category = null, $typesData = null, $locationData = null, $featuresData = null): self
+    public function searchProperties($category, $typesData = null, $locationData = null, $featuresData = null): self
     {
+
+        if (!is_array($category)) {
+            $categoryIds = $category;
+        } else {
+
+            $categoryIds = [];
+            foreach ($category as $cat) {
+                $categoryIds[] = $cat->id;
+            }
+            $categoryIds = implode(',', $categoryIds);
+        }
         $this->query = "SELECT *
                         FROM properties p
                         LEFT JOIN addresses a ON p.addresses_id = a.id
                         LEFT JOIN properties_features pf ON p.id = pf.properties_id
-                        WHERE ";
-        /*Observação ao remover o category está entrando o and após o where resolver isso*/
-
+                        WHERE p.categories_id IN ({$categoryIds})";
 
         // $this->params = [
         //     'category' => $category,
         // ];
-        // $this->query = "SELECT *
-        //                 FROM properties p
-        //                 LEFT JOIN addresses a ON p.addresses_id = a.id
-        //                 LEFT JOIN properties_features pf ON p.id = pf.properties_id
-        //                 WHERE p.categories_id = :category";
 
-        // $this->params = [
-        //     'category' => $category,
-        // ];
-        if (!empty($category)) {
-            // $category = implode(',', $typesData);
-            $this->query .= " p.categories_id = {$category}";
-        }
         if (!empty($typesData)) {
             $typeIds = implode(',', $typesData);
             $this->query .= " AND p.types_id IN ({$typeIds})";
@@ -184,6 +181,50 @@ class Properties extends Model
 
         return $this;
     }
+
+    public function searchPropertiesAndTransactions($type, $category, $typesData = null, $locationData = null, $featuresData = null): self
+    {
+        if (!is_array($category)) {
+            $categoryIds = $category;
+        } else {
+            $categoryIds = [];
+            foreach ($category as $cat) {
+                $categoryIds[] = $cat->id;
+            }
+            $categoryIds = implode(',', $categoryIds);
+        }
+
+        $this->query = "SELECT DISTINCT p.*, t.*
+                            FROM properties p
+                            LEFT JOIN addresses a ON p.addresses_id = a.id
+                            LEFT JOIN properties_features pf ON p.id = pf.properties_id
+                            LEFT JOIN transactions t ON p.id = t.properties_id
+                            WHERE p.categories_id IN ({$categoryIds}) 
+                            AND t.properties_id = p.id 
+                            AND t.status = 'ativo'
+                            AND t.type = '$type'";
+
+        if (!empty($typesData)) {
+            $typeIds = implode(',', $typesData);
+            $this->query .= " AND p.types_id IN ({$typeIds})";
+        }
+
+        if (!empty($locationData)) {
+            $locationPatterns = array_map(function ($location) {
+                return "'%" . $location . "%'";
+            }, $locationData);
+            $locationLike = implode(' OR a.city LIKE ', $locationPatterns);
+            $this->query .= " AND (a.city LIKE {$locationLike})";
+        }
+
+        if (!empty($featuresData)) {
+            $featureIds = implode(',', $featuresData);
+            $this->query .= " AND pf.features_id IN ({$featureIds})";
+        }
+
+        return $this;
+    }
+
 
 
     //aqui!!!!

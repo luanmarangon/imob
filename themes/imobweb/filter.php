@@ -7,18 +7,25 @@
                 <h2 class="text-front icon-filter">Filtro</h2>
             </div>
             <div class="col-6">
-                <h2 class="text-front" style="text-align: end;"><?= $type; ?></h2>
+                <h2 class="text-front" style="text-align: end;"><?= $typeFront = ($type === 'Aluguel') ? 'Alugar' : 'Comprar';
+                                                                ?></h2>
+
                 <!-- <h2 class="text-front"></h2> -->
             </div>
             <div class="col-12 col-md-4">
-                <form action="<?= url("/pesquisa"); ?>" method="post" class="row w-100 bg-white p-3 mb-5">
+                <!-- <form action="<?= url("/pesquisa"); ?>" method="post" class="row w-100 bg-white p-3 mb-5"> -->
+                <form action="<?= url("/pesquisa"); ?>" method="POST">
+                    <div class="ajax_response"><?= flash(); ?></div>
+                    <?= csrf_input(); ?>
 
+                    <!--ACTION SPOOFING-->
+                    <input type="hidden" name="type" value="<?= $type; ?>" />
 
                     <div class="row">
 
                         <div class="form-group col-12 ">
                             <label for="search" class="mb-2"><b>Categorias</b></label>
-                            <select name="category" id="search" class="selectpicker" title="Escolha..." value="0">
+                            <select name="category" id="search" class="selectpicker" title="Escolha..." value="all">
                                 <?php foreach ($category as $c) : ?>
                                     <option value="<?= $c->id; ?>"><?= $c->category; ?></option>
                                 <?php endforeach; ?>
@@ -71,7 +78,9 @@
                         </div> -->
 
                         <div class="col-12  mt-3 text-end">
-                            <a class="btn btn-front advanced_hidden">Filtro Avançado &darr;</a>
+                            <!-- <a class="btn btn-front advanced_hidden">Filtro Avançado &darr;</a> -->
+                            <!-- <a href="<?= url("/pesquisa"); ?>">sas</a> -->
+                            <button class="btn btn-front icon-search" type="reset">Reset</button>
                             <button class="btn btn-front icon-search">Pesquisar</button>
                         </div>
                     </div>

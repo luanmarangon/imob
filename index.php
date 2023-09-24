@@ -28,7 +28,7 @@ $route->post("/optin", "Web:optin");
 $route->get("/interest", "Web:interest");
 $route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
-$route->post("/filtro/{type}", "Web:filter");
+// $route->post("/filtro/{type}", "Web:filter");
 /*Consulta dos Filtros  */
 $route->get("/pesquisa", "Web:propertySearch");
 $route->post("/pesquisa", "Web:propertySearch");
@@ -37,8 +37,8 @@ $route->get("/destaques", "Web:emphasis");
 $route->post("/destaques", "Web:emphasis");
 $route->get("/propriedades/{id}", "Web:property");
 $route->post("/propriedades/{id}", "Web:property");
-$route->get("/alugar", "Web:rent");
-$route->get("/comprar", "Web:purchase");
+// $route->get("/alugar", "Web:rent");
+// $route->get("/comprar", "Web:purchase");
 $route->get("/termos", "Web:terms");
 // $route->get("/entrar", "Web:login");
 // $route->post("/entrar", "Web:login");
@@ -121,6 +121,9 @@ $route->get("/leads/leads/{search}/{page}", "Customer:leads");
 $route->get("/leads/convert/{leads_id}", "Customer:convert");
 $route->post("/leads/convert/{leads_id}", "Customer:convert");
 
+$route->get("/leads/inactive/{leads_id}", "Customer:inactive");
+$route->post("/leads/inactive/{leads_id}", "Customer:inactive");
+
 
 //settings
 $route->get("/settings/home", "Setting:home");
@@ -165,6 +168,16 @@ $route->post("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 //reports
 $route->get("/relatorios", "Reports:home");
 
+//customer success
+$route->get("/cs", "ContactCenter:cs");
+$route->get("/cs/home", "ContactCenter:home");
+$route->get("/cs/contato", "ContactCenter:contact");
+$route->post("/cs/contato", "ContactCenter:contact");
+$route->get("/cs/contato/{search}/{page}", "ContactCenter:contact");
+// $route->get("/cs/contato/", "ContactCenter:response");
+$route->get("/cs/resposta/{id}", "ContactCenter:response");
+$route->post("/cs/resposta/{id}", "ContactCenter:response");
+
 
 //users
 $route->get("/users/home", "Users:home");
@@ -176,6 +189,10 @@ $route->post("/users/user", "Users:user");
 // $route->get("/users/user/{first_name}", "Users:user");
 $route->get("/users/user/{user_id}", "Users:user");
 $route->post("/users/user/{user_id}", "Users:user");
+
+
+//Backup
+$route->get("/backup", "Backup:backup");
 
 
 

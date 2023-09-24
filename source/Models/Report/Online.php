@@ -64,7 +64,8 @@ class Online extends Model
             // $this->ip = $_SERVER["REMOTE_ADDR"];
             $this->ip = filter_input(INPUT_SERVER, "REMOTE_ADDR");
             // $this->agent = $_SERVER["HTTP_USER_AGENT"];
-            $this->agent = filter_input(INPUT_SERVER, "HTTP_USER_AGENT");
+            // $this->agent = filter_input(INPUT_SERVER, "HTTP_USER_AGENT");
+            $this->agent = $_SERVER["HTTP_SEC_CH_UA"];
 
             $this->save();
             $session->set("online", $this->id);

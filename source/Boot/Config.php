@@ -119,10 +119,10 @@ define("CONF_IMAGE_QUALITY", ["jpg" => 75, "png" => 5]);
 /**
  * MAIL
  */
-define("CONF_MAIL_HOST", "smtp.mailtrap.io");
+define("CONF_MAIL_HOST", "sandbox.smtp.mailtrap.io");
 define("CONF_MAIL_PORT", "2525");
-define("CONF_MAIL_USER", "a0865255cf3335");
-define("CONF_MAIL_PASS", "3c0ab03e8c7c54");
+define("CONF_MAIL_USER", "7ed1ac69ecb34d");
+define("CONF_MAIL_PASS", "e290026f5a3105");
 define("CONF_MAIL_SENDER", ["name" => "IMOB", "address" => "luan.limarangon@hotmail.com"]);
 define("CONF_MAIL_SUPPORT", "luan.limarangon@hotmail.com");
 define("CONF_MAIL_OPTION_LANG", "br");

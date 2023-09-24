@@ -20,6 +20,10 @@ class Users extends Admin
     {
         $user = Auth::user();
 
+
+        // $teste =  (filter_input(INPUT_GET, "route", FILTER_SANITIZE_STRIPPED ?? "/"));
+        // var_dump($data);
+
         //search redirect
         if (!empty($data["s"])) {
             $s = str_search($data["s"]);

@@ -24,13 +24,11 @@
 
                 <label class="label" id="phone" style="display:none;">
                     <span class="legend">*Contato:</span>
-                    <input type="text" id="phone" name="phone" placeholder="Digite o telefone de contato"
-                        class="mask-phone">
+                    <input type="text" id="phone" name="phone" placeholder="Digite o telefone de contato" class="mask-phone">
                 </label>
                 <label class="label" id="email" style="display:none;">
                     <span class="legend">*Contato:</span>
-                    <input type="email" id="email" name="email" placeholder="Digite o E-mail de contato"
-                        class="mask-email">
+                    <input type="email" id="email" name="email" placeholder="Digite o E-mail de contato" class="mask-email">
                 </label>
                 <label class="label">
                     <button class="btn btn-green icon-check-square-o">Cadastrar</button>
@@ -45,74 +43,50 @@
             <h3 class="icon-bar-chart">Contatos: <?= sprintf('%02d', $count); ?></h3>
             <?php if ($peopleContacts) : ?>
 
-            <?php foreach ($peopleContacts as $contacts) : ?>
-            <!-- <?php var_dump($contacts->id); ?> -->
-            <article>
-                <?php if ($contacts->contact()->type === "WhatsApp") : ?>
-                <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <?php if ($contacts->contact()->status != "Inativo") : ?>
-                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
-                    <a class="btn btn-red icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Inativar</a>
-                    <?php else : ?>
-                    <a class="btn btn-green icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Ativar</a>
-                    <?php endif; ?>
-                </div>
-                <?php elseif ($contacts->contact()->type === "Fixo") : ?>
-                <h4 class="icon-phone mask-phone"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
-                    <?php if ($contacts->contact()->status != "Inativo") : ?>
-                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
-                    <a class="btn btn-red icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Inativar</a>
-                    <?php else : ?>
-                    <a class="btn btn-green icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Ativar</a>
-                    <?php endif; ?>
-                </div>
-                <?php else : ?>
-                <h4 class="icon-envelope-o"><?= $contacts->contact()->contact; ?></h4>
-                <div>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
-                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
-                    <?php if ($contacts->contact()->status != "Inativo") : ?>
-                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
-                    <a class="btn btn-red icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="delete"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Inativar</a>
-                    <?php else : ?>
-                    <a class="btn btn-green icon-warning"
-                        data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->contact()->id}"); ?>"
-                        data-action="active"
-                        data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!"
-                        data-user_id="<?= $contacts->id; ?>">Ativar</a>
-                    <?php endif; ?>
-                </div>
-                <?php endif; ?>
-            </article>
-            <?php endforeach; ?>
+                <?php foreach ($peopleContacts as $contacts) : ?>
+                    <!-- <?php var_dump($contacts->id); ?> -->
+                    <article>
+                        <?php if ($contacts->type === "WhatsApp") : ?>
+                            <h4 class="icon-whatsapp mask-phone"><?= $contacts->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <?php if ($contacts->status != "Inativo") : ?>
+                                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                                <?php else : ?>
+                                    <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                                <?php endif; ?>
+                            </div>
+                        <?php elseif ($contacts->type === "Fixo") : ?>
+                            <h4 class="icon-phone mask-phone"><?= $contacts->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                                <?php if ($contacts->status != "Inativo") : ?>
+                                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                                <?php else : ?>
+                                    <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                                <?php endif; ?>
+                            </div>
+                        <?php else : ?>
+                            <h4 class="icon-envelope-o"><?= $contacts->contact; ?></h4>
+                            <div>
+                                <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                                <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                                <?php if ($contacts->status != "Inativo") : ?>
+                                    <!-- <a class="icon-pencil btn btn-red" href="" title="">Inativar</a> -->
+                                    <a class="btn btn-red icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Inativar</a>
+                                <?php else : ?>
+                                    <a class="btn btn-green icon-warning" data-post="<?= url("/admin/people/people/{$people->id}/contacts/{$contacts->id}"); ?>" data-action="active" data-confirm="ATENÇÃO: Tem certeza que deseja ativar o usuário? Essa ação não pode ser desfeita!" data-user_id="<?= $contacts->id; ?>">Ativar</a>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
             <?php else : ?>
-            <br>
-            <h2>Sem Contatos cadastrados</h2>
+                <br>
+                <h2>Sem Contatos cadastrados</h2>
             <?php endif; ?>
         </section>
         <?= $paginator; ?>
