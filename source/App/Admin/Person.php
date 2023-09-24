@@ -2,6 +2,7 @@
 
 namespace Source\App\Admin;
 
+use PSpell\Config;
 use Source\Models\Auth;
 use Source\Models\People;
 use Source\Support\Pager;
@@ -23,12 +24,17 @@ class Person extends Admin
     public function home(?array $data): void
     {
         $people = (new People())->find()->count();
+        $births = (new People())->find("DATE_FORMAT(datebirth, '%m-%d') BETWEEN DATE_FORMAT(CURRENT_DATE, '%m-%d') AND DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), '%m-%d')")->order("datebirth ASC")->fetch(true);
+        $birthsCount = (new People())->find("DATE_FORMAT(datebirth, '%m-%d') BETWEEN DATE_FORMAT(CURRENT_DATE, '%m-%d') AND DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), '%m-%d')")->count();
+
+
+
         // $lastPeople = (new People())->find()->order("created_at DESC")->limit(9)->fetch(true);
         // $lastCount = (new People())->find("created_at = :c", "c=")->count();
 
         // $lastPeople = (new People())->find("created_at >= DATE_SUB(NOW(), INTERVAL 720 HOUR)")->order("created_at DESC")->limit(3)->fetch(true);
         // $countPeople = (new People())->find("created_at >= DATE_SUB(NOW(), INTERVAL 720 HOUR)")->order("created_at DESC")->count();
-        $lastPeople = (new People())->find("MONTH(created_at) = MONTH(NOW())")->order("created_at DESC")->limit(6)->fetch(true);
+        $lastPeople = (new People())->find("MONTH(created_at) = MONTH(NOW())")->order("created_at DESC")->limit(4)->fetch(true);
         $countPeople = (new People())->find("MONTH(created_at) = MONTH(NOW())")->order("created_at DESC")->count();
 
 
@@ -46,7 +52,9 @@ class Person extends Admin
             "head" => $head,
             "people" => $people,
             "lastPeople" => $lastPeople,
-            "countPeople" => $countPeople
+            "countPeople" => $countPeople,
+            "births" => $births,
+            "birthsCount" => $birthsCount
         ]);
     }
 
@@ -62,11 +70,16 @@ class Person extends Admin
         //read
         $search = null;
         $people = (new People())->find();
-        $peopleContacts = (new PeopleContacts())->find()->fetch(true);
+        $peopleContacts = (new Contacts())->find()->fetch(true);
 
         if (!empty($data["search"]) && str_search($data["search"]) != "all") {
             $search = str_search($data["search"]);
-            $people = (new People())->find("MATCH(first_name, last_name, cpf, rg) AGAINST(:s)", "s={$search}");
+            // $people = (new People())->find("MATCH(first_name, last_name, cpf, rg) AGAINST(:s)", "s={$search}");
+            $people = (new People())->find("MATCH(first_name, last_name, cpf, rg) AGAINST(:s) 
+                                OR first_name LIKE '%:s%'
+                                OR last_name LIKE '%:s%'
+                                OR cpf LIKE '%:s%'
+                                OR rg LIKE '%:s%'", "s={$search}");
             if (!$people->count()) {
                 $this->message->info("Sua pesquisa não retornou resultados")->flash();
                 redirect("/admin/people/people");
@@ -102,39 +115,33 @@ class Person extends Admin
         if (!empty($data["action"]) && $data["action"] == "create") {
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
+            $query = (new People());
+            $cpf = preg_replace("/[^0-9]/", "", $data["document_cpf"]);
+
+            $query->find("cpf = :cpf", "cpf={$cpf}");
+
+            // var_dump($query->count());
+
+            if ($query->count()) {
+                $this->message->warning("CPF já cadastrado. Por favor, consulte o CPF informado ou verifique se este cliente já está registrado.")->flash();
+                echo json_encode(["redirect" => url("/admin/people/people/{$cpf}/1")]);
+
+                return;
+            }
+
             $personCreate = new People();
-            $personId = $personCreate->lastId();
+
+            // $personId = $personCreate->lastId();
             $personCreate->first_name = $data["first_name"];
             $personCreate->last_name = $data["last_name"];
             $personCreate->genre = $data["genre"];
-            $personCreate->birth = date_fmt_back($data["datebirth"]);
+            $personCreate->datebirth = date_fmt_back($data["datebirth"]);
             $personCreate->cpf = preg_replace("/[^0-9]/", "", $data["document_cpf"]);
             $personCreate->rg = preg_replace("/[^0-9X]/", "", $data["document_rg"]);
 
-            //Address
-            $address = $data['street'] . ", " . $data['number'] . ", " . $data['complement'] . ", " . $data['district'] . ", " . $data['city'] . ", " . $data['zipcode'];
-            $addressCreate = new Addresses();
-            $addressCreate->people_id = $personId;
-            $addressCreate->street = $data["street"];
-            $addressCreate->number = $data["number"];
-            $addressCreate->complement = $data["complement"];
-            $addressCreate->district = $data["district"];
-            $cityState = explode("-", $data["city"]);
-            $addressCreate->city = $cityState[0];
-            $addressCreate->state = $cityState[1];
-            $addressCreate->zipcode = $data["zipcode"];
-
-            $addressAPI = maps_api($address);
-            $addressCreate->latitude = $addressAPI['latitude'];
-            $addressCreate->longitude = $addressAPI['longitude'];
-
             if (!$personCreate->save()) {
+                var_dump($personCreate);
                 $json["message"] = $personCreate->message()->render();
-                echo json_encode($json);
-                return;
-            }
-            if (!$addressCreate->save()) {
-                $json["message"] = $addressCreate->message()->render();
                 echo json_encode($json);
                 return;
             }
@@ -157,6 +164,32 @@ class Person extends Admin
                 }
             }
 
+            if ($data["zipcode"]) {
+
+                //Address
+                $address = $data['street'] . ", " . $data['number'] . ", " . $data['complement'] . ", " . $data['district'] . ", " . $data['city'] . ", " . $data['zipcode'];
+                $addressCreate = new Addresses();
+                $addressCreate->people_id = $personCreate->id;
+                $addressCreate->street = ucwords($data["street"]);
+                $addressCreate->number = $data["number"];
+                $addressCreate->complement = ucwords($data["complement"]);
+                $addressCreate->district = ucwords($data["district"]);
+                $cityState = explode("-", $data["city"]);
+                $addressCreate->city = ucwords($cityState[0]);
+                $addressCreate->state = strtoupper($cityState[1]);
+                $addressCreate->zipcode = $data["zipcode"];
+
+                $addressAPI = maps_api($address);
+                $addressCreate->latitude = $addressAPI['latitude'];
+                $addressCreate->longitude = $addressAPI['longitude'];
+
+                if (!$addressCreate->save()) {
+                    $json["message"] = $addressCreate->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
             $this->message->success("Cliente cadastrado com sucesso...")->flash();
             echo json_encode(["redirect" => url("/admin/people/people")]);
 
@@ -168,9 +201,10 @@ class Person extends Admin
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
             $personUpdate = (new People())->findById($data["people_id"]);
             // var_dump($data);
+            $personUpdate->first_name = $data["first_name"];
             $personUpdate->last_name = $data["last_name"];
             $personUpdate->genre = $data["genre"];
-            $personUpdate->birth = date_fmt_back($data["datebirth"]);
+            $personUpdate->datebirth = date_fmt_back($data["datebirth"]);
             $personUpdate->cpf = preg_replace("/[^0-9]/", "", $data["document_cpf"]);
             $personUpdate->rg = preg_replace("/[^0-9X]/", "", $data["document_rg"]);
 
@@ -400,12 +434,12 @@ class Person extends Admin
             $peopleEdit = (new People())->findById($peopleId);
         }
 
-        $peopleContacts = (new PeopleContacts())->find(
+        $peopleContacts = (new Contacts())->find(
             "people_id = :people",
             "people={$peopleEdit->id}"
         );
 
-        $count = (new PeopleContacts())->find(
+        $count = (new Contacts())->find(
             "people_id = :people",
             "people={$peopleEdit->id}"
         )->count();
@@ -420,7 +454,7 @@ class Person extends Admin
         //read
         // $search = null;
         // $people = (new People())->find();
-        // $peopleContacts = (new PeopleContacts())->find();
+        // $peopleContacts = (new Contacts())->find();
 
         // if (!empty($data["search"]) && str_search($data["search"]) != "all") {
         //     $search = str_search($data["search"]);

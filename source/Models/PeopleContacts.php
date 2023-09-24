@@ -8,7 +8,7 @@ class PeopleContacts extends Model
 {
     public function __construct()
     {
-        parent::__construct("people_contacts", [""], ["people_id", "contacts_id"]);
+        parent::__construct("people_contacts", [], ["people_id", "contacts_id"]);
     }
 
     //validar uso
@@ -18,11 +18,6 @@ class PeopleContacts extends Model
         return $find;
     }
 
-    public function findByContacts(int $id, string $columns = "*"): ?Model
-    {
-        $find = $this->find("people_id = :id", "id={$id}", $columns);
-        return $find->fetch();
-    }
 
 
     public function contact(): ?Contacts

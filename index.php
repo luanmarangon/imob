@@ -121,6 +121,9 @@ $route->get("/leads/leads/{search}/{page}", "Customer:leads");
 $route->get("/leads/convert/{leads_id}", "Customer:convert");
 $route->post("/leads/convert/{leads_id}", "Customer:convert");
 
+$route->get("/leads/inactive/{leads_id}", "Customer:inactive");
+$route->post("/leads/inactive/{leads_id}", "Customer:inactive");
+
 
 //settings
 $route->get("/settings/home", "Setting:home");
@@ -186,6 +189,10 @@ $route->post("/users/user", "Users:user");
 // $route->get("/users/user/{first_name}", "Users:user");
 $route->get("/users/user/{user_id}", "Users:user");
 $route->post("/users/user/{user_id}", "Users:user");
+
+
+//Backup
+$route->get("/backup", "Backup:backup");
 
 
 

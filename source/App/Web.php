@@ -46,7 +46,8 @@ class Web extends Controller
 
 
         (new Access())->report();
-        (new Online())->report();
+        //validar Online pos se não há informaçao apresenta erro
+        // (new Online())->report();
 
         // $teste = (new PropertiesComfortable())->find("properties_id = :id", "id=3")->fetch(true);
         // $teste2 = (new Comfortable())->find()->fetch(true);
@@ -170,7 +171,7 @@ class Web extends Controller
             "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
         )->fetch();
 
-        if ($test) {
+        if ($test || $test->status != 'Inativo') {
             $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
             echo json_encode(["reload" => true]);
             return;

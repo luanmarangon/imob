@@ -8,34 +8,26 @@ class Contacts extends Model
 {
     public function __construct()
     {
-        parent::__construct("contacts", ["id"], ["contact", "type"]);
+        parent::__construct("contacts", ["id"], ["people_id", "contact", "type"]);
+    }
+
+
+    public function findByContacts(int $id, string $columns = "*"): ?Model
+    {
+        $find = $this->find("people_id = :id", "id={$id}", $columns);
+        return $find->fetch();
     }
 
     public function createContact($type, $value, $personId): bool
     {
         $contact = new Contacts();
+        $contact->people_id = $personId;
         $contact->contact = $value;
         $contact->type = $type;
-        if ($contact->save()) {
-            $peopleContacts = new PeopleContacts();
-            $peopleContacts->people_id = $personId;
-            $peopleContacts->contacts_id = $contact->id;
-            if ($peopleContacts->save()) {
-                return true;
-            } else {
-                // log error
-                error_log('Failed to create people contacts.');
-            }
-        } else {
-            // log error
-            error_log('Failed to create contacts.');
+        $contact->status = "Ativo";
+        if (!$contact->save()) {
+            return false;
         }
-        return false;
+        return true;
     }
-
-    // public function findContactPeople(int $id, string $columns = "*"): ?Model
-    // {
-    //     $find = $this->find("properties_id = :id", "id={$id}", $columns);
-    //     return $find;
-    // }
 }

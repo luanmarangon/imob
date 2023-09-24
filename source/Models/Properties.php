@@ -16,7 +16,7 @@ class Properties extends Model
 {
     public function __construct()
     {
-        parent::__construct("properties", ["id"], ["addresses_id", "categories_id", "types_id", "description", "reference", "active"]);
+        parent::__construct("properties", ["id"], ["addresses_id", "categories_id", "types_id", "reference", "description", "active"]);
     }
 
     public function category(): ?Category

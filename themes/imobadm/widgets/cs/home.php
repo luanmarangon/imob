@@ -35,7 +35,7 @@
 
 
         <section class="app_dash_home_trafic">
-            <h3 class="icon-bar-chart">Online agora:
+            <h3 class="icon-bar-chart">Ultimas Mensagens:
             </h3>
 
             <div class="app_dash_home_trafic_list">

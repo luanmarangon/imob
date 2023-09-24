@@ -6,6 +6,7 @@ use Source\Models\Auth;
 use Source\Support\Pager;
 use Source\Models\CustomerService;
 use Source\Models\ResponseService;
+use Source\Support\Email;
 
 class ContactCenter extends Admin
 {
@@ -22,6 +23,8 @@ class ContactCenter extends Admin
 
     public function home()
     {
+        // $teste = (new Email())->bootstrap("Teste", "Texto", "luan.limarangon@hotmail.com", "Marangon")->send();
+        // var_dump($teste);
 
         $unreadContactCount = (new CustomerService)->find(
             "status = :status",
@@ -151,6 +154,73 @@ class ContactCenter extends Admin
 
             $contact->status = 'S';
             $contact->save();
+
+            $subject = "[RETORNO - CONTATO " . CONF_SITE_NAME . "]";
+            $body = "
+                    <html>
+                    <head>
+                        <style>
+                            /* Estilos de formatação do e-mail */
+                            body {
+                                font-family: Arial, sans-serif;
+                            }
+                            .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                padding: 20px;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                                background-color: #f9f9f9;
+                            }
+                            h2 {
+                                color: #333;
+                            }
+                            p {
+                                margin-bottom: 15px;
+                            }
+                            span {
+                                font-weight: bold;
+                                font-style: italic;
+                            }            
+                            a:link, a:visited {
+                                text-decoration: none
+                                }
+                            a:hover {
+                                text-decoration: underline;
+                                }
+                            a:active {
+                                text-decoration: none
+                                }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <h2>Resposta ao Contato</h2>
+                            <p>Olá, tudo bem?</p>
+                            <p>Estamos retornando sobre o envio do contato através de <a href='" . CONF_SITE_DOMAIN_LINK . "'>" . CONF_SITE_DOMAIN . "</a>.</p>
+
+                            <h3>Aqui está a sua mensagem original:</h3>
+                            <blockquote>$contact->messageContact</blockquote>
+                            <h3>Nossa Resposta:</h3>
+                            <blockquote>$response->response</blockquote>
+                            <br>
+                            <br>
+                            <p>Atenciosamente Equipe " . CONF_SITE_NAME . "</p>
+                        </div>
+                    </body>
+                    </html>
+                ";
+
+
+            $mail = (new Email())->bootstrap($subject, $body, $contact->email, $contact->name)->queue();
+            // $mail = (new Email())->bootstrap("Contato Site", $response->response, $contact->email, $contact->name)->queue();
+
+            // if ($contact->save()) {
+            //     $mail = (new Email())->bootstrap("Contato Site", $response->response, $contact->email, $contact->name)->sendQueue();
+            //     $json["message"] = $contact->message()->render();
+            //     echo json_encode($json);
+            //     return;
+            // }
 
             $this->message->success("Resposta cadastrada com sucesso, para agendamento de envio...")->flash();
             echo json_encode(["redirect" => url("/admin/cs/contato")]);
