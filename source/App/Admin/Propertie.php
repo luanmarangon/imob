@@ -36,10 +36,10 @@ class Propertie extends Admin
 
 
         // Teste
-        // $teste = new Properties();
-        // $teste->addresses_id = 104;
-        // $teste->categories_id = 1;
-        // $teste->types_id = 2;
+        // $teste = new PropertiesComfortable();
+        // $teste->properties_id = 10;
+        // $teste->comfortable_id = 1;
+        // $teste->quantity = 2;
         // $teste->reference = "LUAN";
         // $teste->description = "Teste Home";
         // $teste->active = 1;
@@ -210,11 +210,8 @@ class Propertie extends Admin
             /**   VALIDADO ATÉ AQUI               ^ */
             /**Minimo para cadastrar um Propertie |*/
 
-
             /**Incio Comfortable */
-            if (!empty($data['comfortable[]'])) {
-                /**Criar testes */
-                $propertieComfortableCreate = new PropertiesComfortable();
+            if (!empty($data['comfortable'])) {
                 $comfortablePropertie = [];
                 $comfortableQuantity = [];
 
@@ -234,26 +231,23 @@ class Propertie extends Admin
                 }
 
                 foreach ($comfortablePropertie as $index => $comfortable) {
+                    $propertieComfortableCreate = new PropertiesComfortable(); // Criar uma nova instância para cada registro
                     $quantity = $comfortableQuantity[$index];
                     $propertieComfortableCreate->properties_id = $propertieCreate->id;
                     $propertieComfortableCreate->comfortable_id = $comfortable;
                     $propertieComfortableCreate->quantity = $quantity;
-                    // var_dump($propertieComfortableCreate);
-                }
 
-                if (!$propertieComfortableCreate->save()) {
-                    // var_dump($propertieComfortableCreate);
-                    $json["message"] = $propertieComfortableCreate->message()->render();
-                    echo json_encode($json);
-                    return;
+                    if (!$propertieComfortableCreate->save()) {
+                        $json["message"] = $propertieComfortableCreate->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
                 }
             }
             /**Fim Comfortable */
 
             /**Inicio Structures */
-            if (!empty($data['structure[]'])) {
-
-                $propertieStructuresCreate = new PropertiesStructures();
+            if (!empty($data['structure'])) {
                 $structuresPropertie = [];
                 $structuresFootage = [];
 
@@ -273,24 +267,23 @@ class Propertie extends Admin
                 }
 
                 foreach ($structuresPropertie as $index => $structures) {
+                    $propertieStructuresCreate = new PropertiesStructures();
                     $footage = $structuresFootage[$index];
                     $propertieStructuresCreate->properties_id = $propertieCreate->id;
                     $propertieStructuresCreate->structures_id = $structures;
                     $propertieStructuresCreate->footage = $footage;
-                }
 
-                if (!$propertieStructuresCreate->save()) {
-                    $json["message"] = $propertieStructuresCreate->message()->render();
-                    echo json_encode($json);
-                    return;
+                    if (!$propertieStructuresCreate->save()) {
+                        $json["message"] = $propertieStructuresCreate->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
                 }
             }
             /**Fim Structures */
 
             /**inicio Tributes */
-            if (!empty($fata['tribute[]'])) {
-
-                $propertieTributesCreate = new Tributes();
+            if (!empty($data['tribute'])) {
                 $tributesData = [];
 
                 $i = 0;
@@ -310,41 +303,50 @@ class Propertie extends Admin
                 }
 
                 foreach ($tributesData as $tributeData) {
+                    $propertieTributesCreate = new Tributes();
                     $propertieTributesCreate->properties_id = $propertieCreate->id;
                     $propertieTributesCreate->charges_id = $tributeData['tribute'];
                     $propertieTributesCreate->exercise = $tributeData['exercise'];
                     $propertieTributesCreate->value = $tributeData['value'];
-                }
 
-                if (!$propertieTributesCreate->save()) {
-                    // var_dump($propertieTributesCreate);
-                    $json["message"] = $propertieTributesCreate->message()->render();
-                    echo json_encode($json);
-                    return;
+                    if (!$propertieTributesCreate->save()) {
+                        // var_dump($propertieTributesCreate);
+                        $json["message"] = $propertieTributesCreate->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
                 }
             }
             /**Fim Tributes */
 
             // /**Inicio Features */
-            if (!empty($data['feature[]'])) {
+            if (!empty($data['feature'])) {
+                $featurePropertie = [];
 
-                // $propertieFeaturesCreate = new PropertiesFeatures();
-                // $featuresData = [];
+                $i = 0;
+                while (isset($data['feature'][$i])) {
+                    if (!empty($data['feature'][$i])) {
+                        $feature = $data['feature'][$i];
 
-                // $featuresData[] = $data['feature'];
+                        // Verificar se o valor já existe no array
+                        if (!in_array($feature, $featurePropertie)) {
+                            $featurePropertie[] = $feature;
+                        }
+                    }
+                    $i++;
+                }
 
-                // foreach ($featuresData as $feature) {
-                //     $propertieFeaturesCreate->properties_id = $propertieCreate->id;
-                //     $propertieFeaturesCreate->features_id = $feature;
-                //     // var_dump($propertieFeaturesCreate);
-                // }
+                foreach ($featurePropertie as $index => $feature) {
+                    $propertieFeatureCreate = new PropertiesFeatures(); // Criar uma nova instância para cada registro
+                    $propertieFeatureCreate->properties_id = $propertieCreate->id;
+                    $propertieFeatureCreate->features_id = $feature;
 
-                // if (!$propertieFeaturesCreate->save()) {
-                //     $json["message"] = $propertieFeaturesCreate->message()->render();
-                //     echo json_encode($json);
-                //     return;
-                // }
-                // var_dump($propertieCreate->id);
+                    if (!$propertieFeatureCreate->save()) {
+                        $json["message"] = $propertieFeatureCreate->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
+                }
             }
             /**Fim Features */
 
