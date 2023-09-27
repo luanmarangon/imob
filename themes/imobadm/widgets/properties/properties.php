@@ -43,7 +43,7 @@
                     <a class="icon-vallet btn btn-red"
                         href="<?= url("admin/properties/properties/{$propertie->reference}/transactions/transactions"); ?>"
                         title="">Transações</a>
-                    <a class="icon-pencil btn btn-blue" href="" title="">Editar</a>
+                    <a class="icon-pencil btn btn-blue" href="<?= url("admin/properties/properties-create/{$propertie->id}"); ?>" title="">Editar</a>
                     <?php if ($propertie->active == 1) : ?>
                     <a class="icon-ban btn btn-yellow" href="" title="">Desativar</a>
                     <?php else : ?>

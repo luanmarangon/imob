@@ -90,8 +90,8 @@ $route->post("/properties/properties", "Propertie:properties");
 $route->get("/properties/properties-create", "Propertie:propertiesCreate");
 $route->post("/properties/properties-create", "Propertie:propertiesCreate");
 
-$route->get("/properties/properties/{propertie_id}", "Propertie:propertiesCreate");
-$route->post("//properties/properties/{propertie_id}", "Propertie:propertiesCreate");
+$route->get("/properties/properties-create/{propertie_id}", "Propertie:propertiesCreate");
+$route->post("/properties/properties-create/{propertie_id}", "Propertie:propertiesCreate");
 
 
 

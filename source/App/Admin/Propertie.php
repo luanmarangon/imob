@@ -132,7 +132,6 @@ class Propertie extends Admin
         $structures = (new Structures())->find()->fetch(true);
         $charge = (new Charge())->find()->fetch(true);
 
-
         // $propertie = (new Properties())->find()->fetch(true);
         //create
         if (!empty($data["action"]) && $data["action"] == "create") {
@@ -337,7 +336,7 @@ class Propertie extends Admin
                 }
 
                 foreach ($featurePropertie as $index => $feature) {
-                    $propertieFeatureCreate = new PropertiesFeatures(); // Criar uma nova instância para cada registro
+                    $propertieFeatureCreate = new PropertiesFeatures();
                     $propertieFeatureCreate->properties_id = $propertieCreate->id;
                     $propertieFeatureCreate->features_id = $feature;
 
@@ -355,75 +354,81 @@ class Propertie extends Admin
             return;
         }
         //update
-        // if (!empty($data["action"]) && $data["action"] == "update") {
-        //     // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-        //     // $userUpdate = (new User())->findById($data["user_id"]);
+        if (!empty($data["action"]) && $data["action"] == "update") {
 
-        //     // /**
-        //     //  * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
-        //     //  */
-        //     // if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
-        //     //     if (Auth::user()->level < $userUpdate->level) {
-        //     //         $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
-        //     //         echo json_encode(["redirect" => url("admin/users/home")]);
-        //     //         return;
-        //     //     }
-        //     // }
+            var_dump($data["action"]);
+            echo "aqui";
 
-        //     // if (!$userUpdate) {
-        //     //     $this->message->error("Você tentou gerenciar um usuário que não existe ou foi removido")->flash();
-        //     //     echo json_encode(["redirect" => url("admin/users/home")]);
-        //     //     return;
-        //     // }
+            //     // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            //     // $userUpdate = (new User())->findById($data["user_id"]);
 
-        //     // $userUpdate->first_name = $data["first_name"];
-        //     // $userUpdate->last_name = $data["last_name"];
-        //     // $userUpdate->email = $data["email"];
-        //     // $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
-        //     // $userUpdate->level = $data["level"];
-        //     // $userUpdate->genre = $data["genre"];
-        //     // $userUpdate->office = $data["office"];
-        //     // $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
-        //     // $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
-        //     // $userUpdate->status = $data["status"];
+            //     // /**
+            //     //  * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
+            //     //  */
+            //     // if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
+            //     //     if (Auth::user()->level < $userUpdate->level) {
+            //     //         $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
+            //     //         echo json_encode(["redirect" => url("admin/users/home")]);
+            //     //         return;
+            //     //     }
+            //     // }
 
-        //     // //upload cover
-        //     // if (!empty($_FILES["photo"])) {
-        //     //     if ($userUpdate->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}")) {
-        //     //         unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}");
-        //     //         (new Thumb())->flush($userUpdate->photo);
-        //     //     }
+            //     // if (!$userUpdate) {
+            //     //     $this->message->error("Você tentou gerenciar um usuário que não existe ou foi removido")->flash();
+            //     //     echo json_encode(["redirect" => url("admin/users/home")]);
+            //     //     return;
+            //     // }
 
-        //     //     $files = $_FILES["photo"];
-        //     //     $upload = new Upload();
-        //     //     $image = $upload->image($files, $userUpdate->fullName(), 600);
+            //     // $userUpdate->first_name = $data["first_name"];
+            //     // $userUpdate->last_name = $data["last_name"];
+            //     // $userUpdate->email = $data["email"];
+            //     // $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
+            //     // $userUpdate->level = $data["level"];
+            //     // $userUpdate->genre = $data["genre"];
+            //     // $userUpdate->office = $data["office"];
+            //     // $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
+            //     // $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
+            //     // $userUpdate->status = $data["status"];
 
-        //     //     if (!$image) {
-        //     //         $json["message"] = $upload->message()->render();
-        //     //         echo json_encode($json);
-        //     //         return;
-        //     //     }
+            //     // //upload cover
+            //     // if (!empty($_FILES["photo"])) {
+            //     //     if ($userUpdate->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}")) {
+            //     //         unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}");
+            //     //         (new Thumb())->flush($userUpdate->photo);
+            //     //     }
 
-        //     //     $userUpdate->photo = $image;
-        //     // }
-        //     // if (!$userUpdate->save()) {
-        //     //     $json["message"] = $userUpdate->message()->render();
-        //     //     echo json_encode($json);
-        //     //     return;
-        //     // }
+            //     //     $files = $_FILES["photo"];
+            //     //     $upload = new Upload();
+            //     //     $image = $upload->image($files, $userUpdate->fullName(), 600);
 
-        //     // $this->message->success("Usuário atualizado com sucesso...")->flash();
-        //     // echo json_encode(["reload" => true]);
+            //     //     if (!$image) {
+            //     //         $json["message"] = $upload->message()->render();
+            //     //         echo json_encode($json);
+            //     //         return;
+            //     //     }
 
-        //     // return;
-        // }
+            //     //     $userUpdate->photo = $image;
+            //     // }
+            //     // if (!$userUpdate->save()) {
+            //     //     $json["message"] = $userUpdate->message()->render();
+            //     //     echo json_encode($json);
+            //     //     return;
+            //     // }
 
+            //     // $this->message->success("Usuário atualizado com sucesso...")->flash();
+            //     // echo json_encode(["reload" => true]);
 
-        $propertieEdit = null;
-        if (!empty($data["user_id"])) {
-            $propertieId = filter_var($data["propertie_id"], FILTER_SANITIZE_STRIPPED);
-            $userEdit = (new Properties())->findById($propertieId);
+            //     // return;
         }
+
+// var_dump($data);
+        $propertieEdit = null;
+        if (!empty($data["propertie_id"])) {
+            $propertieId = filter_var($data["propertie_id"], FILTER_SANITIZE_STRIPPED);
+            $propertieEdit = (new Properties())->findById($propertieId);
+            var_dump($propertieId);
+        }
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
