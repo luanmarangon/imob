@@ -426,7 +426,7 @@ class Propertie extends Admin
         if (!empty($data["propertie_id"])) {
             $propertieId = filter_var($data["propertie_id"], FILTER_SANITIZE_STRIPPED);
             $propertieEdit = (new Properties())->findById($propertieId);
-            var_dump($propertieId);
+            // var_dump($propertieId);
         }
 
 

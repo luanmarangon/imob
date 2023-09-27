@@ -198,9 +198,14 @@
                                     <option value="<?= $owner->id; ?>"><?= $owner->fullName(); ?></option>
                                 <?php endforeach; ?>
                             </select>
-                      
+
                         <?php else : ?>
-                            <input type="text" name="name" value="<?= $propertie->address()->people_id; ?>" disabled />
+                            <?php foreach ($peoples as $owner) : ?>
+                                <?php if ($propertie->address()->people_id == $owner->id) : ?>
+                                    <input type="text" name="" id="" value="<?= $owner->fullName(); ?>">
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <span><a href="#">transferencia Propriedade</a></span>
                         <?php endif; ?>
                     </label>
                 </div>
@@ -240,7 +245,7 @@
                 </div>
 
                 <div class="al-right">
-                    <button class="btn btn-green icon-check-square-o">Criar Imóvel</button>
+                    <button class="btn btn-blue icon-check-square-o">Atualizar Imóvel</button>
                 </div>
             </form>
         </div>
