@@ -192,7 +192,7 @@
                     <label class="label">
                         <span class="legend">Proprietário:</span>
                         <?php if (!$propertie->address()->people_id) : ?>
-                            <select name="" id="">
+                            <select name="owner" id="">
                                 <option value=""></option>
                                 <?php foreach ($peoples as $owner) : ?>
                                     <option value="<?= $owner->id; ?>"><?= $owner->fullName(); ?></option>
@@ -202,7 +202,8 @@
                         <?php else : ?>
                             <?php foreach ($peoples as $owner) : ?>
                                 <?php if ($propertie->address()->people_id == $owner->id) : ?>
-                                    <input type="text" name="" id="" value="<?= $owner->fullName(); ?>">
+                                    <input type="hidden" name="owner" value="<?= $owner->id ?>">
+                                    <input type="text" name="ownerFullName" id="" value="<?= $owner->fullName(); ?>" disabled>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                             <span><a href="#">transferencia Propriedade</a></span>
@@ -213,24 +214,24 @@
                 <div class="label_g2">
                     <label class="label">
                         <span class="legend">C.E.P.:</span>
-                        <input class="mask-cep" type="text" id="cep" name="number" minlength="10" value="<?= $propertie->address()->zipcode; ?>" placeholder="Digite o CEP" />
+                        <input class="mask-cep" type="text" id="cep" name="zipcode" minlength="10" value="<?= $propertie->address()->zipcode; ?>" placeholder="Digite o CEP" />
                     </label>
 
                     <label class="label">
                         <span class="legend">Cidade:</span>
-                        <input class="" id="cidade" type="text" name="number" value="<?= $propertie->address()->city; ?>-<?= $propertie->address()->state; ?>" />
+                        <input class="" id="cidade" type="text" name="city" value="<?= $propertie->address()->city; ?>-<?= $propertie->address()->state; ?>" />
                     </label>
 
                     <label class="label">
                         <span class="legend">Bairro:</span>
-                        <input class="" id="bairro" type="text" name="address" value="<?= $propertie->address()->district; ?>" />
+                        <input class="" id="bairro" type="text" name="district" value="<?= $propertie->address()->district; ?>" />
                     </label>
 
                 </div>
                 <div class="label_g2">
                     <label class="label">
                         <span class="legend">Logradouro:</span>
-                        <input class="" id="logradouro" type="text" name="address" value="<?= $propertie->address()->street; ?>" />
+                        <input class="" id="logradouro" type="text" name="street" value="<?= $propertie->address()->street; ?>" />
                     </label>
 
                     <label class="label">
@@ -240,7 +241,7 @@
 
                     <label class="label">
                         <span class="legend">Complemento:</span>
-                        <input class="" type="text" name="number" value="<?= $propertie->address()->complement; ?>" />
+                        <input class="" type="text" name="complement" value="<?= $propertie->address()->complement; ?>" />
                     </label>
                 </div>
 

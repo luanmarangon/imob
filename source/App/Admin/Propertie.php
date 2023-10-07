@@ -356,58 +356,45 @@ class Propertie extends Admin
         //update
         if (!empty($data["action"]) && $data["action"] == "update") {
 
-            var_dump($data["action"]);
-            echo "aqui";
+            // var_dump($data);
+            // echo "aqui";
+            // var_dump($data['propertie_id']);
 
-            //     // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-            //     // $userUpdate = (new User())->findById($data["user_id"]);
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertieUpdate = (new Properties())->findById($data['propertie_id']);
+            $addressUpdate = (new Addresses())->findById($propertieUpdate->addresses_id);
 
-            //     // /**
-            //     //  * Condição para travar um User->Level menor de alterar os dados de um User->Level maior
-            //     //  */
-            //     // if (Auth::user()->level < 10 || $userUpdate->level != 'Inativo') {
-            //     //     if (Auth::user()->level < $userUpdate->level) {
-            //     //         $this->message->error("Você não tem permissão de editar o perfil do usuário, pois ele possui nível acima do seu usuário")->flash();
-            //     //         echo json_encode(["redirect" => url("admin/users/home")]);
-            //     //         return;
-            //     //     }
-            //     // }
+            $addressUpdate->zipcode = $data['zipcode'];
+            $parts = explode("-", $data["city"]); // Separar a cidade e o estado pelo hífen
 
-            //     // if (!$userUpdate) {
-            //     //     $this->message->error("Você tentou gerenciar um usuário que não existe ou foi removido")->flash();
-            //     //     echo json_encode(["redirect" => url("admin/users/home")]);
-            //     //     return;
-            //     // }
+            $city = $parts[0]; // Obter a cidade
+            $state = $parts[1]; // Obter o estado
 
-            //     // $userUpdate->first_name = $data["first_name"];
-            //     // $userUpdate->last_name = $data["last_name"];
-            //     // $userUpdate->email = $data["email"];
-            //     // $userUpdate->password = (!empty($data["password"]) ? $data["password"] : $userUpdate->password);
-            //     // $userUpdate->level = $data["level"];
-            //     // $userUpdate->genre = $data["genre"];
-            //     // $userUpdate->office = $data["office"];
-            //     // $userUpdate->datebirth = date_fmt_back($data["datebirth"]);
-            //     // $userUpdate->document = preg_replace("/[^0-9]/", "", $data["document"]);
-            //     // $userUpdate->status = $data["status"];
+            $addressUpdate->city = $city;
+            $addressUpdate->state = $state;
 
-            //     // //upload cover
-            //     // if (!empty($_FILES["photo"])) {
-            //     //     if ($userUpdate->photo && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}")) {
-            //     //         unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$userUpdate->photo}");
-            //     //         (new Thumb())->flush($userUpdate->photo);
-            //     //     }
+            $addressUpdate->city = $data['city'];
 
-            //     //     $files = $_FILES["photo"];
-            //     //     $upload = new Upload();
-            //     //     $image = $upload->image($files, $userUpdate->fullName(), 600);
 
-            //     //     if (!$image) {
-            //     //         $json["message"] = $upload->message()->render();
-            //     //         echo json_encode($json);
-            //     //         return;
-            //     //     }
+            $addressUpdate->district = $data['district'];
+            $addressUpdate->street = $data['street'];
+            $addressUpdate->number = $data['number'];
+            $addressUpdate->complement = $data['complement'];
 
-            //     //     $userUpdate->photo = $image;
+            $address = $addressUpdate->street . ", "  .
+                $addressUpdate->number . ", " .
+                $addressUpdate->complement . ", "  .
+                $addressUpdate->district . ", "  .
+                $addressUpdate->city . ", "  .
+                $addressUpdate->state . ", "  .
+                $addressUpdate->zipcode;
+
+            $addressAPI = maps_api($address);
+            $addressUpdate->latitude = $addressAPI['latitude'];
+            $addressUpdate->longitude = $addressAPI['longitude'];
+
+            var_dump($addressUpdate);
+            exit();
             //     // }
             //     // if (!$userUpdate->save()) {
             //     //     $json["message"] = $userUpdate->message()->render();
@@ -421,7 +408,7 @@ class Propertie extends Admin
             //     // return;
         }
 
-// var_dump($data);
+        // var_dump($data);
         $propertieEdit = null;
         if (!empty($data["propertie_id"])) {
             $propertieId = filter_var($data["propertie_id"], FILTER_SANITIZE_STRIPPED);

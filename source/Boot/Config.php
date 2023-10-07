@@ -31,13 +31,15 @@ define("CONF_SITE_DESC", "O IMOB é um gerenciador de imóveis, para manter atua
 define("CONF_SITE_LANG", "pt_BR");
 define("CONF_SITE_DOMAIN", "www.imob-marangon.com.br");
 define("CONF_SITE_DOMAIN_LINK", "https://www.imob-marangon.com.br");
-define("CONF_SITE_ADDR_STREET", "Rua Alcides Ramos da Silva");
-define("CONF_SITE_ADDR_NUMBER", "315");
+define("CONF_SITE_ADDR_STREET", "Avenida Brasil");
+define("CONF_SITE_ADDR_NUMBER", "911");
 define("CONF_SITE_ADDR_COMPLEMENT", "Casa");
-define("CONF_SITE_ADDR_DISTRICT", "Jd. Paulista");
-define("CONF_SITE_ADDR_CITY", "Martinópolis");
+define("CONF_SITE_ADDR_DISTRICT", "Vila Brasil");
+define("CONF_SITE_ADDR_CITY", "Presidente Prudente");
 define("CONF_SITE_ADDR_STATE", "SP");
-define("CONF_SITE_ADDR_ZIPCODE", "19.500-000");
+define("CONF_SITE_ADDR_ZIPCODE", "19.010-031");
+define("CONF_SITE_SLOGAN", "Encontre o <b>imóvel ideal</b> para você e <b>sua família</b> morar com
+<b>tranquilidade</b> e <b>segurança</b>");
 
 /**
  * COMPANY

@@ -5,9 +5,10 @@ $v->layout("_theme"); ?>
     <div class="container" style="height: 100%;">
         <div class="row align-items-center" style="height: 100%;">
             <div class="col-8">
-                <p class="main_slide_content">Encontre o <b>imóvel ideal</b> para você e <b>sua família</b> morar com
+                <p class="main_slide_content"><?= CONF_SITE_SLOGAN; ?></p>
+                <!-- <p class="main_slide_content">Encontre o <b>imóvel ideal</b> para você e <b>sua família</b> morar com
                     <b>tranquilidade</b> e <b>segurança</b>
-                </p>
+                </p> -->
                 <a href="<?= url("/filtro/Aluguel"); ?>" class="btn btn-front btn-lg">Quero <b>Alugar</b></a>
                 <a href="<?= url("/filtro/Venda"); ?>" class="btn btn-front btn-lg">Quero <b>Comprar</b></a>
             </div>
