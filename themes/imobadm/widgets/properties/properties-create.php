@@ -179,7 +179,7 @@
         </div>
     <?php else : ?>
         <header class="dash_content_app_header">
-            <h2 class="icon-plus-circle"><?= $propertie->reference; ?></h2>
+            <h2 class="icon-pencil-square-o">Atualize o endereço registrado para a propriedade <b> <?= $propertie->reference; ?></b></h2>
         </header>
 
         <div class="dash_content_app_box">
@@ -246,7 +246,16 @@
                 </div>
 
                 <div class="al-right">
-                    <button class="btn btn-blue icon-check-square-o">Atualizar Imóvel</button>
+                    <!-- <button class="btn btn-blue icon-check-square-o">Atualizar Imóvel</button> -->
+
+                    <?php if ($propertie->active != "Inativo") : ?>
+                        <button class="btn btn-blue icon-check-square-o">Atualizar</button>
+                        <a href="#" class="btn btn-red icon-warning" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o Imóvel e todos os dados relacionados a ele?" data-properties_id="<?= $propertie->id; ?>">Inativar Imóvel</a>
+                    <?php else : ?>
+                        <a href="#" class="btn btn-green icon-warning" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="ativar" data-confirm="ATENÇÃO: Tem certeza que deseja ativar o Imóvel!" data-properties_id="<?= $propertie->id; ?>">Ativar Imóvel</a>
+                    <?php endif; ?>
+
+
                 </div>
             </form>
         </div>

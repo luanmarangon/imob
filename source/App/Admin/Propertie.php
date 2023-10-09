@@ -2,22 +2,23 @@
 
 namespace Source\App\Admin;
 
+use Source\Models\Auth;
+use Source\Models\Type;
+use Source\Models\Charge;
+use Source\Models\People;
 use Source\Support\Pager;
 use Source\App\Admin\Admin;
-use Source\Models\Addresses;
 use Source\Models\Category;
-use Source\Models\Charge;
-use Source\Models\Comfortable;
 use Source\Models\Features;
-use Source\Models\People;
+use Source\Models\Tributes;
+use Source\Models\Addresses;
 use Source\Models\Properties;
-use Source\Models\PropertiesComfortable;
+use Source\Models\Structures;
+use Source\Models\Comfortable;
+use Source\Models\Transactions;
 use Source\Models\PropertiesFeatures;
 use Source\Models\PropertiesStructures;
-use Source\Models\Structures;
-use Source\Models\Transactions;
-use Source\Models\Tributes;
-use Source\Models\Type;
+use Source\Models\PropertiesComfortable;
 
 class Propertie extends Admin
 {
@@ -115,7 +116,7 @@ class Propertie extends Admin
             "app" => "properties/properties",
             "head" => $head,
             "search" => $search,
-            "properties" => $properties->limit($pager->limit())->offset($pager->offset())->order("updated_at")->fetch(true),
+            "properties" => $properties->limit($pager->limit())->offset($pager->offset())->order("active ASC")->fetch(true),
             // "address" => $address->limit($pager->limit())->offset($pager->offset())->order("updated_at")->fetch(true),
             "people" => $people,
             "paginator" => $pager->render()
@@ -373,7 +374,7 @@ class Propertie extends Admin
             $addressUpdate->city = $city;
             $addressUpdate->state = $state;
 
-            $addressUpdate->city = $data['city'];
+            // $addressUpdate->city = $data['city'];
 
 
             $addressUpdate->district = $data['district'];
@@ -393,20 +394,90 @@ class Propertie extends Admin
             $addressUpdate->latitude = $addressAPI['latitude'];
             $addressUpdate->longitude = $addressAPI['longitude'];
 
-            var_dump($addressUpdate);
-            exit();
+            // var_dump($addressUpdate);
+            // exit();
             //     // }
-            //     // if (!$userUpdate->save()) {
-            //     //     $json["message"] = $userUpdate->message()->render();
-            //     //     echo json_encode($json);
-            //     //     return;
-            //     // }
+            if (!$addressUpdate->save()) {
+                $json["message"] = $addressUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
 
-            //     // $this->message->success("Usuário atualizado com sucesso...")->flash();
-            //     // echo json_encode(["reload" => true]);
+            $this->message->success("Imóvel atualizado com sucesso...")->flash();
+            echo json_encode(["reload" => true]);
 
-            //     // return;
+            return;
         }
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertieDelete = (new Properties())->findById($data['propertie_id']);
+
+            /**
+             * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
+             */
+            if (Auth::user()->level <= 5) {
+                $this->message->error("Você não tem permissão para Inativar o Imóvel.")->flash();
+                echo json_encode(["redirect" => url("admin/users/home")]);
+                return;
+            }
+
+            if (!$propertieDelete) {
+                $this->message->error("Você tentou Inativar um Imóvel que já foi inativado")->flash();
+                echo json_encode(["redirect" => url("/admin/properties/properties")]);
+                return;
+            }
+
+            $propertieDelete->active = 'Inativo';
+            // $propertieDelete->save();
+
+            if (!$propertieDelete->save()) {
+                $json["message"] = $propertieDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Imóvel Inativado com sucesso...")->flash();
+
+            echo json_encode(["redirect" => url("/admin/properties/properties")]);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "ativar") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertieAtivar = (new Properties())->findById($data['propertie_id']);
+
+            /**
+             * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
+             */
+            if (Auth::user()->level <= 5) {
+                $this->message->error("Você não tem permissão para Ativar o Imóvel.")->flash();
+                echo json_encode(["redirect" => url("admin/users/home")]);
+                return;
+            }
+
+            if (!$propertieAtivar) {
+                $this->message->error("Você tentou Inativar um Imóvel que já foi inativado")->flash();
+                echo json_encode(["redirect" => url("/admin/properties/properties")]);
+                return;
+            }
+
+            $propertieAtivar->active = 'Ativo';
+            // $propertieAtivar->save();
+
+            if (!$propertieAtivar->save()) {
+                $json["message"] = $propertieAtivar->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Imóvel Ativado com sucesso...")->flash();
+
+            echo json_encode(["redirect" => url("/admin/properties/properties")]);
+            return;
+        }
+
+
+
 
         // var_dump($data);
         $propertieEdit = null;
@@ -484,14 +555,36 @@ class Propertie extends Admin
             "reference = :reference",
             "reference={$data["reference"]}"
         )->fetch();
-
+        $comfortable = (new Comfortable())->find("id NOT IN (SELECT DISTINCT comfortable_id FROM properties_comfortable WHERE properties_id = {$propertie->id})")->fetch(true);
         $propertieComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->fetch(true);
-        $countComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->count();
 
-        $propertieFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->fetch(true);
-        $countFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->count();
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertie = (new Properties())->find(
+                "reference = :reference",
+                "reference={$data["reference"]}"
+            )->fetch();
+            // var_dump($propertie);
+            // exit();
 
-        $propertieStructures = (new PropertiesStructures())->findByProperties($propertie->id)->fetch(true);
+            $propertieComfortable = (new PropertiesComfortable());
+
+            $propertieComfortable->properties_id = $propertie->id;
+            $propertieComfortable->comfortable_id = $data["comfortable"];
+            $propertieComfortable->quantity = $data["quantityComfortable"];
+
+            if (!$propertieComfortable->save()) {
+                $json["message"] = $propertieComfortable->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Cômodo Inserido com sucesso")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/comfortable")]);
+            return;
+            // var_dump($propertieComfortable);
+        }
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -504,12 +597,13 @@ class Propertie extends Admin
         echo $this->view->render("widgets/properties/details/comfortable", [
             "app" => "properties/properties/{$propertie->reference}/details/comfortable",
             "head" => $head,
+            "comfortable" => $comfortable,
             "propertie" => $propertie,
             "propertieComfortable" => $propertieComfortable,
-            "countComfortable" => $countComfortable,
-            "propertieFeatures"  => $propertieFeatures,
-            "countFeatures" => $countFeatures,
-            "propertieStructures"  => $propertieStructures
+            // "countComfortable" => $countComfortable,
+            // "propertieFeatures"  => $propertieFeatures,
+            // "countFeatures" => $countFeatures,
+            // "propertieStructures"  => $propertieStructures
         ]);
     }
 

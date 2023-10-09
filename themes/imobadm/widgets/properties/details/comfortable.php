@@ -16,18 +16,22 @@
         </article>
         <br>
         <div class="newForm">
-            <form class="app_form" action="" method="post">
+            <form class="app_form" action="<?= url("/admin/properties/properties/{$propertie->reference}/details/comfortable"); ?>" method="post">
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="create" />
                 <div class="label_g2">
                     <label class="label">
                         <span class="legend">*Cômodo do Imóvel:</span>
-                        <select name="status" required>
-                            <option value="active">Quarto</option>
-                            <option value="inactive">Banheiro</option>
+                        <select name="comfortable" required>
+                            <option value=""></option>
+                            <?php foreach ($comfortable as $convenient) : ?>
+                                <option value="<?= $convenient->id; ?>"><?= $convenient->convenient; ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </label>
                     <label class="label">
                         <span class="legend">*Quantidade do Cômodo:</span>
-                        <input type="text" name="title" placeholder="A Quantidade do cômodo" required />
+                        <input type="text" name="quantityComfortable" placeholder="A Quantidade do cômodo" required />
                     </label>
                 </div>
                 <div class="al-right">
@@ -43,6 +47,8 @@
                 <article class="user radius">
                     <h4><?= $comfortable->comfortable($comfortable->comfortable_id)->convenient; ?></h4>
                     <h5><?= $comfortable->quantity; ?></h5>
+                    <input type="text" name="quantityComfortable" placeholder="A Quantidade do cômodo" id="teste" class="ds-none" />
+
                     <div class="info">
                         <p><b>Criado:</b> <span class="mask-datetime"><?= date("d-m-Y H:i", strtotime($comfortable->created_at)); ?></span>
                         </p>
@@ -51,7 +57,7 @@
                     </div>
 
                     <div class="actions">
-                        <a class="icon-cog btn btn-blue" href="" title="">Gerenciar</a>
+                        <a class="icon-cog btn btn-blue" id="gerenciarBotao" title="">Gerenciar</a>
                     </div>
                 </article>
             <?php endforeach; ?>

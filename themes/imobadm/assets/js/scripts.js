@@ -509,6 +509,18 @@ $(function () {
         };
     }
 
+    /**Função para deixar visivel o comfortable no details */
+    // Captura o botão
+    var gerenciarBotao = document.getElementById('gerenciarBotao');
+    // Captura o elemento com ID 'teste'
+    var testeInput = document.getElementById('teste');
+    // Adiciona um ouvinte de evento para o clique no botão
+    gerenciarBotao.addEventListener('click', function () {
+        // Remove a classe 'ds-none' do input para mostrá-lo
+        testeInput.classList.remove('ds-none');
+    });
+
+
     /**Analisar datePicker */
 
     // $(document).ready(function () {
