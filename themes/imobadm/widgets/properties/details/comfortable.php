@@ -57,7 +57,8 @@
                     </div>
 
                     <div class="actions">
-                        <a class="icon-cog btn btn-blue" id="gerenciarBotao" title="">Gerenciar</a>
+                        <!-- <a class="icon-cog btn btn-blue" title="" href="<?=  url("/admin/properties/properties/{$propertie->reference}/details/comfortable/{$comfortable->id}"); ?>">Gerenciar</a> -->
+                        <a class="icon-cog btn btn-blue" title="" href="#">Gerenciar</a>
                     </div>
                 </article>
             <?php endforeach; ?>

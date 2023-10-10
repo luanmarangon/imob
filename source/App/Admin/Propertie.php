@@ -555,6 +555,7 @@ class Propertie extends Admin
             "reference = :reference",
             "reference={$data["reference"]}"
         )->fetch();
+
         $comfortable = (new Comfortable())->find("id NOT IN (SELECT DISTINCT comfortable_id FROM properties_comfortable WHERE properties_id = {$propertie->id})")->fetch(true);
         $propertieComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->fetch(true);
 
@@ -564,7 +565,7 @@ class Propertie extends Admin
                 "reference = :reference",
                 "reference={$data["reference"]}"
             )->fetch();
-            // var_dump($propertie);
+            // var_dump($data);
             // exit();
 
             $propertieComfortable = (new PropertiesComfortable());
@@ -580,11 +581,17 @@ class Propertie extends Admin
             }
 
             $this->message->success("Cômodo Inserido com sucesso")->flash();
-            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/comfortable")]);
+            // echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/comfortable")]);
+            echo json_encode(["reload" => true]);
             return;
             // var_dump($propertieComfortable);
         }
 
+        /**Pensar melhor no Update */
+        // if (!empty($data["action"]) && $data["action"] == "update") {
+        //     echo "Aqui";
+        //     var_dump($data);
+        // }
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -609,19 +616,84 @@ class Propertie extends Admin
 
     public function detailsFeatures(array $data): void
     {
-
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
         $propertie = (new Properties())->find(
             "reference = :reference",
             "reference={$data["reference"]}"
         )->fetch();
 
-        $propertieComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->fetch(true);
-        $countComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->count();
-
+        $features = (new Features())->find("id NOT IN (SELECT DISTINCT features_id FROM properties_features WHERE properties_id = {$propertie->id})")->fetch(true);
         $propertieFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->fetch(true);
-        $countFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->count();
 
-        $propertieStructures = (new PropertiesStructures())->findByProperties($propertie->id)->fetch(true);
+        // var_dump($propertieFeatures);
+
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertie = (new Properties())->find(
+                "reference = :reference",
+                "reference={$data["reference"]}"
+            )->fetch();
+
+           
+            // $propertieFeatures = (new PropertiesFeatures());
+
+            // $propertieFeatures->properties_id = $propertie->id;
+            // $propertieFeatures->features_id = $data["feature"];
+            // var_dump($propertieFeatures);
+
+            if (!empty($data['feature'])) {
+                $featurePropertie = [];
+
+                $i = 0;
+                while (isset($data['feature'][$i])) {
+                    if (!empty($data['feature'][$i])) {
+                        $feature = $data['feature'][$i];
+
+                        // Verificar se o valor já existe no array
+                        if (!in_array($feature, $featurePropertie)) {
+                            $featurePropertie[] = $feature;
+                        }
+                    }
+                    $i++;
+                }
+
+                foreach ($featurePropertie as $index => $feature) {
+                    $propertieFeatureCreate = new PropertiesFeatures();
+                    $propertieFeatureCreate->properties_id = $propertie->id;
+                    $propertieFeatureCreate->features_id = $feature;
+
+                    var_dump($propertieFeatureCreate);
+
+                    if (!$propertieFeatureCreate->save()) {
+                        $json["message"] = $propertieFeatureCreate->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
+                }
+                $this->message->success("Características Inserido com sucesso")->flash();
+                echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
+                return;
+            }
+            $this->message->warning("teste")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
+            return;
+
+
+
+
+            // if (!$propertieFeatures->save()) {
+            //     $json["message"] = $propertieFeatures->message()->render();
+            //     echo json_encode($json);
+            //     return;
+            // }
+
+            // $this->message->success("Características Inserido com sucesso")->flash();
+            // echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
+            // return;
+            // var_dump($propertieComfortable);
+        }
+
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -634,12 +706,14 @@ class Propertie extends Admin
         echo $this->view->render("widgets/properties/details/features", [
             "app" => "properties/properties/{$propertie->reference}/details/features",
             "head" => $head,
+            "features" => $features,
             "propertie" => $propertie,
-            "propertieComfortable" => $propertieComfortable,
-            "countComfortable" => $countComfortable,
-            "propertieFeatures"  => $propertieFeatures,
-            "countFeatures" => $countFeatures,
-            "propertieStructures"  => $propertieStructures
+            "propertieFeatures" => $propertieFeatures,
+            // "propertieComfortable" => $propertieComfortable,
+            // "countComfortable" => $countComfortable,
+            // "propertieFeatures"  => $propertieFeatures,
+            // "countFeatures" => $countFeatures,
+            // "propertieStructures"  => $propertieStructures
         ]);
     }
 

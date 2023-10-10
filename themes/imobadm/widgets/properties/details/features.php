@@ -17,19 +17,31 @@
         </article>
         <br>
         <div class="newForm">
-            <form class="app_form" action="" method="post">
+        <form class="app_form" action="<?= url("/admin/properties/properties/{$propertie->reference}/details/features"); ?>" method="post">
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="create" />
                 <div class="label_g2">
                     <label class="label">
                         <span class="legend">*Característica do Imóvel:</span>
-                        <select name="status" required>
-                            <option value="active">Quarto</option>
-                            <option value="inactive">Banheiro</option>
-                        </select>
+                        <!-- <select name="feature" required>
+                            <option value=""></option>
+                            <?php foreach ($features as $feature) : ?>
+                                <option value="<?= $feature->id; ?>"><?= $feature->feature; ?></option>
+                            <?php endforeach; ?>
+                        </select> -->
+                        <div class="checkbox-columns">
+                            <?php foreach ($features as $feature) : ?>
+                                <div class="checkbox-column">
+                                    <label><?= $feature->feature; ?></label>
+                                    <input type="checkbox" name="feature" value="<?= $feature->id; ?>">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </label>
-                    <label class="label">
+                    <!-- <label class="label">
                         <span class="legend">*Quantidade no Imóvel:</span>
-                        <input type="text" name="title" placeholder="A Quantidade do cômodo" required />
-                    </label>
+                        <input type="text" name="quantityFeature" placeholder="A Quantidade da Característica" required />
+                    </label> -->
                 </div>
                 <div class="al-right">
                     <button class="btn btn-green icon-plus-square-o">Inserir Característica</button>

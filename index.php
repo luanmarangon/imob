@@ -99,7 +99,10 @@ $route->get("/properties/properties/{search}/{page}", "Propertie:properties");
 $route->get("/properties/properties/{reference}/details/home", "Propertie:details");
 $route->get("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");
 $route->post("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");
+/**Pensar Melhor nessa URL Abaixo */
+// $route->get("/properties/properties/{reference}/details/comfortable/{comfortable_id}", "Propertie:detailsComfortable");
 $route->get("/properties/properties/{reference}/details/features", "Propertie:detailsFeatures");
+$route->post("/properties/properties/{reference}/details/features", "Propertie:detailsFeatures");
 $route->get("/properties/properties/{reference}/details/structures", "Propertie:detailsStrucutures");
 $route->get("/properties/properties/{reference}/transactions/transactions", "Propertie:transactions");
 
