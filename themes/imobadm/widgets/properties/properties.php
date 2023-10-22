@@ -40,12 +40,11 @@
                         <a class="icon-cogs btn btn-green" href="<?= url("admin/properties/properties/{$propertie->reference}/details/home"); ?>" title="">Detalhes</a>
                         <a class="icon-vallet btn btn-red" href="<?= url("admin/properties/properties/{$propertie->reference}/transactions/transactions"); ?>" title="">Transações</a>
                         <a class="icon-pencil btn btn-blue" href="<?= url("admin/properties/properties-create/{$propertie->id}"); ?>" title="">Editar</a>
-                        <?php if ($propertie->active != "Inativo") : ?>
-                            <!-- <a class="icon-ban btn btn-yellow" href="" title="">Desativar</a> -->
-                            <a href="#" class="icon-ban btn btn-yellow" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o Imóvel e todos os dados relacionados a ele?" data-properties_id="<?= $propertie->id; ?>">Desativar</a>
+                        <a class="icon-file-image-o btn btn-default-admin" href="<?= url("admin/properties/propertiesImages/{$propertie->reference}"); ?>" title="">Imagens</a>
 
+                        <?php if ($propertie->active != "Inativo") : ?>
+                            <a href=" #" class="icon-ban btn btn-yellow" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o Imóvel e todos os dados relacionados a ele?" data-properties_id="<?= $propertie->id; ?>">Desativar</a>
                         <?php else : ?>
-                            <!-- <a class="icon-check btn btn-green" href="" title="">Ativar</a> -->
                             <a href="#" class="icon-check btn btn-green" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="ativar" data-confirm="ATENÇÃO: Tem certeza que deseja ativar o Imóvel!" data-properties_id="<?= $propertie->id; ?>">Ativar</a>
 
                         <?php endif; ?>

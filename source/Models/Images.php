@@ -14,6 +14,12 @@ class Images extends Model
     public function findByImage(int $id, string $columns = "*"): ?Model
     {
         $find = $this->find("properties_id = :id", "id={$id}", $columns);
-        return $find->fetch();
+        return $find;
+    }
+
+    public function images(): ?string
+    {
+        if ($this->path && file_exists(__DIR__ . "/../../" . CONF_UPLOAD_DIR . "/{$this->path}"));
+        return $this->path;
     }
 }

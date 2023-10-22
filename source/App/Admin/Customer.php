@@ -201,7 +201,7 @@ class Customer extends Admin
             $personCreate->first_name = $data["first_name"];
             $personCreate->last_name = $data["last_name"];
             $personCreate->genre = $data["genre"];
-            $personCreate->birth = date_fmt_back($data["datebirth"]);
+            $personCreate->datebirth = date_fmt_back($data["datebirth"]);
             $personCreate->cpf = preg_replace("/[^0-9]/", "", $data["document_cpf"]);
             $personCreate->rg = preg_replace("/[^0-9X]/", "", $data["document_rg"]);
 
@@ -222,11 +222,17 @@ class Customer extends Admin
             $addressCreate->latitude = $addressAPI['latitude'];
             $addressCreate->longitude = $addressAPI['longitude'];
 
+
+
+
             if (!$personCreate->save()) {
                 $json["message"] = $personCreate->message()->render();
                 echo json_encode($json);
                 return;
             }
+
+
+
             if (!$addressCreate->save()) {
                 $json["message"] = $addressCreate->message()->render();
                 echo json_encode($json);

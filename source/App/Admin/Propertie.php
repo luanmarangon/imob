@@ -5,8 +5,11 @@ namespace Source\App\Admin;
 use Source\Models\Auth;
 use Source\Models\Type;
 use Source\Models\Charge;
+use Source\Models\Images;
 use Source\Models\People;
 use Source\Support\Pager;
+use Source\Support\Thumb;
+use Source\Support\Upload;
 use Source\App\Admin\Admin;
 use Source\Models\Category;
 use Source\Models\Features;
@@ -34,24 +37,6 @@ class Propertie extends Admin
             "active = :active",
             "active=1"
         )->count();
-
-
-        // Teste
-        // $teste = new PropertiesComfortable();
-        // $teste->properties_id = 10;
-        // $teste->comfortable_id = 1;
-        // $teste->quantity = 2;
-        // $teste->reference = "LUAN";
-        // $teste->description = "Teste Home";
-        // $teste->active = 1;
-
-        // var_dump($teste);
-
-        // $teste->save();
-        // var_dump($teste);
-
-
-
 
 
         $head = $this->seo->render(
@@ -101,8 +86,6 @@ class Propertie extends Admin
         $all = ($search ?? "all");
         $pager = new Pager(url("/admin/properties/properties/{$all}/"));
         $pager->pager($properties->count(), 5, (!empty($data["page"]) ? $data["page"] : 1));
-
-        // var_dump($data["page"]);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -436,6 +419,10 @@ class Propertie extends Admin
                 return;
             }
 
+            $transaction = (new transactions())->find("properties_id={$propertieDelete->id}")->fetch();
+            $transaction->status = 'Inativo';
+            $transaction->save();
+
             $this->message->success("Imóvel Inativado com sucesso...")->flash();
 
             echo json_encode(["redirect" => url("/admin/properties/properties")]);
@@ -528,6 +515,11 @@ class Propertie extends Admin
 
         $propertieStructures = (new PropertiesStructures())->findByProperties($propertie->id)->fetch(true);
 
+        $endComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->order("updated_at DESC")->fetch();
+        $endFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->order("updated_at DESC")->fetch();
+        $endStructures = (new PropertiesStructures())->findByProperties($propertie->id)->order("updated_at DESC")->fetch();
+
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
             CONF_SITE_DESC,
@@ -544,7 +536,10 @@ class Propertie extends Admin
             "countComfortable" => $countComfortable,
             "propertieFeatures"  => $propertieFeatures,
             "countFeatures" => $countFeatures,
-            "propertieStructures"  => $propertieStructures
+            "propertieStructures"  => $propertieStructures,
+            "endComfortable" => $endComfortable,
+            "endFeatures" => $endFeatures,
+            "endStructures" => $endStructures
         ]);
     }
 
@@ -565,8 +560,6 @@ class Propertie extends Admin
                 "reference = :reference",
                 "reference={$data["reference"]}"
             )->fetch();
-            // var_dump($data);
-            // exit();
 
             $propertieComfortable = (new PropertiesComfortable());
 
@@ -581,17 +574,32 @@ class Propertie extends Admin
             }
 
             $this->message->success("Cômodo Inserido com sucesso")->flash();
-            // echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/comfortable")]);
             echo json_encode(["reload" => true]);
             return;
-            // var_dump($propertieComfortable);
         }
 
-        /**Pensar melhor no Update */
-        // if (!empty($data["action"]) && $data["action"] == "update") {
-        //     echo "Aqui";
-        //     var_dump($data);
-        // }
+
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $propertieComfortableDelete = (new PropertiesComfortable())
+                ->find(
+                    "properties_id = :p and comfortable_id = :f",
+                    "p={$data['properties_id']}&f={$data['comfortable_id']}"
+                )
+                ->fetch();
+
+            if (!$propertieComfortableDelete->destroy()) {
+                $json["message"] = $propertieComfortableDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Cômodo Excluído com sucesso")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -606,11 +614,7 @@ class Propertie extends Admin
             "head" => $head,
             "comfortable" => $comfortable,
             "propertie" => $propertie,
-            "propertieComfortable" => $propertieComfortable,
-            // "countComfortable" => $countComfortable,
-            // "propertieFeatures"  => $propertieFeatures,
-            // "countFeatures" => $countFeatures,
-            // "propertieStructures"  => $propertieStructures
+            "propertieComfortable" => $propertieComfortable
         ]);
     }
 
@@ -625,21 +629,12 @@ class Propertie extends Admin
         $features = (new Features())->find("id NOT IN (SELECT DISTINCT features_id FROM properties_features WHERE properties_id = {$propertie->id})")->fetch(true);
         $propertieFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->fetch(true);
 
-        // var_dump($propertieFeatures);
-
         if (!empty($data["action"]) && $data["action"] == "create") {
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
             $propertie = (new Properties())->find(
                 "reference = :reference",
                 "reference={$data["reference"]}"
             )->fetch();
-
-           
-            // $propertieFeatures = (new PropertiesFeatures());
-
-            // $propertieFeatures->properties_id = $propertie->id;
-            // $propertieFeatures->features_id = $data["feature"];
-            // var_dump($propertieFeatures);
 
             if (!empty($data['feature'])) {
                 $featurePropertie = [];
@@ -649,7 +644,6 @@ class Propertie extends Admin
                     if (!empty($data['feature'][$i])) {
                         $feature = $data['feature'][$i];
 
-                        // Verificar se o valor já existe no array
                         if (!in_array($feature, $featurePropertie)) {
                             $featurePropertie[] = $feature;
                         }
@@ -662,14 +656,13 @@ class Propertie extends Admin
                     $propertieFeatureCreate->properties_id = $propertie->id;
                     $propertieFeatureCreate->features_id = $feature;
 
-                    var_dump($propertieFeatureCreate);
-
                     if (!$propertieFeatureCreate->save()) {
                         $json["message"] = $propertieFeatureCreate->message()->render();
                         echo json_encode($json);
                         return;
                     }
                 }
+
                 $this->message->success("Características Inserido com sucesso")->flash();
                 echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
                 return;
@@ -677,20 +670,28 @@ class Propertie extends Admin
             $this->message->warning("teste")->flash();
             echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
             return;
+        }
 
 
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
+            $propertieFeaturesDelete = (new PropertiesFeatures())
+                ->find(
+                    "properties_id = :p and features_id = :f",
+                    "p={$data['properties_id']}&f={$data['features_id']}"
+                )
+                ->fetch();
 
-            // if (!$propertieFeatures->save()) {
-            //     $json["message"] = $propertieFeatures->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
+            if (!$propertieFeaturesDelete->destroy()) {
+                $json["message"] = $propertieFeaturesDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
 
-            // $this->message->success("Características Inserido com sucesso")->flash();
-            // echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/features")]);
-            // return;
-            // var_dump($propertieComfortable);
+            $this->message->success("Características Excluída com sucesso")->flash();
+            echo json_encode(["reload" => true]);
+            return;
         }
 
 
@@ -708,60 +709,69 @@ class Propertie extends Admin
             "head" => $head,
             "features" => $features,
             "propertie" => $propertie,
-            "propertieFeatures" => $propertieFeatures,
-            // "propertieComfortable" => $propertieComfortable,
-            // "countComfortable" => $countComfortable,
-            // "propertieFeatures"  => $propertieFeatures,
-            // "countFeatures" => $countFeatures,
-            // "propertieStructures"  => $propertieStructures
+            "propertieFeatures" => $propertieFeatures
         ]);
     }
 
     public function detailsStrucutures(array $data): void
     {
-        // //search redirect
-        // if (!empty($data["s"])) {
-        //     $s = str_search($data["s"]);
-        //     redirect("/admin/properties/properties/{$s}/1");
-        //     // echo json_encode(["redirect" => url("/admin/people/people/{$s}/1")]);
-        //     return;
-        // }
-
-        // //read
-        // $search = null;
-        // $structures = (new Structures())->find();
-
         $propertie = (new Properties())->find(
             "reference = :reference",
             "reference={$data["reference"]}"
         )->fetch();
 
-        $propertieComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->fetch(true);
-        $countComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->count();
-
-        $propertieFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->fetch(true);
-        $countFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->count();
-
+        $structures = (new Structures())->find("id NOT IN (SELECT DISTINCT structures_id FROM properties_structures WHERE properties_id = {$propertie->id})")->fetch(true);
         $propertieStructures = (new PropertiesStructures())->findByProperties($propertie->id)->fetch(true);
 
-        // if (!empty($data["search"]) && str_search($data["search"]) != "all") {
-        //     $search = str_search($data["search"]);
-        //     $structures = (new Structures())->find("MATCH(structure) AGAINST(:s)", "s={$search}");
-        //     if (!$structures->count()) {
-        //         $this->message->info("Sua pesquisa não retornou resultados")->flash();
-        //         redirect("/properties/properties/{$propertie->reference}/details/structures");
-        //     }
-        // }
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertie = (new Properties())->find(
+                "reference = :reference",
+                "reference={$data["reference"]}"
+            )->fetch();
 
-        // $all = ($search ?? "all");
-        // $pager = new Pager(url("/properties/properties/{$propertie->reference}/details/structures/{$all}/"));
-        // $pager->pager($structures->count(), 5, (!empty($data["page"]) ? $data["page"] : 1));
-        // var_dump(
-        //     $structures,
-        //     $data,
-        //     $pager,
-        //     $propertie->reference
-        // );
+            $propertieStructures = (new PropertiesStructures());
+
+            $propertieStructures->properties_id = $propertie->id;
+            $propertieStructures->structures_id = $data["structure"];
+            $propertieStructures->footage = $data["footage"];
+
+            if (!$propertieStructures->save()) {
+                $json["message"] = $propertieStructures->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Estrutura Inserida com sucesso")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
+
+
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $propertieStructuresDelete = (new PropertiesStructures())
+                ->find(
+                    "properties_id = :p and structures_id = :f",
+                    "p={$data['properties_id']}&f={$data['structures_id']}"
+                )
+                ->fetch();
+
+            if (!$propertieStructuresDelete->destroy()) {
+                $json["message"] = $propertieStructuresDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Estrutura Excluída com sucesso")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
+
+
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -774,17 +784,111 @@ class Propertie extends Admin
         echo $this->view->render("widgets/properties/details/structures", [
             "app" => "properties/properties/{$propertie->reference}/details/structures",
             "head" => $head,
+            "structures" => $structures,
             "propertie" => $propertie,
-            "propertieComfortable" => $propertieComfortable,
-            "countComfortable" => $countComfortable,
-            "propertieFeatures"  => $propertieFeatures,
-            "countFeatures" => $countFeatures,
-            "propertieStructures"  => $propertieStructures,
-            // "search" => $search,
-            // "paginator" => $pager->render()
+            "propertieStructures" => $propertieStructures,
 
         ]);
     }
+
+    public function comfortableUpdate(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+        $propertie = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $propertieComfortable = (new PropertiesComfortable())
+            ->findById("{$data['comfortable_id']}");
+
+        if (!empty($data["action"]) && $data["action"] == "update") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $propertieComfortableUpdate = (new PropertiesComfortable())
+                ->findById($data['comfortable_id']);
+
+            $propertieComfortableUpdate->quantity = $data["quantity"];
+
+            if (!$propertieComfortableUpdate->save()) {
+                $json["message"] = $propertieComfortableUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Cômodo alterado com sucesso")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/comfortable")]);
+            return;
+        }
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/details/comfortableUpdate", [
+            "app" => "properties/properties/{$propertie->reference}/details/home",
+            "head" => $head,
+            "propertie" => $propertie,
+            "propertieComfortable" => $propertieComfortable
+        ]);
+    }
+
+
+    public function structuresUpdate(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+        $propertie = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $propertieStructures = (new PropertiesStructures())
+            ->findById("{$data['structures_id']}");
+
+        if (!empty($data["action"]) && $data["action"] == "update") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $propertieStructuresUpdate = (new PropertiesStructures())
+                ->findById($data['structures_id']);
+
+            $propertieStructuresUpdate->footage = $data["footage"];
+
+            if (!$propertieStructuresUpdate->save()) {
+                $json["message"] = $propertieStructuresUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Estrutura alterada com sucesso")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/details/structures")]);
+            return;
+        }
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/details/structuresUpdate", [
+            "app" => "properties/properties/{$propertie->reference}/details/home",
+            "head" => $head,
+            "propertie" => $propertie,
+            "propertieStructures" => $propertieStructures
+        ]);
+    }
+
+
+
+
 
     public function transactions(array $data): void
     {
@@ -794,19 +898,33 @@ class Propertie extends Admin
             "reference={$data["reference"]}"
         )->fetch();
 
-        $transactions = (new Transactions())->findTransactionsProperti($propertie->id)->fetch(true);
-        $people = (new People())->find()->fetch(true);
+        $transactions = (new Transactions())->findTransactionsProperti($propertie->id);
+        $addresses = (new Addresses())->find("id={$propertie->addresses_id}")->fetch();
+        $people = (new People())->find("id={$addresses->people_id}")->fetch();
 
-        // var_dump($owners);
+        $active = (new Transactions())->find(
+            "status = :s and properties_id = :p",
+            "s=Ativo&p={$propertie->id}"
+        )->fetch();
 
+        if ($active) {
+            if ($active->end < date_fmt_back(date("d/m/Y"))) {
 
-        // $propertieComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->fetch(true);
-        // $countComfortable = (new PropertiesComfortable())->findByProperties($propertie->id)->count();
+                $active->status = 'Inativo';
+                $transactionActive = (new Transactions())->findTransactionsProperti($propertie->id)->fetch();
 
-        // $propertieFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->fetch(true);
-        // $countFeatures = (new PropertiesFeatures())->findByProperties($propertie->id)->count();
+                if ($transactionActive->end > date_fmt_back(date("d/m/Y"))) {
+                    $transactionActive->status = 'Ativo';
+                    $transactionActive->save();
+                }
+                $active->save();
+            }
+        }
 
-        // $propertieStructures = (new PropertiesStructures())->findByProperties($propertie->id)->fetch(true);
+        $search = null;
+        $all = ($search ?? "all");
+        $pager = new Pager(url("/admin/properties/properties/{$propertie->reference}/transactions/transactions/{$all}/"));
+        $pager->pager($transactions->count(), 4, (!empty($data["page"]) ? $data["page"] : 1));
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Imóveis",
@@ -820,13 +938,385 @@ class Propertie extends Admin
             "app" => "properties/transactions/transactions",
             "head" => $head,
             "propertie" => $propertie,
-            "transactions" => $transactions,
-            "people" => $people
+            "transactions" => $transactions->limit($pager->limit())->offset($pager->offset())->order("status ASC")->fetch(true),
+            "addresses" => $addresses,
+            "people" => $people,
+            "paginator" => $pager->render()
             // "propertieComfortable" => $propertieComfortable,
             // "countComfortable" => $countComfortable,
             // "propertieFeatures"  => $propertieFeatures,
             // "countFeatures" => $countFeatures,
             // "propertieStructures"  => $propertieStructures
+        ]);
+    }
+
+    public function transactionsCreate(array $data): void
+    {
+
+        $propertie = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $addressPropertie = (new Addresses())->addressFull($propertie->addresses_id);
+
+        // var_dump(date("d/m/Y"));
+
+
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertie = (new Properties())->find("reference='{$data['reference']}'")->fetch();
+
+            $transactionCreate = (new Transactions());
+
+            $transactionCreate->properties_id = $propertie->id;
+            $transactionCreate->type = $data['transactionsType'];
+            $transactionCreate->value = str_replace([".", ","], ["", "."], $data["transactionsValue"]);
+
+
+            if (date_fmt_back($data['transactionsStart']) < date_fmt_back($data['transactionsEnd'])) {
+                $transactionCreate->start = date_fmt_back($data['transactionsStart']);
+                $transactionCreate->end = date_fmt_back($data['transactionsEnd']);
+            }
+
+            if (date_fmt_back($data['transactionsStart']) > date_fmt_back($data['transactionsEnd'])) {
+                $transactionCreate->start = date_fmt_back($data['transactionsEnd']);
+                $transactionCreate->end = date_fmt_back($data['transactionsStart']);
+            }
+
+            if ($transactionCreate->end < date_fmt_back(date("d/m/Y"))) {
+                $transactionCreate->status = "Inativo";
+            } else {
+                $transactionCreate->status = "Ativo";
+            }
+            $msg = null;
+            $status = 'success';
+            /**If para travar a inserção com star e end entre um transaction ativo */
+
+            $active = (new Transactions())->find("status = :s and properties_id = :p", "s=Ativo&p={$propertie->id}")->fetch(true);
+
+            if ($active) {
+                $msg = 'No momento, você possui a  transação ' . $active->id . ' ativa.';
+                $status = 'warning';
+                $transactionCreate->status = "Inativo";
+            }
+
+            if (!$transactionCreate->save()) {
+                $json["message"] = $transactionCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->{$status}("Nova transação Inserida com sucesso. {$msg}")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "update") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            // $propertie = (new Properties())->find("reference='{$data['reference']}'")->fetch();
+
+            $transactionUpdate = (new Transactions())->findById($data['transaction_id']);
+
+            $transactionUpdate->type = $data['transactionsType'];
+            $transactionUpdate->value = str_replace([".", ","], ["", "."], $data["transactionsValue"]);
+
+            if (date_fmt_back($data['transactionsStart']) < date_fmt_back($data['transactionsEnd'])) {
+                $transactionUpdate->start = date_fmt_back($data['transactionsStart']);
+                $transactionUpdate->end = date_fmt_back($data['transactionsEnd']);
+            }
+
+            if (date_fmt_back($data['transactionsStart']) > date_fmt_back($data['transactionsEnd'])) {
+                $transactionUpdate->start = date_fmt_back($data['transactionsEnd']);
+                $transactionUpdate->end = date_fmt_back($data['transactionsStart']);
+            }
+
+            if ($transactionUpdate->end < date_fmt_back(date("d/m/Y"))) {
+                $transactionUpdate->status = "Inativo";
+            } else {
+                $transactionUpdate->status = "Ativo";
+            }
+
+            $msg = null;
+            $status = 'success';
+
+            /**If para travar a inserção com star e end entre um transaction ativo */
+            $active = (new Transactions())->find("status = :s and properties_id = :p", "s=Ativo&p={$propertie->id}")->fetch();
+            if ($active) {
+                $msg = 'No momento, você possui a  transação ' . $active->id . ' ativa.';
+                $status = 'warning';
+                $transactionUpdate->status = "Inativo";
+            }
+
+
+            if (!$transactionUpdate->save()) {
+                $json["message"] = $transactionUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+
+            $this->message->{$status}("Transação Atualizada com sucesso. {$msg}")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            return;
+        }
+
+
+        if (!empty($data["action"]) && $data["action"] == "active") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $transactionActive = (new Transactions())->findById($data['transaction_id']);
+
+            $transactionInactive = (new Transactions())->find("status = :s and properties_id = :p", "s=Ativo&p={$transactionActive->properties_id}")->fetch();
+
+            if (date_fmt_back($transactionActive->end) > date_fmt_back(date("d/m/Y"))) {
+                $transactionActive->status = 'Ativo';
+                if (!empty($transactionInactive)) {
+                    $transactionInactive->end = date_fmt_back(date("d/m/Y"));
+                    $transactionInactive->status = 'Inativo';
+                    if (!$transactionInactive->save()) {
+                        $json["message"] = $transactionInactive->message()->render();
+                        echo json_encode($json);
+                        return;
+                    }
+                }
+            }
+
+            if (!$transactionActive->save()) {
+                $json["message"] = $transactionInactive->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Transação {$transactionActive->id} Ativada com sucesso.")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "inactive") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $transactionInactive = (new Transactions())->findById($data['transaction_id']);
+
+            $transactionInactive->status = 'Inativo';
+
+            if (!$transactionInactive->save()) {
+                $json["message"] = $transactionInactive->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Transação {$transactionInactive->id} Inativa com sucesso.")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $transactionDelete = (new Transactions())->findById($data['transaction_id']);
+
+            // if (date_fmt_back($transactionDelete->end) > date_fmt_back(date("d/m/Y"))) {
+
+            //     $this->message->error("Transação {$transactionDelete->id} possui data de vigencia ainda.")->flash();
+            //     echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            //     return;
+
+            //     var_dump($transactionDelete);
+            //     exit();
+            // }
+
+
+
+            if (!$transactionDelete->destroy()) {
+                $json["message"] = $transactionDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Transação {$transactionDelete->id} Excluída com sucesso.")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/transactions/transactions")]);
+            return;
+        }
+
+
+        $transactionEdit = null;
+        if (!empty($data["transaction_id"])) {
+            $transactionId = filter_var($data["transaction_id"], FILTER_SANITIZE_STRIPPED);
+            $transactionEdit = (new Transactions())->findById($transactionId);
+        }
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/transactions/transactions-create", [
+            "app" => "properties/transactions/transactions-create",
+            "head" => $head,
+            "propertie" => $propertie,
+            "addressPropertie" => $addressPropertie,
+            "transaction" => $transactionEdit
+
+        ]);
+    }
+
+    public function propertiesImages(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $properties = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $imageProperties = (new Images())->findByImage($properties->id)->fetch(true);
+
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $properties = (new Properties())->find(
+                "reference = :reference",
+                "reference={$data["reference"]}"
+            )->fetch();
+
+            $imageCreate = new Images();
+            $imageCreate->properties_id = $properties->id;
+            $imageCreate->identification = strtoupper($data['identification']);
+
+
+            //upload photo
+            if (!empty($_FILES["image"])) {
+                $files = $_FILES["image"];
+                $upload = new Upload();
+                $nome = $properties->reference . "-" . $imageCreate->identification;
+                $image = $upload->image($files, $nome, 1200);
+
+                if (!$image) {
+                    $json["message"] = $upload->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
+                $imageCreate->path = $image;
+            }
+
+            if (!$imageCreate->save()) {
+                $json["message"] = $imageCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Imagem cadastrado com sucesso...")->flash();
+            echo json_encode(["reload" => true]);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $imagedelete = (new Images())->findById($data['images_id']);
+
+            if ($imagedelete->path && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$imagedelete->path}")) {
+                unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$imagedelete->path}");
+                (new Thumb())->flush($imagedelete->path);
+            }
+
+            if (!$imagedelete->destroy()) {
+                $json["message"] = $imagedelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Imagem excluída com sucesso...")->flash();
+            echo json_encode(["reload" => true]);
+
+            return;
+        }
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/propertiesImages", [
+            "app" => "properties/home",
+            "head" => $head,
+            "properties" => $properties,
+            "imageProperties" => $imageProperties
+            // "activesProperties" => $activesProperties
+        ]);
+    }
+
+
+    public function propertiesImagesUpdate(array $data): void
+    {
+
+
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $properties = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $imageProperties = (new Images())->findById($data['image']);
+
+        if (!empty($data["action"]) && $data["action"] == "update") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $imageUpdate = (new Images())->findById($data['image']);
+            $imageUpdate->identification = strtoupper($data['identification']);
+
+            //upload cover
+            if (!empty($_FILES["image"])) {
+                if ($imageUpdate->path && file_exists(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$imageUpdate->path}")) {
+                    unlink(__DIR__ . "/../../../" . CONF_UPLOAD_DIR . "/{$imageUpdate->path}");
+                    (new Thumb())->flush($imageUpdate->path);
+                }
+
+                $files = $_FILES["image"];
+                $upload = new Upload();
+                $nome = $properties->reference . "-" . $imageUpdate->identification;
+                $image = $upload->image($files, $nome, 1200);
+
+                if (!$image) {
+                    $json["message"] = $upload->message()->render();
+                    echo json_encode($json);
+                    return;
+                }
+                $imageUpdate->path = $image;
+            }
+
+            if (!$imageUpdate->save()) {
+                $json["message"] = $imageUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Imagem atualizada com sucesso...")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/propertiesImages/{$properties->reference}")]);
+            return;
+        }
+
+
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/propertiesImagesUpdate", [
+            "app" => "properties/home",
+            "head" => $head,
+            "properties" => $properties,
+            "imageProperties" => $imageProperties
+            // "activesProperties" => $activesProperties
         ]);
     }
 }

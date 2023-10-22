@@ -213,14 +213,9 @@ class ContactCenter extends Admin
 
 
             $mail = (new Email())->bootstrap($subject, $body, $contact->email, $contact->name)->queue();
-            // $mail = (new Email())->bootstrap("Contato Site", $response->response, $contact->email, $contact->name)->queue();
 
-            // if ($contact->save()) {
-            //     $mail = (new Email())->bootstrap("Contato Site", $response->response, $contact->email, $contact->name)->sendQueue();
-            //     $json["message"] = $contact->message()->render();
-            //     echo json_encode($json);
-            //     return;
-            // }
+            // Aguarde 30 segundos (30.000 milissegundos)
+            // usleep(30000);
 
             $this->message->success("Resposta cadastrada com sucesso, para agendamento de envio...")->flash();
             echo json_encode(["redirect" => url("/admin/cs/contato")]);

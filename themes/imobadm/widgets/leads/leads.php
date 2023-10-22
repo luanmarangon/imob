@@ -28,9 +28,7 @@
                             <a class="icon-pencil btn btn-blue" href="<?= url("admin/leads/convert/{$lead->id}") ?>" title="">Converter</a>
                             <a class="icon-ban btn btn-red" href="<?= url("admin/leads/inactive/{$lead->id}") ?>" title="">Desativar</a>
                         <?php else : ?>
-                            <!-- <a class="icon-pencil btn btn-blue" href="<?= url("admin/leads/convert/{$lead->id}") ?>" title="">Converter</a> -->
-                            <span class="icon-ban btn btn-dark" href="<?= url("admin/leads/inactive/{$lead->id}") ?>" title="">Lead Inativo</span>
-                            <!-- <a class="icon-check btn btn-green" href="" title="">Convertido</a> -->
+                            <span class="icon-ban btn btn-dark" href="<?= url("admin/leads/inactive/{$lead->id}") ?>" title="">Lead <?= $lead->status; ?></span>
                         <?php endif; ?>
                     </div>
                 </article>

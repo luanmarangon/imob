@@ -1,6 +1,5 @@
 <div class="dash_content_sidebar">
-    <h3 class="icon-home">Imóveis\ <a href="<?= url("/admin/properties/properties"); ?>"><span
-                class=" icon-reply"></span></a>
+    <h3 class="icon-home">Imóveis\ <a href="<?= url("/admin/properties/properties"); ?>"><span class=" icon-reply"></span></a>
     </h3>
     <p class="dash_content_sidebar_desc">Tudo sobre as transações do seu imóvel, bem aqui.... </p>
 
@@ -13,7 +12,7 @@
         };
 
         echo $nav("money", "properties/properties/{$propertie->reference}/transactions/transactions", "Transação");
-        echo $nav("plus-circle", "properties/transactions/transactions-create", "Novo Imóvel");
+        echo $nav("plus-circle", "properties/properties/{$propertie->reference}/transactions/transactions-create", "Nova Transação");
 
 
         ?>

@@ -64,7 +64,7 @@ class Web extends Controller
     {
         $properties = (new Properties())->find(
             "active = :active",
-            "active=1"
+            "active=Ativo"
         )
             // ->limit(10)
             // ->order("updated_at ASC")
@@ -171,7 +171,7 @@ class Web extends Controller
             "name={$lead->full_name}&mail={$lead->email}&&phone={$lead->phone}"
         )->fetch();
 
-        if ($test || $test->status != 'Inativo') {
+        if ($test) {
             $this->message->warning("Esse registro já está cadastrado em nosso sistema. Por favor, verifique os dados fornecidos e tente novamente.")->flash();
             echo json_encode(["reload" => true]);
             return;

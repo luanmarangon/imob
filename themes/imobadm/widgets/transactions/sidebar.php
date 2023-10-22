@@ -12,7 +12,7 @@
 
         echo $nav("laptop", "transactions/home", "Dashboard");
         echo $nav("money", "transactions/transactions", "Transação");
-        echo $nav("plus-circle", "properties/properties", "Novo Imóvel");
+        echo $nav("plus-circle", "properties/properties", "Nova Transação");
 
         // echo $nav("files-o", "imoveis/relatorios/home", "Relatórios");
 

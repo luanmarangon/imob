@@ -32,5 +32,19 @@ class Addresses extends Model
         return $find->fetch();
     }
 
+
+    public function addressFull(int $id)
+    {
+
+        $find = $this->findById($id);
+        $full = $find->street . ", " . $find->number . " - " . $find->complement . ", " . $find->district . ", " . $find->city . "-" . $find->state . " - " . $find->zipcode;
+
+        return $full;
+    }
+
+
+
+
+
     //fim
 }

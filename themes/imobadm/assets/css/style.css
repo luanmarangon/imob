@@ -1073,6 +1073,26 @@ p {
     margin: 0 auto 20px auto;
 }
 
+.app_users_home article .image {
+    background: #eeeeee;
+    background-size: cover;
+    border-radius: 10%;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px auto;
+}
+
+.app_users_home article .image:hover {
+    background: #eeeeee;
+    background-size: cover;
+    border-radius: 10%;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 20px auto;
+}
+
+
+
 .app_users_home article h4 {
     font-size: var(--font-medium);
     font-weight: var(--weight-strong);
@@ -1091,6 +1111,12 @@ p {
 
 .newForm {
     display: none;
+}
+
+.new_form_complet {
+    text-align: center;
+    font-style: italic;
+    font-stretch: semi-expanded;
 }
 
 .advanced_filter {
@@ -1150,6 +1176,35 @@ p {
     justify-content: center;
     align-items: center;
 }
+
+/* .checkbox-column_2 {
+    width: 49%;
+    box-sizing: border-box;
+    padding-right: 10px;
+    display: table;
+    justify-content: center;
+    align-items: center;
+} */
+
+/* .checkbox-column_2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 49%;
+    box-sizing: border-box;
+    padding-right: 10px;
+} */
+
+.checkbox-column_2 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    justify-content: center;
+    align-items: center;
+    width: 49%;
+    box-sizing: border-box;
+    padding-right: 10px;
+}
+
 
 .checkbox-column label {
     display: block;

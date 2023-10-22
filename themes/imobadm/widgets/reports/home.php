@@ -1,4 +1,5 @@
-<?php require __DIR__ . "/sidebar.php"; ?>
+<?php $v->layout("_admin"); ?>
+<?php $v->insert("widgets/reports/sidebar.php"); ?>
 
 <section class="dash_content_app">
     <header class="dash_content_app_header">

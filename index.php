@@ -74,13 +74,10 @@ $route->post("/people/people-create", "Person:peopleCreate");
 $route->get("/people/people-create/{people_id}", "Person:peopleCreate");
 $route->post("/people/people-create/{people_id}", "Person:peopleCreate");
 
-
 $route->get("/people/people/{people_id}/contacts", "Person:contacts");
 $route->post("/people/people/{people_id}/contacts", "Person:contacts");
 $route->get("/people/people/{people_id}/contacts/{search}/{page}", "Person:contacts");
 $route->post("/people/people/{people_id}/contacts/{contacts_id}", "Person:contacts");
-
-// $route->get("/people/people/create", "Person:create");
 
 //properties
 $route->get("/properties/home", "Propertie:home");
@@ -93,18 +90,35 @@ $route->post("/properties/properties-create", "Propertie:propertiesCreate");
 $route->get("/properties/properties-create/{propertie_id}", "Propertie:propertiesCreate");
 $route->post("/properties/properties-create/{propertie_id}", "Propertie:propertiesCreate");
 
+$route->get("/properties/propertiesImages/{reference}", "Propertie:propertiesImages");
+$route->post("/properties/propertiesImages/{reference}", "Propertie:propertiesImages");
+$route->get("/properties/propertiesImages/{reference}/{image}", "Propertie:propertiesImagesUpdate");
+$route->post("/properties/propertiesImages/{reference}/{image}", "Propertie:propertiesImagesUpdate");
 
 
 $route->get("/properties/properties/{search}/{page}", "Propertie:properties");
 $route->get("/properties/properties/{reference}/details/home", "Propertie:details");
+
 $route->get("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");
 $route->post("/properties/properties/{reference}/details/comfortable", "Propertie:detailsComfortable");
-/**Pensar Melhor nessa URL Abaixo */
-// $route->get("/properties/properties/{reference}/details/comfortable/{comfortable_id}", "Propertie:detailsComfortable");
+$route->get("/properties/properties/{reference}/details/comfortableUpdate/{comfortable_id}", "Propertie:comfortableUpdate");
+$route->post("/properties/properties/{reference}/details/comfortableUpdate/{comfortable_id}", "Propertie:comfortableUpdate");
+
 $route->get("/properties/properties/{reference}/details/features", "Propertie:detailsFeatures");
 $route->post("/properties/properties/{reference}/details/features", "Propertie:detailsFeatures");
+
 $route->get("/properties/properties/{reference}/details/structures", "Propertie:detailsStrucutures");
+$route->post("/properties/properties/{reference}/details/structures", "Propertie:detailsStrucutures");
+$route->get("/properties/properties/{reference}/details/structuresUpdate/{structures_id}", "Propertie:structuresUpdate");
+$route->post("/properties/properties/{reference}/details/structuresUpdate/{structures_id}", "Propertie:structuresUpdate");
+
 $route->get("/properties/properties/{reference}/transactions/transactions", "Propertie:transactions");
+$route->get("/properties/properties/{reference}/transactions/transactions/{search}/{page}", "Propertie:transactions");
+$route->get("/properties/properties/{reference}/transactions/transactions-create", "Propertie:transactionsCreate");
+$route->post("/properties/properties/{reference}/transactions/transactions-create", "Propertie:transactionsCreate");
+
+$route->get("/properties/properties/{reference}/transactions/transactions-create/{transaction_id}", "Propertie:transactionsCreate");
+$route->post("/properties/properties/{reference}/transactions/transactions-create/{transaction_id}", "Propertie:transactionsCreate");
 
 //transactions
 $route->get("/transactions/home", "Transaction:home");
@@ -162,7 +176,6 @@ $route->get("/settings/structures/{search}/{page}", "Setting:structures");
 $route->get("/settings/structuresUpdate/{structure_id}", "Setting:structuresUpdate");
 $route->post("/settings/structuresUpdate/{structure_id}", "Setting:structuresUpdate");
 
-
 $route->get("/settings/types", "Setting:types");
 $route->post("/settings/types", "Setting:types");
 $route->get("/settings/types/{search}/{page}", "Setting:types");
@@ -170,7 +183,9 @@ $route->get("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 $route->post("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 
 //reports
-$route->get("/relatorios", "Reports:home");
+$route->get("/reports/home", "Settings:home");
+
+
 
 //customer success
 $route->get("/cs", "ContactCenter:cs");
@@ -178,7 +193,6 @@ $route->get("/cs/home", "ContactCenter:home");
 $route->get("/cs/contato", "ContactCenter:contact");
 $route->post("/cs/contato", "ContactCenter:contact");
 $route->get("/cs/contato/{search}/{page}", "ContactCenter:contact");
-// $route->get("/cs/contato/", "ContactCenter:response");
 $route->get("/cs/resposta/{id}", "ContactCenter:response");
 $route->post("/cs/resposta/{id}", "ContactCenter:response");
 
@@ -187,17 +201,14 @@ $route->post("/cs/resposta/{id}", "ContactCenter:response");
 $route->get("/users/home", "Users:home");
 $route->post("/users/home", "Users:home");
 $route->get("/users/home/{search}/{page}", "Users:home");
-
 $route->get("/users/user", "Users:user");
 $route->post("/users/user", "Users:user");
-// $route->get("/users/user/{first_name}", "Users:user");
 $route->get("/users/user/{user_id}", "Users:user");
 $route->post("/users/user/{user_id}", "Users:user");
 
 
 //Backup
 $route->get("/backup", "Backup:backup");
-
 
 
 /**
@@ -220,8 +231,6 @@ $route->dispatch();
 if ($route->error()) {
   $route->redirect("/ops/{$route->error()}");
 }
-
-
 
 
 ob_end_flush();

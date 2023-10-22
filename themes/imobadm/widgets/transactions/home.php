@@ -16,7 +16,7 @@
                 <article class="radius">
                     <h4 class="icon-calendar-check-o">Expiração:</h4>
 
-                    <p><?= $moneyRent ?  date("d-m-Y", strtotime($moneyRent->end)) : "-------" ?>
+                    <p><?= $moneyRent ?  date("d/m/Y", strtotime($moneyRent->end)) : "-------" ?>
                     </p>
 
                 </article>
@@ -39,7 +39,7 @@
                 <article class="radius">
                     <h4 class="icon-calendar-check-o">Expiração:</h4>
 
-                    <p><?= $moneySale ?  date("d-m-Y", strtotime($moneySale->end)) : "-------" ?>
+                    <p><?= $moneySale ?  date("d/m/Y", strtotime($moneySale->end)) : "-------" ?>
                     </p>
 
                 </article>
@@ -60,11 +60,11 @@
             <section class="app_control_subs radius">
                 <h3 class="icon-heartbeat">Imóveis:</h3>
                 <?php for ($i = 0; $i < 10; $i++) : ?>
-                <article class="subscriber">
-                    <h5>22.10.18 22h - Aluguel</h5>
-                    <p>R$ 500,00</p>
-                    <p>IMOB001</p>
-                </article>
+                    <article class="subscriber">
+                        <h5>22.10.18 22h - Aluguel</h5>
+                        <p>R$ 500,00</p>
+                        <p>IMOB001</p>
+                    </article>
                 <?php endfor; ?>
             </section>
         </div>

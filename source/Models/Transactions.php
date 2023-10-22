@@ -8,7 +8,7 @@ class Transactions extends Model
 {
     public function __construct()
     {
-        parent::__construct("transactions", ["id"], ["properties_id", "type", "start", "end", "value"]);
+        parent::__construct("transactions", ["id"], ["properties_id", "type", "start", "end", "value", "status"]);
     }
 
 
@@ -49,4 +49,28 @@ class Transactions extends Model
         }
         return $recurrence;
     }
+
+    /**Function para apresentar as transactions e Properties -> analisar os dados consultados, o que estiver igual nas tabelas não irá trazer! */
+    // public function findTransactionsProperties(int $propertiId)
+    // {
+    //     $this->query = "SELECT t.*, p.* FROM transactions t
+    //                         JOIN properties p ON t.properties_id = p.id
+    //                         WHERE t.properties_id = {$propertiId}";
+
+    //     return $this;
+    // }
+
+    /**Verificar */
+    // public function findTransactions(int $propertiId)
+    // {
+    //     $this->query = "SELECT t.*, p.*, a.*, pe.*, t.status as tStatus FROM transactions t
+    //           JOIN properties p ON t.properties_id = p.id
+    //           JOIN addresses a ON p.addresses_id = a.id
+    //           JOIN people pe ON a.people_id = pe.id
+    //           WHERE t.properties_id = {$propertiId}";
+
+    //     // $results = $this->$query;
+
+    //     return $this;
+    // }
 }
