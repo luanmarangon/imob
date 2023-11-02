@@ -120,6 +120,13 @@ $route->post("/properties/properties/{reference}/transactions/transactions-creat
 $route->get("/properties/properties/{reference}/transactions/transactions-create/{transaction_id}", "Propertie:transactionsCreate");
 $route->post("/properties/properties/{reference}/transactions/transactions-create/{transaction_id}", "Propertie:transactionsCreate");
 
+$route->get("/properties/properties/{reference}/tributes/home", "Propertie:tributes");
+$route->get("/properties/properties/{reference}/tributes/tributes-create", "Propertie:tributesCreate");
+$route->post("/properties/properties/{reference}/tributes/tributes-create", "Propertie:tributesCreate");
+$route->get("/properties/properties/{reference}/tributes/tributes-create/{tribute_id}", "Propertie:tributesCreate");
+$route->post("/properties/properties/{reference}/tributes/tributes-create/{tribute_id}", "Propertie:tributesCreate");
+
+
 //transactions
 $route->get("/transactions/home", "Transaction:home");
 $route->get("/transactions/transactions", "Transaction:transactions");
@@ -183,9 +190,22 @@ $route->get("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 $route->post("/settings/typesUpdate/{type_id}", "Setting:typesUpdate");
 
 //reports
-$route->get("/reports/home", "Settings:home");
+$route->get("/reports/home", "Reports:home");
+
+$route->get("/reports/relImoveis", "Reports:relImoveis");
+$route->post("/reports/relImoveis", "Reports:relImoveis");
+
+$route->get("/reports/relatorioImoveis", "Reports:relatorioImoveis");
+$route->post("/reports/relatorioImoveis", "Reports:relatorioImoveis");
+$route->get("/reports/relatorioImoveis/{search}/{page}", "Reports:relatorioImoveis");
+
+$route->get("/reports/relClients", "Reports:relClients");
+$route->post("/reports/relClients", "Reports:relClients");
 
 
+$route->get("/reports/relatorioClientes", "Reports:relatorioClientes");
+$route->post("/reports/relatorioClientes", "Reports:relatorioClientes");
+$route->get("/reports/relatorioClientes/{search}/{page}", "Reports:relatorioClientes");
 
 //customer success
 $route->get("/cs", "ContactCenter:cs");

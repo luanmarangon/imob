@@ -237,16 +237,56 @@ class Properties extends Model
         return null;
     }
 
-    // public function comfortable(int $propertiId): ?Comfortable
-    // {
-    //     if ($propertiId) {
-    //         return (new Comfortable())->findById($propertiId);
-    //     }
-    //     return null;
-    // }
+
     public function comfortable(): ?Comfortable
     {
 
         return (new Comfortable())->find();
+    }
+
+
+
+
+    public function reportsProperties($dateFirst, $dateLast, $city = null, $state = null, $status = null)
+    {
+        $this->query = "SELECT * FROM properties p 
+                  JOIN addresses a ON a.id = p.addresses_id 
+                  WHERE (p.created_at > '{$dateFirst}' AND p.created_at < '{$dateLast}')";
+
+        if (!empty($city)) {
+            $this->query .= " AND (a.city = '{$city}' AND a.state = '{$state}')";
+            // $this->query .= " AND a.city = '{$data['city']}'";
+        }
+
+        if (!empty($status) && $status != 'Geral') {
+            $this->query .= " AND p.active = '{$status}'";
+        }
+
+        return $this;
+    }
+
+    public function transactionsPropertiesActive(string $type)
+    {
+
+        $this->query = "SELECT *, t.type AS typeTransaction, ty.type AS Type from transactions t 
+                            JOIN properties p ON t.properties_id = p.id
+                            JOIN addresses a ON p.addresses_id = a.id
+                            JOIN images i ON i.properties_id = p.id
+                            JOIN categories c ON p.categories_id = c.id
+                            JOIN types ty ON p.types_id = ty.id
+                            WHERE t.status = 'Ativo' && t.type = '{$type}' GROUP BY t.id ORDER BY t.updated_at DESC";
+
+        return $this;
+    }
+
+    public function propertiesFeatures()
+    {
+
+        $this->query = "SELECT f.feature FROM properties p
+                                JOIN properties_features pf ON pf.properties_id = p.id
+                                JOIN features f ON f.id = pf.features_id
+                                WHERE p.active = 'Ativo'";
+
+        return $this;
     }
 }

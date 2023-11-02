@@ -942,11 +942,6 @@ class Propertie extends Admin
             "addresses" => $addresses,
             "people" => $people,
             "paginator" => $pager->render()
-            // "propertieComfortable" => $propertieComfortable,
-            // "countComfortable" => $countComfortable,
-            // "propertieFeatures"  => $propertieFeatures,
-            // "countFeatures" => $countFeatures,
-            // "propertieStructures"  => $propertieStructures
         ]);
     }
 
@@ -959,9 +954,6 @@ class Propertie extends Admin
         )->fetch();
 
         $addressPropertie = (new Addresses())->addressFull($propertie->addresses_id);
-
-        // var_dump(date("d/m/Y"));
-
 
         if (!empty($data["action"]) && $data["action"] == "create") {
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
@@ -1246,7 +1238,6 @@ class Propertie extends Admin
             "head" => $head,
             "properties" => $properties,
             "imageProperties" => $imageProperties
-            // "activesProperties" => $activesProperties
         ]);
     }
 
@@ -1316,7 +1307,129 @@ class Propertie extends Admin
             "head" => $head,
             "properties" => $properties,
             "imageProperties" => $imageProperties
-            // "activesProperties" => $activesProperties
+        ]);
+    }
+
+    public function tributes(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $propertie = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $tributes = (new Tributes())->find("properties_id = :p", "p={$propertie->id}")->fetch(true);
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/tributes/home", [
+            "app" => "properties/home",
+            "head" => $head,
+            "propertie" => $propertie,
+            "tributes" => $tributes
+        ]);
+    }
+
+    public function tributesCreate(array $data): void
+    {
+        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+        $propertie = (new Properties())->find(
+            "reference = :reference",
+            "reference={$data["reference"]}"
+        )->fetch();
+
+        $charge = (new Charge())->find()->fetch(true);
+        $tribute = (new Tributes())->find("properties_id = :p", "p={$propertie->id}")->fetch();
+
+        if (!empty($data["action"]) && $data["action"] == "create") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $propertie = (new Properties())->find(
+                "reference = :reference",
+                "reference={$data["reference"]}"
+            )->fetch();
+
+            $tributesCreate = new Tributes();
+            $tributesCreate->properties_id = $propertie->id;
+            $tributesCreate->charges_id = $data['tribute'];
+            $tributesCreate->value =  str_replace([".", ","], ["", "."], $data['tributeValue']);
+            $tributesCreate->exercise = $data['tributeExercise'];
+
+            if (!$tributesCreate->save()) {
+                $json["message"] = $tributesCreate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Tributo cadastrado com sucesso...")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/tributes/home")]);
+            return;
+        }
+
+
+        if (!empty($data["action"]) && $data["action"] == "update") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $tributeUpdate = (new Tributes())->findById($tribute->id);
+            $tributeUpdate->charges_id = $data['tribute'];
+            $tributeUpdate->value = str_replace([".", ","], ["", "."], $data['tributeValue']);
+            $tributeUpdate->exercise = $data['tributeExercise'];
+
+            if (!$tributeUpdate->save()) {
+                $json["message"] = $tributeUpdate->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Tributo alterado com sucesso...")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/tributes/home")]);
+            return;
+        }
+
+
+        if (!empty($data["action"]) && $data["action"] == "delete") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $tributeDelete = (new Tributes())->findById($data['tribute_id']);
+
+            if (!$tributeDelete->destroy()) {
+                $json["message"] = $tributeDelete->message()->render();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->success("Tributo excluído com sucesso...")->flash();
+            echo json_encode(["redirect" => url("/admin/properties/properties/{$propertie->reference}/tributes/home")]);
+            return;
+        }
+
+
+
+        $tributeEdit = null;
+        if (!empty($data["tribute_id"])) {
+            $tributeId = filter_var($data["tribute_id"], FILTER_SANITIZE_STRIPPED);
+            $tributeEdit = (new Tributes())->findById($tributeId);
+        }
+
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Imóveis",
+            CONF_SITE_DESC,
+            url("/admin"),
+            theme("/assets/images/image.jpg", CONF_VIEW_ADMIN),
+            false
+        );
+
+        echo $this->view->render("widgets/properties/tributes/tributes-create", [
+            "app" => "properties/home",
+            "head" => $head,
+            "propertie" => $propertie,
+            "charge" => $charge,
+            "tribute" => $tributeEdit
         ]);
     }
 }

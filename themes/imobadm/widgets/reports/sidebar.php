@@ -10,9 +10,10 @@
             return "<a class=\"icon-{$icon} radius {$active}\" href=\"{$url}\">{$title}</a>";
         };
 
-        echo $nav("laptop", "transactions/home", "Dashboard");
-        echo $nav("money", "transactions/transactions", "Transação");
-        echo $nav("plus-circle", "properties/properties", "Nova Transação");
+        echo $nav("laptop", "reports/home", "Dashboard");
+        echo $nav("laptop", "reports/relImoveis", "Relatórios de Imóveis");
+        echo $nav("laptop", "reports/relClients", "Relatórios de Clientes");
+
 
         // echo $nav("files-o", "imoveis/relatorios/home", "Relatórios");
 

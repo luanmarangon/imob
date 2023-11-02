@@ -7,54 +7,78 @@
     </header>
 
     <div class="dash_content_app_box">
-        <div class="app_control_home">
-            <section class="app_control_home_stats">
-                <article class="radius">
-                    <form class="app_form" action="" method="post">
-                        <div class="label_g2">
-                            <label class="label">
-                                <span class="legend">Início:</span>
-                                <input type="date" id="data" name="data">
-                            </label>
+        <form class="app_form" action="<?= url("/admin/reports/relatorioImoveis"); ?>" method="post">
+            <!--ACTION SPOOFING-->
+            <input type="hidden" name="action" value="relImoveis" />
+            <div class="label_g2">
+                <label class="label">
+                    <span class="legend">*Data Inicial:</span>
+                    <input type="date" name="dateFirst" required />
+                </label>
 
-                            <label class="label">
-                                <span class="legend">Final:</span>
-                                <input type="date" id="data" name="data" placeholder="DD/MM/AAAA">
-                            </label>
-                            <label class="label">
-                                <span class="legend">Situação:</span>
-                                <select name="" id="">
-                                    <option value="">Ativo</option>
-                                    <option value="">Inativo</option>
-                                </select>
-                            </label>
-                            <label class="label">
-                                <span class="legend">Situação:</span>
-                                <select name="" id="">
-                                    <option value="">Alu</option>
-                                    <option value="">Inativo</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="al-right">
-                            <button class="btn btn-green icon-check-square-o">Consultar</button>
-                        </div>
-                    </form>
-                </article>
+                <label class="label">
+                    <span class="legend">*Data Final:</span>
+                    <input type="date" name="dateLast" required />
+                </label>
 
-            </section>
+                <label class="label">
+                    <span class="legend">Cidade</span>
+                    <select name="city" id="">
+                        <option value="Geral">GERAL</option>
+                        <?php foreach ($citys as $city) : ?>
+                            <option value="<?= $city->city; ?>-<?= $city->state; ?>"><?= $city->city; ?>-<?= $city->state; ?></option>
+                        <?php endforeach; ?>
+
+                    </select>
+                </label>
+                <label class="label">
+                    <span class="legend">*Ativo?</span>
+
+                    <select name="status" id="">
+                        <!-- <option value=""></option> -->
+                        <option value="Ativo">ATIVO</option>
+                        <option value="Inativo">INATIVO</option>
+                        <option value="Geral">GERAL</option>
+
+                    </select>
+                </label>
+            </div>
 
 
-            <section class="app_control_subs radius">
-                <h3 class="icon-heartbeat">Imóveis:</h3>
-                <?php for ($i = 0; $i < 10; $i++) : ?>
-                    <article class="subscriber">
-                        <h5>22.10.18 22h - Rua Alcides Ramos da Silva, 315</h5>
-                        <p>Martinópolis-SP</p>
-                        <p>Concluída</p>
-                    </article>
-                <?php endfor; ?>
-            </section>
-        </div>
+
+            <div class="al-right">
+                <button class="btn btn-blue icon-check-square-o">Buscar</button>
+            </div>
+        </form>
+    </div>
+    <div class="dash_content_app_box">
+        <?php if ($reports) : ?>
+            <div id="containerDoBotao">
+                <button class="btn btn-default icon-print" id="printReports">Imprimir</button>
+            </div>
+            <hr>
+            <table class="reports">
+                <thead>
+                    <tr>
+                        <th>Referencia</th>
+                        <th>Categoria</th>
+                        <th>C.E.P.</th>
+                        <th>Cidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reports as $key) : ?>
+                        <tr>
+                            <td><?= $key->reference; ?></td>
+                            <td><?= $key->category($key->categories_id)->category; ?></td>
+                            <td><?= $key->zipcode; ?></td>
+                            <td><?= $key->city; ?>-<?= $key->state; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <!-- <?= $paginator; ?> -->
+        <?php endif; ?>
     </div>
 </section>

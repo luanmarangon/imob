@@ -35,4 +35,21 @@ class People extends Model
         }
         return null;
     }
+
+    public function reportsPeoples($dateFirst, $dateLast, $genre = null, $status = null)
+    {
+        $this->query = "SELECT * FROM people p 
+                  JOIN contacts c ON c.people_id = p.id  
+                  WHERE (p.created_at > '{$dateFirst}' AND p.created_at < '{$dateLast}')";
+
+        if (!empty($genre)) {
+            $this->query .= " AND p.genre = '{$genre}'";
+        }
+
+        if (!empty($status) && $status != 'Geral') {
+            $this->query .= " AND p.status = '{$status}'";
+        }
+
+        return $this;
+    }
 }

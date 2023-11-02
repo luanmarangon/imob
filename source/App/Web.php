@@ -62,42 +62,29 @@ class Web extends Controller
 
     public function home(): void
     {
-        $properties = (new Properties())->find(
-            "active = :active",
-            "active=Ativo"
-        )
-            // ->limit(10)
-            // ->order("updated_at ASC")
-            ->fetch(true);
 
-        /**Validar o order updated_at ASC */
+        $queryStatus = (new Transactions())->find("end<NOW()&&status!='Inativo'")->fetch(true);
+
+        if ($queryStatus) {
+            foreach ($queryStatus as $key) {
+
+                $transactionUpdate = (new Transactions())->findById($key->id);
+                $transactionUpdate->status = 'Inativo';
+                $transactionUpdate->save();
+            }
+        }
+
 
         /**Filtros */
-
         $category = (new Category())->find()->fetch(true);
         $comfortable = (new Comfortable())->find()->fetch(true);
         $features = (new Features())->find()->fetch(true);
         $types = (new Type())->find()->fetch(true);
         $addresses = (new Addresses())->distinct("city")->fetch(true);
 
+        $sale = (new Properties())->transactionsPropertiesActive('venda')->fetch(true);
+        $rent = (new Properties())->transactionsPropertiesActive('aluguel')->fetch(true);
 
-
-        // var_dump($addresses);
-
-        $sale = (new Transactions())->find(
-            "type = :type AND status = :status ",
-            "type=Venda&status=Ativo"
-        )->fetch(true);
-
-        $rent = (new Transactions())->find(
-            "type = :type AND status = :status ",
-            "type=Aluguel&status=Ativo"
-        )->fetch(true);
-
-        // var_dump($properties);
-
-        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
-        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -108,15 +95,12 @@ class Web extends Controller
 
         echo $this->view->render("home", [
             "head" => $head,
-            "properties" => $properties,
-            "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures,
             "sale" => $sale,
             "rent" => $rent,
             "category" => $category,
             "types" => $types,
             "features" => $features,
-            "addresses" => $addresses
+            "addresses" => $addresses,
         ]);
     }
 
@@ -372,18 +356,6 @@ class Web extends Controller
             $type = "Venda";
         }
 
-        $properties = (new Properties())->find(
-            "active = :active",
-            "active=1"
-        )
-            ->limit(8)
-            // ->order("updated_at ASC")
-            ->fetch(true);
-
-        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
-        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
-
-
         /**Filtros */
         $category = (new Category())->find()->fetch(true);
         $comfortable = (new Comfortable())->find()->fetch(true);
@@ -391,39 +363,11 @@ class Web extends Controller
         $typesProperties = (new Type())->find()->fetch(true);
         $addresses = (new Addresses())->distinct("city")->fetch(true);
 
-        $transactionType = (new Transactions())->find(
-            "type = :type AND status = :status",
-            "type={$data['type']}&status=Ativo"
-        )->fetch(true);
-
-        //create
-        // if (!empty($data["action"]) && $data["action"] == "search") {
-        // $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-        // if (empty($data['category']) && empty($data['location']) && empty($data['typeProperties']) && empty($data['feature'])) {
-
-        //     $transactionType = (new Transactions())->find(
-        //         "type = :type AND status = :status",
-        //         "type={$data['type']}&status=Ativo"
-        //     )->fetch(true);
-        // } else {
-
-        //     if ($data['category'] === "") {
-
-        //         $category = (new Category())->find("", "", "id")->fetch(true);
-        //         $data['category'] = null;
-        //     }
+        $propertieTransactions = (new Properties())->transactionsPropertiesActive($type)->fetch(true);
+        $query = (new Properties())->propertiesFeatures()->fetch(true);
+        // var_dump($query);
 
 
-
-        //     $category = !empty($data['category']) ? $data['category'] : $category;
-        //     $locationData = !empty($data['location']) ? $data['location'] : null;
-        //     $typesData = !empty($data['typeProperties']) ? $data['typeProperties'] : null;
-        //     $featuresData = !empty($data['feature']) ? $data['feature'] : null;
-
-        //     // excluir essa Function searchProperties
-        //     // $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData)->fetch(true);
-        //     $transactionType = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData)->fetch(true);
-        // }
 
 
 
@@ -436,12 +380,8 @@ class Web extends Controller
 
         echo $this->view->render("filter", [
             "head" => $head,
-            "transactionType" => $transactionType,
-            "properties" => $properties,
-            "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures,
+            "propertieTransactions" => $propertieTransactions,
             "type" => $type,
-            // "data" => $data['type'],
             "category" => $category,
             "typesProperties" => $typesProperties,
             "features" => $features,

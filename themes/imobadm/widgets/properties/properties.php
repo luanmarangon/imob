@@ -41,6 +41,7 @@
                         <a class="icon-vallet btn btn-red" href="<?= url("admin/properties/properties/{$propertie->reference}/transactions/transactions"); ?>" title="">Transações</a>
                         <a class="icon-pencil btn btn-blue" href="<?= url("admin/properties/properties-create/{$propertie->id}"); ?>" title="">Editar</a>
                         <a class="icon-file-image-o btn btn-default-admin" href="<?= url("admin/properties/propertiesImages/{$propertie->reference}"); ?>" title="">Imagens</a>
+                        <a class="icon-file-image-o btn btn-default" href="<?= url("admin/properties/properties/{$propertie->reference}/tributes/home"); ?>" title="">Tributos</a>
 
                         <?php if ($propertie->active != "Inativo") : ?>
                             <a href=" #" class="icon-ban btn btn-yellow" data-post="<?= url("/admin/properties/properties-create/{$propertie->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja inativar o Imóvel e todos os dados relacionados a ele?" data-properties_id="<?= $propertie->id; ?>">Desativar</a>
