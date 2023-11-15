@@ -8,35 +8,35 @@
 
 
     <div class="dash_content_app_box">
-        <?php if ($reports) : ?>
-            <div id="containerDoBotao">
-                <a class="btn btn-default icon-print" id="printReports">Imprimir</a>
-            </div>
-            <hr>
-            <table class="reports">
-                <thead>
+        <!-- <?php if ($reports) : ?> -->
+        <div id="containerDoBotao">
+            <a class="btn btn-default icon-print" id="printReports">Imprimir</a>
+        </div>
+        <hr>
+        <table class="reports">
+            <thead>
+                <tr>
+                    <th>Referencia</th>
+                    <th>Categoria</th>
+                    <th>C.E.P.</th>
+                    <th>Cidade</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($reports as $key) : ?>
                     <tr>
-                        <th>Referencia</th>
-                        <th>Categoria</th>
-                        <th>C.E.P.</th>
-                        <th>Cidade</th>
-                        <th>Status</th>
+                        <td><?= $key->reference; ?></td>
+                        <td><?= $key->category($key->categories_id)->category; ?></td>
+                        <td><?= $key->zipcode; ?></td>
+                        <td><?= $key->city; ?>-<?= $key->state; ?></td>
+                        <td><?= $key->active; ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($reports as $key) : ?>
-                        <tr>
-                            <td><?= $key->reference; ?></td>
-                            <td><?= $key->category($key->categories_id)->category; ?></td>
-                            <td><?= $key->zipcode; ?></td>
-                            <td><?= $key->city; ?>-<?= $key->state; ?></td>
-                            <td><?= $key->active; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-            <?= $paginator; ?>
-        <?php endif; ?>
+        <!-- <?= $paginator; ?> -->
+        <!-- <?php endif; ?> -->
     </div>
 </section>

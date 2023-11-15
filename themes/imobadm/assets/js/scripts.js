@@ -277,24 +277,26 @@ $(function () {
 
     $(document).ready(function () {
         var select = document.getElementById("select-opcoes");
-        select.addEventListener("change", function () {
-            var opcaoSelecionada = select.value;
-            var opcao1 = document.getElementById("phone");
-            var opcao2 = document.getElementById("email");
-            if (opcaoSelecionada === "WhatsApp") {
-                opcao1.style.display = "block";
-                opcao2.style.display = "none";
-            } else if (opcaoSelecionada === "Fixo") {
-                opcao1.style.display = "block";
-                opcao2.style.display = "none";
-            } else if (opcaoSelecionada === "E-mail") {
-                opcao1.style.display = "none";
-                opcao2.style.display = "block";
-            } else {
-                opcao1.style.display = "none";
-                opcao2.style.display = "none";
-            }
-        });
+        if (select) {
+            select.addEventListener("change", function () {
+                var opcaoSelecionada = select.value;
+                var opcao1 = document.getElementById("phone");
+                var opcao2 = document.getElementById("email");
+                if (opcaoSelecionada === "WhatsApp") {
+                    opcao1.style.display = "block";
+                    opcao2.style.display = "none";
+                } else if (opcaoSelecionada === "Fixo") {
+                    opcao1.style.display = "block";
+                    opcao2.style.display = "none";
+                } else if (opcaoSelecionada === "E-mail") {
+                    opcao1.style.display = "none";
+                    opcao2.style.display = "block";
+                } else {
+                    opcao1.style.display = "none";
+                    opcao2.style.display = "none";
+                }
+            });
+        }
     })
 
 
@@ -316,18 +318,20 @@ $(function () {
         var container = document.querySelector('.newForm');
         var icon = document.getElementById('icon_new');
 
-        mostrarForm.addEventListener('click', function () {
-            if (container.style.display === 'none') {
-                container.style.display = 'block';
-                icon.classList.remove('icon-expand');
-                icon.classList.add('icon-compress')
+        if (mostrarForm) {
+            mostrarForm.addEventListener('click', function () {
+                if (container.style.display === 'none') {
+                    container.style.display = 'block';
+                    icon.classList.remove('icon-expand');
+                    icon.classList.add('icon-compress')
 
-            } else {
-                container.style.display = 'none';
-                icon.classList.remove('icon-compress');
-                icon.classList.add('icon-expand')
-            }
-        });
+                } else {
+                    container.style.display = 'none';
+                    icon.classList.remove('icon-compress');
+                    icon.classList.add('icon-expand')
+                }
+            });
+        }
     })
 
     /**
@@ -509,16 +513,16 @@ $(function () {
         };
     }
 
-    /**Função para deixar visivel o comfortable no details */
-    // Captura o botão
-    var gerenciarBotao = document.getElementById('gerenciarBotao');
-    // Captura o elemento com ID 'teste'
-    var testeInput = document.getElementById('teste');
-    // Adiciona um ouvinte de evento para o clique no botão
-    gerenciarBotao.addEventListener('click', function () {
-        // Remove a classe 'ds-none' do input para mostrá-lo
-        testeInput.classList.remove('ds-none');
-    });
+    // /**Função para deixar visivel o comfortable no details */
+    // // Captura o botão
+    // var gerenciarBotao = document.getElementById('gerenciarBotao');
+    // // Captura o elemento com ID 'teste'
+    // var testeInput = document.getElementById('teste');
+    // // Adiciona um ouvinte de evento para o clique no botão
+    // gerenciarBotao.addEventListener('click', function () {
+    //     // Remove a classe 'ds-none' do input para mostrá-lo
+    //     testeInput.classList.remove('ds-none');
+    // });
 
 
     /**Analisar datePicker */
