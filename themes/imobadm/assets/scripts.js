@@ -303,7 +303,7 @@ $('.mask-email').mask("A",{translation:{"A":{pattern:/[\w@\-.+]/,recursive:!0}}}
 class CoordMapType{tileSize;alt=null;maxZoom=10;minZoom=0;name=null;projection=null;radius=6378137;constructor(tileSize){this.tileSize=tileSize}
 getTile(coord,zoom,ownerDocument){const div=ownerDocument.createElement("div");return div}
 releaseTile(tile){}}
-function initMap(){const latitude=parseFloat(document.getElementById("latitude").value);const longitute=parseFloat(document.getElementById("longitute").value);const location={lat:latitude,lng:longitute};console.log(latitude);console.log(longitute);console.log(location);const map=new google.maps.Map(document.getElementById("map"),{zoom:17,center:location,});const raio=3000;const cityCircle=new google.maps.Circle({strokeColor:"green",strokeOpacity:0.8,strokeWeight:1,fillColor:"green",fillOpacity:0.35,map,center:location,radius:Math.sqrt(raio),})}
+function initMap(){if(document.getElementById("latitude")&&document.getElementById("longitute")){const latitude=parseFloat(document.getElementById("latitude").value);const longitute=parseFloat(document.getElementById("longitute").value);const location={lat:latitude,lng:longitute};const map=new google.maps.Map(document.getElementById("map"),{zoom:17,center:location,});const raio=3000;const cityCircle=new google.maps.Circle({strokeColor:"green",strokeOpacity:0.8,strokeWeight:1,fillColor:"green",fillOpacity:0.35,map,center:location,radius:Math.sqrt(raio),})}}
 window.initMap=initMap;/*!
   * Bootstrap v5.3.0-alpha1 (https://getbootstrap.com/)
   * Copyright 2011-2022 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)

@@ -19,12 +19,15 @@ $v->layout("_theme"); ?>
 <div class="main_filter">
     <div class="container my-5">
         <div>
-            <form action="/filtro" class="row form-inline w-100" method="post" enctype="multipart/form-data">
-
+            <form action="<?= url("/propertySearch"); ?>" class="row form-inline w-100" method="post" enctype="multipart/form-data">
+                <div class="ajax_response"><?= flash(); ?></div>
+                <?= csrf_input(); ?>
+                <!--ACTION SPOOFING-->
+                <input type="hidden" name="action" value="home" />
 
                 <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Categorias</b></label>
-                    <select name="search" id="search" class="selectpicker" title="Escolha...">
+                    <label for="category" class="mb-2"><b>Categorias</b></label>
+                    <select name="category[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
                         <?php foreach ($category as $c) : ?>
                             <option value="<?= $c->id; ?>"><?= $c->category; ?></option>
                         <?php endforeach; ?>
@@ -32,8 +35,8 @@ $v->layout("_theme"); ?>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Tipo</b></label>
-                    <select name="search" id="search" class="selectpicker" title="Escolha...">
+                    <label for="type" class="mb-2"><b>Tipo</b></label>
+                    <select name="type[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
                         <?php foreach ($types as $t) : ?>
                             <option value="<?= $t->id; ?>"><?= $t->type; ?></option>
                         <?php endforeach; ?>
@@ -41,17 +44,17 @@ $v->layout("_theme"); ?>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Localidade</b></label>
-                    <select name="search" id="localidade[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                    <label for="localition" class="mb-2"><b>Localidade</b></label>
+                    <select name="locality[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
                         <?php foreach ($addresses as $a) : ?>
-                            <option value="<?= $a->id; ?>"><?= $a->city; ?></option>
+                            <option value="<?= $a->city; ?>-<?= $a->state; ?>"><?= $a->city; ?>-<?= $a->state; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-lg-3">
                     <label for="search" class="mb-2"><b>Características</b></label>
-                    <select name="search" id="search" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                    <select name="features[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
                         <?php foreach ($features as $f) : ?>
                             <option value="<?= $f->id; ?>"><?= $f->feature; ?></option>
                         <?php endforeach; ?>
@@ -64,13 +67,13 @@ $v->layout("_theme"); ?>
                 <!-- </div> -->
 
                 <!-- filtros avancados -->
-                <div class="row form-inline w-100 advanced_filter">
+                <!-- <div class="row form-inline w-100 advanced_filter">
                     <hr>
                     <?php
                     for ($i = 0; $i < 4; $i++) {   ?>
                         <div class="form-group col-12 col-sm-6 col-lg-3">
                             <label for="search" class="mb-2"><b>Comprar ou Alugar?</b></label>
-                            <select name="search" id="search" class="selectpicker" title="Escolha...">
+                            <select name="search" class="selectpicker" title="Escolha...">
                                 <option value=" ">Comprar</option>
                                 <option value=" ">Alugar</option>
                             </select>
@@ -78,7 +81,7 @@ $v->layout("_theme"); ?>
                     <?php
                     }
                     ?>
-                </div>
+                </div> -->
 
 
                 <div class="col-6 mt-3 text-end">

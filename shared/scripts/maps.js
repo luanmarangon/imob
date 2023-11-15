@@ -24,30 +24,30 @@ class CoordMapType {
 
 function initMap() {
     // Create the map.
-    const latitude = parseFloat(document.getElementById("latitude").value);
-    const longitute = parseFloat(document.getElementById("longitute").value);
+    /** Condição para não apresentar erro nas demais páginas que não usar o Elemento*/
+    if (document.getElementById("latitude") && document.getElementById("longitute")) {
 
-    const location = { lat: latitude, lng: longitute };
-    console.log(latitude);
-    console.log(longitute);
-    console.log(location);
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 17,
-        center: location,
-        // mapTypeId: "satellite",
+        const latitude = parseFloat(document.getElementById("latitude").value);
+        const longitute = parseFloat(document.getElementById("longitute").value);
+        const location = { lat: latitude, lng: longitute };
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 17,
+            center: location,
+            // mapTypeId: "satellite",
 
-    });
-    const raio = 3000;
-    const cityCircle = new google.maps.Circle({
-        strokeColor: "green",
-        strokeOpacity: 0.8,
-        strokeWeight: 1,
-        fillColor: "green",
-        fillOpacity: 0.35,
-        map,
-        center: location,
-        radius: Math.sqrt(raio),
-    });
+        });
+        const raio = 3000;
+        const cityCircle = new google.maps.Circle({
+            strokeColor: "green",
+            strokeOpacity: 0.8,
+            strokeWeight: 1,
+            fillColor: "green",
+            fillOpacity: 0.35,
+            map,
+            center: location,
+            radius: Math.sqrt(raio),
+        });
+    }
 }
 
 window.initMap = initMap;

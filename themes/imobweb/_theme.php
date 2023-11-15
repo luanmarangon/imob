@@ -107,6 +107,7 @@
                         <li><a href="<?= url("/filtro/Venda"); ?>">Comprar</a></li>
                         <li><a href="<?= url("/contato"); ?>">Contato</a></li>
                         <li><a href="<?= url("/termos"); ?>">Termos de Uso</a></li>
+                        <li><a href="<?= url("/politicaPrivacidade"); ?>">Politica de Privacidade</a></li>
                         <li><a href="<?= url("/admin/login"); ?>">Login</a></li>
                     </ul>
                 </div>

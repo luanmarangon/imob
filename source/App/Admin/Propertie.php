@@ -148,6 +148,7 @@ class Propertie extends Admin
             $addressAPI = maps_api($address);
             $addressCreate->latitude = $addressAPI['latitude'];
             $addressCreate->longitude = $addressAPI['longitude'];
+            $addressCreate->status = 'Ativo';
 
             $queryAddresses = (new Addresses())->find("latitude = :lat and longitude = :log", "lat={$addressCreate->latitude}&log={$addressCreate->longitude}")->fetch(true);
 
@@ -391,9 +392,12 @@ class Propertie extends Admin
 
             return;
         }
+
         if (!empty($data["action"]) && $data["action"] == "delete") {
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
             $propertieDelete = (new Properties())->findById($data['propertie_id']);
+            $propertieAddress = (new Addresses())->findById($propertieDelete->addresses_id);
+            $propertieTransaction = (new Transactions())->findTransactionsProperti($propertieDelete->id)->fetch(true);
 
             /**
              * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
@@ -410,21 +414,28 @@ class Propertie extends Admin
                 return;
             }
 
-            $propertieDelete->active = 'Inativo';
-            // $propertieDelete->save();
+            if ($propertieAddress) {
+                $propertieAddress->status = 'Inativo';
+                $propertieAddress->save();
+            }
 
+            if ($propertieTransaction) {
+                foreach ($propertieTransaction as $key) {
+
+                    $key->status = 'Inativo';
+                    $key->end = date_fmt_back(date("d/m/Y"));
+                    $key->save();
+                }
+            }
+
+            $propertieDelete->active = 'Inativo';
             if (!$propertieDelete->save()) {
                 $json["message"] = $propertieDelete->message()->render();
                 echo json_encode($json);
                 return;
             }
 
-            $transaction = (new transactions())->find("properties_id={$propertieDelete->id}")->fetch();
-            $transaction->status = 'Inativo';
-            $transaction->save();
-
             $this->message->success("Imóvel Inativado com sucesso...")->flash();
-
             echo json_encode(["redirect" => url("/admin/properties/properties")]);
             return;
         }
@@ -432,6 +443,8 @@ class Propertie extends Admin
         if (!empty($data["action"]) && $data["action"] == "ativar") {
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
             $propertieAtivar = (new Properties())->findById($data['propertie_id']);
+            $propertieAddress = (new Addresses())->findById($propertieAtivar->addresses_id);
+
 
             /**
              * Condição para travar um User->Level menor de deletar os dados de um User->Level maior
@@ -448,6 +461,7 @@ class Propertie extends Admin
                 return;
             }
 
+
             $propertieAtivar->active = 'Ativo';
             // $propertieAtivar->save();
 
@@ -457,8 +471,12 @@ class Propertie extends Admin
                 return;
             }
 
-            $this->message->success("Imóvel Ativado com sucesso...")->flash();
+            if ($propertieAddress) {
+                $propertieAddress->status = 'Ativo';
+                $propertieAddress->save();
+            }
 
+            $this->message->success("Imóvel Ativado com sucesso...")->flash();
             echo json_encode(["redirect" => url("/admin/properties/properties")]);
             return;
         }
@@ -1090,6 +1108,7 @@ class Propertie extends Admin
             $transactionInactive = (new Transactions())->findById($data['transaction_id']);
 
             $transactionInactive->status = 'Inativo';
+            $transactionInactive->end = date_fmt_back(date("d/m/Y"));
 
             if (!$transactionInactive->save()) {
                 $json["message"] = $transactionInactive->message()->render();

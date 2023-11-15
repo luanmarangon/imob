@@ -43,6 +43,7 @@ class Properties extends Model
         return null;
     }
 
+    /** Analisar se ira usar*/
     public function imagesProperties(int $propertiId): ?Images
     {
         if ($propertiId) {
@@ -138,40 +139,116 @@ class Properties extends Model
     //     return $this;
     // }
 
-    public function searchProperties($category, $typesData = null, $locationData = null, $featuresData = null): self
+    // public function searchProperties($category, $typesData = null, $locationData = null, $featuresData = null): self
+    // {
+
+    //     if (!is_array($category)) {
+    //         $categoryIds = $category;
+    //     } else {
+
+    //         $categoryIds = [];
+    //         foreach ($category as $cat) {
+    //             $categoryIds[] = $cat->id;
+    //         }
+    //         $categoryIds = implode(',', $categoryIds);
+    //     }
+    //     $this->query = "SELECT *
+    //                     FROM properties p
+    //                     LEFT JOIN addresses a ON p.addresses_id = a.id
+    //                     LEFT JOIN properties_features pf ON p.id = pf.properties_id
+    //                     WHERE p.categories_id IN ({$categoryIds})";
+
+    //     // $this->params = [
+    //     //     'category' => $category,
+    //     // ];
+
+    //     if (!empty($typesData)) {
+    //         $typeIds = implode(',', $typesData);
+    //         $this->query .= " AND p.types_id IN ({$typeIds})";
+    //     }
+
+    //     if (!empty($locationData)) {
+    //         $locationPatterns = array_map(function ($location) {
+    //             return "'%" . $location . "%'";
+    //         }, $locationData);
+    //         $locationLike = implode(' OR a.city LIKE ', $locationPatterns);
+    //         $this->query .= " AND (a.city LIKE {$locationLike})";
+    //     }
+
+    //     if (!empty($featuresData)) {
+    //         $featureIds = implode(',', $featuresData);
+    //         $this->query .= " AND pf.features_id IN ({$featureIds})";
+    //     }
+
+    //     return $this;
+    // }
+
+    public function searchPropertiesAndTransactions($type = null, $category, $typesData = null, $locationData = null, $featuresData = null): self
     {
+        if (!is_array($typesData)) {
+            $typesIds = $typesData;
+        } else {
+            $typesIds = [];
+            foreach ($typesData as $ty) {
+                $typesIds[] = $ty;
+            }
+            $typesIds = implode(',', $typesIds);
+        }
+
 
         if (!is_array($category)) {
             $categoryIds = $category;
         } else {
-
             $categoryIds = [];
             foreach ($category as $cat) {
-                $categoryIds[] = $cat->id;
+                // var_dump($cat);
+
+                $categoryIds[] = $cat;
+                // var_dump($categoryIds);
+                // exit();
             }
             $categoryIds = implode(',', $categoryIds);
         }
-        $this->query = "SELECT *
-                        FROM properties p
-                        LEFT JOIN addresses a ON p.addresses_id = a.id
-                        LEFT JOIN properties_features pf ON p.id = pf.properties_id
-                        WHERE p.categories_id IN ({$categoryIds})";
 
-        // $this->params = [
-        //     'category' => $category,
-        // ];
-
-        if (!empty($typesData)) {
-            $typeIds = implode(',', $typesData);
-            $this->query .= " AND p.types_id IN ({$typeIds})";
+        if (!is_array($locationData)) {
+            $cityNames = $locationData;
+        } else {
+            $cityNames = [];
+            foreach ($locationData as $city) {
+                $parts = explode("-", $city);
+                $cityNames[] = $parts[0];
+            }
+            $cityNames = implode("', '", $cityNames);
         }
 
-        if (!empty($locationData)) {
-            $locationPatterns = array_map(function ($location) {
-                return "'%" . $location . "%'";
-            }, $locationData);
-            $locationLike = implode(' OR a.city LIKE ', $locationPatterns);
-            $this->query .= " AND (a.city LIKE {$locationLike})";
+
+        $this->query = "SELECT t.id AS TransactionId,  t.type AS typeTransaction, ty.type AS Type, p.*, a.*, i.*, c.*, ty.*, t.*, pf.* 
+                            FROM transactions t 
+                            JOIN properties p ON t.properties_id = p.id 
+                            JOIN addresses a ON p.addresses_id = a.id 
+                            LEFT JOIN images i ON i.properties_id = p.id 
+                            JOIN categories c ON p.categories_id = c.id 
+                            JOIN types ty ON p.types_id = ty.id 
+                            JOIN properties_features pf ON pf.properties_id = p.id
+                            JOIN features f ON pf.features_id = f.id WHERE t.status = 'Ativo'";
+
+        /**type => Aluguel|Venda */
+
+
+        /**TypesData => tipo do Imovel, tabela TYPES */
+        if (!empty($typesIds)) {
+            // $typeIds = implode(',', $typesData);
+            $this->query .= " AND p.types_id IN ({$typesIds})";
+        }
+
+        if (!empty($categoryIds)) {
+            $this->query .= " AND p.categories_id IN ({$categoryIds})";
+        }
+
+
+        /**Cidade escolhida no Form, pode vir várias {Array} */
+        if (!empty($cityNames)) {
+            $this->query .= " AND a.city IN ('{$cityNames}')";
         }
 
         if (!empty($featuresData)) {
@@ -179,48 +256,11 @@ class Properties extends Model
             $this->query .= " AND pf.features_id IN ({$featureIds})";
         }
 
-        return $this;
-    }
-
-    public function searchPropertiesAndTransactions($type, $category, $typesData = null, $locationData = null, $featuresData = null): self
-    {
-        if (!is_array($category)) {
-            $categoryIds = $category;
-        } else {
-            $categoryIds = [];
-            foreach ($category as $cat) {
-                $categoryIds[] = $cat->id;
-            }
-            $categoryIds = implode(',', $categoryIds);
+        if (!empty($type)) {
+            $this->query .= " AND t.type = '{$type}'";
         }
 
-        $this->query = "SELECT DISTINCT p.*, t.*
-                            FROM properties p
-                            LEFT JOIN addresses a ON p.addresses_id = a.id
-                            LEFT JOIN properties_features pf ON p.id = pf.properties_id
-                            LEFT JOIN transactions t ON p.id = t.properties_id
-                            WHERE p.categories_id IN ({$categoryIds}) 
-                            AND t.properties_id = p.id 
-                            AND t.status = 'ativo'
-                            AND t.type = '$type'";
-
-        if (!empty($typesData)) {
-            $typeIds = implode(',', $typesData);
-            $this->query .= " AND p.types_id IN ({$typeIds})";
-        }
-
-        if (!empty($locationData)) {
-            $locationPatterns = array_map(function ($location) {
-                return "'%" . $location . "%'";
-            }, $locationData);
-            $locationLike = implode(' OR a.city LIKE ', $locationPatterns);
-            $this->query .= " AND (a.city LIKE {$locationLike})";
-        }
-
-        if (!empty($featuresData)) {
-            $featureIds = implode(',', $featuresData);
-            $this->query .= " AND pf.features_id IN ({$featureIds})";
-        }
+        $this->query .= " GROUP BY t.id ORDER BY t.updated_at DESC";
 
         return $this;
     }
@@ -265,16 +305,24 @@ class Properties extends Model
         return $this;
     }
 
-    public function transactionsPropertiesActive(string $type)
+    public function transactionsPropertiesActive(?string $type)
     {
 
-        $this->query = "SELECT *, t.type AS typeTransaction, ty.type AS Type from transactions t 
+        $this->query = "SELECT t.id AS TransactionId,  t.type AS typeTransaction, ty.type AS Type, p.*, a.*, i.*, c.*, ty.*, t.* 
+                            FROM transactions t 
                             JOIN properties p ON t.properties_id = p.id
                             JOIN addresses a ON p.addresses_id = a.id
-                            JOIN images i ON i.properties_id = p.id
+                            LEFT JOIN images i ON i.properties_id = p.id
                             JOIN categories c ON p.categories_id = c.id
                             JOIN types ty ON p.types_id = ty.id
-                            WHERE t.status = 'Ativo' && t.type = '{$type}' GROUP BY t.id ORDER BY t.updated_at DESC";
+                            WHERE t.status = 'Ativo'";
+
+        if (!empty($type)) {
+            $this->query .= " && t.type = '{$type}'";
+        }
+
+        $this->query .= " GROUP BY t.id ORDER BY t.updated_at DESC";
+
 
         return $this;
     }
@@ -282,11 +330,35 @@ class Properties extends Model
     public function propertiesFeatures()
     {
 
-        $this->query = "SELECT f.feature FROM properties p
+        $this->query = "SELECT * FROM properties p
                                 JOIN properties_features pf ON pf.properties_id = p.id
                                 JOIN features f ON f.id = pf.features_id
                                 WHERE p.active = 'Ativo'";
 
         return $this;
     }
+
+    /**Não Usar */
+    // public function propertyProperties($propertieId)
+    // {
+    //     $this->query = "SELECT * FROM properties p
+    //                     LEFT JOIN
+    //                         addresses a ON p.addresses_id = a.id
+    //                     LEFT JOIN
+    //                         images i ON p.id = i.properties_id
+    //                     LEFT JOIN
+    //                         categories c ON p.categories_id = c.id
+    //                     LEFT JOIN
+    //                         types ty ON p.types_id = ty.id
+    //                     LEFT JOIN
+    //                         properties_comfortable pc ON p.id = pc.properties_id
+    //                     LEFT JOIN
+    //                         properties_features pf ON p.id = pf.properties_id
+    //                     LEFT JOIN
+    //                         properties_structures ps ON p.id = ps.properties_id
+    //                     WHERE
+    //                         p.id =  {$propertieId}";
+
+    //     return $this;
+    // }
 }

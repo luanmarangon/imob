@@ -106,6 +106,20 @@ body {
   font-size: 1.2em;
 }
 
+/*LINK*/
+.link {
+  text-decoration: none;
+  font-size: 0.875em;
+  font-weight: 800;
+  color: blue;
+  font-style: italic;
+}
+
+.link:hover {
+  font-size: 1em;
+  transition: 0.2;
+}
+
 /*OPTIN*/
 .main_optin {
   text-align: center;
@@ -446,6 +460,11 @@ body {
   margin-bottom: 50px;
 }
 
+.policy-list {
+  padding-left: 5%;
+  text-align: justify;
+}
+
 /*Filter*/
 .main_filter .advanced_filter {
   display: none;
@@ -464,12 +483,15 @@ body {
 
 .property-highlight.sale {
   background-color: #FDDCDC;
-  color: #FF0000;
+  color: rgba(255, 0, 0, 0.90);
+
+  /* color: #FF0000; */
 }
 
 .property-highlight.rent {
   background-color: #DCE6FF;
-  color: #0000FF;
+  color: rgba(0, 0, 255, 0.90);
+  /* color: #0000FF; */
 }
 
 .property-highlight.sale::before {
@@ -491,6 +513,29 @@ body {
   /* Outros estilos para o hover */
 }
 
+/** Ajuste da TD da Table*/
+.property-table-td {
+  width: 80% !important;
+}
+
+
+/*Teste Imagem com a Faixa do TYPE*/
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* background-color: rgba(0, 0, 0, 0.7); */
+  /* Cor do fundo com transparência */
+  /* color: #fff; */
+  /* Cor do texto */
+  padding: 10px;
+  /* Preenchimento interno */
+}
 
 
 

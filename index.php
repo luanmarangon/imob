@@ -21,6 +21,7 @@ $route = new Router(url(), ":");
 
 $route->namespace("Source\App");
 $route->get("/", "Web:home");
+$route->post("/", "Web:home");
 $route->get("/contato", "Web:contact");
 $route->post("/contato", "Web:contact");
 $route->get("/optin", "Web:optin");
@@ -30,8 +31,8 @@ $route->post("/interest", "Web:interest");
 $route->get("/filtro/{type}", "Web:filter");
 // $route->post("/filtro/{type}", "Web:filter");
 /*Consulta dos Filtros  */
-$route->get("/pesquisa", "Web:propertySearch");
-$route->post("/pesquisa", "Web:propertySearch");
+$route->get("/propertySearch", "Web:propertySearch");
+$route->post("/propertySearch", "Web:propertySearch");
 
 $route->get("/destaques", "Web:emphasis");
 $route->post("/destaques", "Web:emphasis");
@@ -40,6 +41,7 @@ $route->post("/propriedades/{id}", "Web:property");
 // $route->get("/alugar", "Web:rent");
 // $route->get("/comprar", "Web:purchase");
 $route->get("/termos", "Web:terms");
+$route->get("/politicaPrivacidade", "Web:privacyPolicy");
 // $route->get("/entrar", "Web:login");
 // $route->post("/entrar", "Web:login");
 

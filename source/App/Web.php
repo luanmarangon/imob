@@ -80,7 +80,9 @@ class Web extends Controller
         $comfortable = (new Comfortable())->find()->fetch(true);
         $features = (new Features())->find()->fetch(true);
         $types = (new Type())->find()->fetch(true);
-        $addresses = (new Addresses())->distinct("city")->fetch(true);
+        $addresses = (new Addresses())->find("", "", "city, state")->group("city")->fetch(true);
+        // $addresses = (new Addresses())->distinct("city")->fetch(true);
+        // var_dump($addresses);
 
         $sale = (new Properties())->transactionsPropertiesActive('venda')->fetch(true);
         $rent = (new Properties())->transactionsPropertiesActive('aluguel')->fetch(true);
@@ -282,49 +284,49 @@ class Web extends Controller
     public function propertySearch(array $data): void
     {
 
-        $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
-
-        if ($data['type'] === 'Aluguel') {
-            $type = "Aluguel";
-        } else {
-            $type = "Venda";
+        if (!empty($data["action"]) && $data["action"] == "home") {
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $type = null;
+            $category = null;
+            if (!empty($data['category'])) {
+                $category = $data['category'];
+            }
+            $typesData = null;
+            if (!empty($data['type'])) {
+                $typesData = $data['type'];
+            }
+            $locationData = null;
+            if (!empty($data['locality'])) {
+                $locationData = $data['locality'];
+            }
+            $featuresData = null;
+            if (!empty($data['features'])) {
+                $featuresData = $data['features'];
+            }
+            $teste = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData);
         }
 
-        $properties = (new Properties())->find(
-            "active = :active",
-            "active=1"
-        )
-            ->limit(8)
-            // ->order("updated_at ASC")
-            ->fetch(true);
+        if (!empty($data["action"]) && $data["action"] == "filter") {
 
-        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
-        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
-
-        if (empty($data['category']) && empty($data['location']) && empty($data['typeProperties']) && empty($data['feature'])) {
-
-            $transactionType = (new Transactions())->find(
-                "type = :type AND status = :status",
-                "type={$data['type']}&status=Ativo"
-            )->fetch(true);
-        } else {
-
-            if ($data['category'] === "") {
-
-                $category = (new Category())->find("", "", "id")->fetch(true);
-                $data['category'] = null;
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+            $type = $data['typePage'];
+            $category = null;
+            if (!empty($data['category'])) {
+                $category = $data['category'];
             }
-
-
-
-            $category = !empty($data['category']) ? $data['category'] : $category;
-            $locationData = !empty($data['location']) ? $data['location'] : null;
-            $typesData = !empty($data['typeProperties']) ? $data['typeProperties'] : null;
-            $featuresData = !empty($data['feature']) ? $data['feature'] : null;
-
-            // excluir essa Function searchProperties
-            // $propertiCategory = (new Properties())->searchProperties($category, $typesData, $locationData, $featuresData)->fetch(true);
-            $transactionType = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData)->fetch(true);
+            $typesData = null;
+            if (!empty($data['type'])) {
+                $typesData = $data['type'];
+            }
+            $locationData = null;
+            if (!empty($data['locality'])) {
+                $locationData = $data['locality'];
+            }
+            $featuresData = null;
+            if (!empty($data['features'])) {
+                $featuresData = $data['features'];
+            }
+            $teste = (new Properties())->searchPropertiesAndTransactions($type, $category, $typesData, $locationData, $featuresData);
         }
 
 
@@ -338,11 +340,7 @@ class Web extends Controller
 
         echo $this->view->render("propertySearch", [
             "head" => $head,
-            "transactionType" => $transactionType,
-            "properties" => $properties,
-            "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures,
-
+            "teste" => $teste->fetch(true)
         ]);
     }
 
@@ -364,6 +362,8 @@ class Web extends Controller
         $addresses = (new Addresses())->distinct("city")->fetch(true);
 
         $propertieTransactions = (new Properties())->transactionsPropertiesActive($type)->fetch(true);
+
+        /**Analisar o Front */
         $query = (new Properties())->propertiesFeatures()->fetch(true);
         // var_dump($query);
 
@@ -385,29 +385,15 @@ class Web extends Controller
             "category" => $category,
             "typesProperties" => $typesProperties,
             "features" => $features,
-            "addresses" => $addresses
+            "addresses" => $addresses,
+            "query" => $query
         ]);
     }
 
 
     public function emphasis()
     {
-
-        $properties = (new Properties())->find()
-            // ->limit(8)
-            // ->order("updated_at ASC")
-            ->fetch(true);
-
-        $transactionProperties = (new Transactions())->find(
-            "status = :status",
-            "status=Ativo"
-        )->fetch(true);
-
-        // var_dump($transactionProperties);
-
-
-        $propertiComfortable = (new PropertiesComfortable())->find()->fetch(true);
-        $propertiStructures  = (new PropertiesStructures())->find()->fetch(true);
+        $emphasis = (new Properties())->transactionsPropertiesActive(null);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
@@ -418,14 +404,14 @@ class Web extends Controller
 
         echo $this->view->render("emphasis", [
             "head" => $head,
-            "properties" => $properties,
-            "transactionProperties" => $transactionProperties,
-            "propertiComfortable" => $propertiComfortable,
-            "propertiStructures" => $propertiStructures,
+            "emphasis" => $emphasis->fetch(true)
         ]);
     }
     public function property(array $data)
     {
+
+        // $teste = (new Properties())->propertyProperties($data['id']);
+        // // var_dump($teste->fetch(true));
 
         $properti = (new Properties())->findById($data['id']);
         if (!$properti) {
@@ -437,8 +423,14 @@ class Web extends Controller
             "properties={$properti->id}"
         )
             ->limit(8)
-            ->order("identification ASC")
             ->fetch(true);
+        $imagesCount = (new Images())->find(
+            "properties_id = :properties",
+            "properties={$properti->id}"
+        )->count();
+
+
+        // var_dump($propertiesImages);
 
         $propertiComfortable = (new PropertiesComfortable())
             ->find()
@@ -459,9 +451,9 @@ class Web extends Controller
             ->fetch(true);
 
         $propertiTributes = (new Tributes())->find(
-            "properties_id = :properties AND exercise = year(NOW())",
+            "properties_id = :properties AND exercise = YEAR(NOW())",
             "properties={$properti->id}"
-        )->fetch(true);
+        )->order("updated_at DESC")->fetch(true);
 
         /**Inicio Testes */
         // var_dump($propertiStructures);
@@ -477,12 +469,14 @@ class Web extends Controller
 
         echo $this->view->render("property", [
             "head" => $head,
+            // "teste" => $teste->fetch(true),
             "properti" => $properti,
             "propertiesImages" => $propertiesImages,
             "propertiComfortable" => $propertiComfortable,
             "propertiFeatures" => $propertiFeatures,
             "propertiStructures" => $propertiStructures,
-            "propertiTributes" => $propertiTributes
+            "propertiTributes" => $propertiTributes,
+            "imagesCount" => $imagesCount
 
         ]);
     }
@@ -497,6 +491,19 @@ class Web extends Controller
         );
 
         echo $this->view->render("terms", [
+            "head" => $head
+        ]);
+    }
+    public function privacyPolicy()
+    {
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " - " . CONF_SITE_TITLE,
+            CONF_SITE_DESC,
+            url("/termos"),
+            theme("/assets/images/share.png")
+        );
+
+        echo $this->view->render("privacyPolicy", [
             "head" => $head
         ]);
     }

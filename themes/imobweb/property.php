@@ -15,14 +15,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-lg-8">
-
                     <!-- Carousel Slide -->
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        </div>
+                        <?php if ($imagesCount) : ?>
+                            <div class="carousel-indicators">
+                                <?php for ($i = 0; $i < $imagesCount; $i++) : ?>
+                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<?= $i; ?>" class="active" aria-current="true" aria-label="<?= $i; ?>"></button>
+                                <?php endfor; ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="carousel-inner">
                             <?php if (!empty($propertiesImages)) : ?>
                                 <?php foreach ($propertiesImages as $images) : ?>
@@ -34,9 +35,7 @@
                                 <div class="carousel-item active">
                                     <img src="<?= theme("/assets/images/semImagem.png"); ?>" class="d-block w-100" alt="...">
                                 </div>
-
                             <?php endif; ?>
-
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -47,14 +46,23 @@
                             <span class="visually-hidden">Proximo</span>
                         </button>
                     </div>
-
+                    <!-- FIM Carousel Slide -->
                     <div class="main_property_content_price text-muted pt-4">
-                        <p class="main_property_content_price_small">IPTU:
-                            <?= $propertiTributes ? str_price($propertiTributes) : "Não Informado"; ?></p>
+                        <?php if ($propertiTributes) : ?>
+                            <?php foreach ($propertiTributes as $key) : ?>
+                                <p class="main_property_content_price_small"><?= $key->findTribute($key->charges_id)->charge; ?>: <?= $key->value; ?>/<?= $key->exercise; ?></p>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+
+                        <!-- <p class="main_property_content_price_small">IPTU: <?= $propertiTributes ? $propertiTributes : "Não Informado"; ?></p> -->
+
+
+
                         <p class="main_property_content_price_big">Valor de
                             <?= $properti->transactionsProperties($properti->id)->type; ?>:
                             R$
-                            <?= str_price($properti->transactionsProperties($properti->id)->value); ?><?= $properti->transactionsProperties($properti->id)->type === "Aluguel" ? "/ mês" : ""; ?>
+                            <?= $properti->transactionsProperties($properti->id)->value; ?><?= $properti->transactionsProperties($properti->id)->type === "Aluguel" ? "/ mês" : ""; ?>
                         </p>
                     </div>
 
@@ -79,21 +87,20 @@
                             não hesite em entrar em contato.
                         </p>
                     </div>
+                    <!-- Comodos  -->
                     <div class="main_property_content_features">
                         <h2 class="text-front">Cômodos do imóvel</h2>
                         <?php if ($propertiComfortable) : ?>
                             <?php foreach ($propertiComfortable as $comfortable) : ?>
-                                <!-- <?php if ($comfortable->properties_id === $properti->id) : ?> -->
-                                <table class="table table-striped">
-                                    <tbody>
+                                <table class="table">
+                                    <tbody class="table-dark">
                                         <tr>
-                                            <td><?= $comfortable->comfortable()->convenient; ?>
+                                            <td class="property-table-td"><?= $comfortable->comfortable()->convenient; ?>
                                             </td>
-                                            <td><?= $comfortable->quantity; ?></td>
+                                            <td class=""><?= $comfortable->quantity; ?></td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                <!-- <?php endif; ?> -->
                             <?php endforeach; ?>
                         <?php else : ?>
                             <div class="modal_aviso">

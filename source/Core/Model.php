@@ -184,6 +184,11 @@ abstract class Model
         $this->order = " ORDER BY {$columnOrder}";
         return $this;
     }
+    public function group(string $group): Model
+    {
+        $this->order = " GROUP BY {$group}";
+        return $this;
+    }
 
     /**
      * @param int $limit
