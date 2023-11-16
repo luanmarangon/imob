@@ -5,9 +5,9 @@
         <img src="<?= theme('assets/images/icons/icon_cadeado.png'); ?>" alt="Login">
         <h2>Login</h2>
         <h3>Entre com suas Credencias</h3>
-        <div class="ajax_response"><?= flash(); ?></div>
 
         <form class="login-form" action="<?= url("/admin/login") ?>" method="post" enctype="multipart/form-data">
+            <div class="ajax_response"><?= flash(); ?></div>
             <?= csrf_input(); ?>
 
             <input type="email" name="email" class="control" value="<?= ($cookie ?? null); ?>" placeholder="Login">

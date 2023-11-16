@@ -26,17 +26,6 @@ class Login extends Controller
         } else {
             redirect("/admin/login");
         }
-
-        //Testar Validação - Caso o User < 5 achar URL do ADMIN
-        // if ($user) {
-        //     if ($user->level >= 5) {
-        //         redirect("/admin/dash");
-        //     } else {
-        //         redirect("/app");
-        //     }
-        // } else {
-        //     redirect("/admin/login");
-        // }
     }
 
     /**
@@ -45,46 +34,117 @@ class Login extends Controller
      */
     public function login(?array $data): void
     {
-        $user = Auth::user();
+        // $user = Auth::user();
 
+
+        // if ($user && $user->level >= 5) {
+        //     redirect("/admin/dash");
+        // }
+
+
+        // if (!empty($data['csrf'])) {
+        //     if (!csrf_verify($data)) {
+        //         $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
+        //         // echo json_encode(["msg" => var_dump($data['csrf'])]);
+        //         echo json_encode($json,);
+        //         return;
+        //     }
+
+        //     if (request_limit("weblogin", 3, 60 * 5)) {
+        //         $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();
+        //         echo json_encode($json);
+        //         return;
+        //     }
+
+        //     if (empty($data['email'] || empty($data['password']))) {
+        //         $json['message'] = $this->message->warning("Informe seu email e senha para entrar")->render();
+        //         echo json_encode($json);
+        //         return;
+        //     }
+        //     $save = (!empty($data['save']) ? true : false);
+        //     $auth = new Auth();
+        //     // $login = $auth->login($data["email"], $data["password"], true, 5);
+        //     $login = $auth->login($data['email'], $data['password'], $save);
+
+        //     if ($login) {
+        //         $this->message->success("Seja bem-vindo(a) de volta " . Auth::user()->first_name . " " . Auth::user()->last_name . "!")->flash();
+        //         $json['redirect'] = url("/admin/dash");
+        //     } else {
+        //         $json['message'] = $auth->message()->before("Ooops! ")->after(".")->render();
+        //     }
+
+        //     echo json_encode($json);
+        //     return;
+        // }
+
+        // if (Auth::user()) {
+        //     redirect("/admin/dash");
+        // }
+
+        // if (!empty($data['csrf'])) {
+        //     if (!csrf_verify($data)) {
+        //         $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
+        //         // echo json_encode(["msg" => var_dump($data['csrf'])]);
+        //         echo json_encode($json);
+        //         return;
+        //     }
+
+        //     if (request_limit("weblogin", 3, 60 * 5)) {
+        //         $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();
+        //         echo json_encode($json);
+        //         return;
+        //     }
+
+        //     if (empty($data['email'] || empty($data['password']))) {
+        //         $json['message'] = $this->message->warning("Informe seu email e senha para entrar")->render();
+        //         echo json_encode($json);
+        //         return;
+        //     }
+        //     $save = (!empty($data['save']) ? true : false);
+        //     $auth = new Auth();
+        //     $login = $auth->login($data['email'], $data['password'], $save);
+
+        //     if ($login) {
+        //         $this->message->success("Seja bem-vindo(a) de volta " . Auth::user()->first_name . " " . Auth::user()->last_name . "!")->flash();
+        //         $json['redirect'] = url("/app");
+        //     } else {
+        //         $json['message'] = $auth->message()->before("Ooops! ")->after(".")->render();
+        //     }
+
+        //     echo json_encode($json);
+        //     return;
+        // }
+
+        $user = Auth::user();
 
         if ($user && $user->level >= 5) {
             redirect("/admin/dash");
         }
 
+        if (!empty($data["email"]) && !empty($data["password"])) {
 
-        if (!empty($data['csrf'])) {
-            // if (!csrf_verify($data)) {
-            //     $json['message'] = $this->message->error("Erro ao enviar, favor use o formulário")->render();
-            //     // echo json_encode(["msg" => var_dump($data['csrf'])]);
-            //     echo json_encode($json,);
-            //     return;
-            // }
-
-            if (request_limit("weblogin", 3, 60 * 5)) {
-                $json['message'] = $this->message->error("Você já efetuou 3 tentativas, esse é o Limite. Por favor aguarde 5 segundos para nova tentativa de acesso!")->render();
+            //VALIDAÇÃO DE VARIAS TENTATIVAS
+            if (request_limit("loginlogin", 3, 60 * 5)) {
+                $json["message"] = $this->message->error("ACESSO NEGADO: Aguarde por 05 minutos para tentar novamente")->render();
                 echo json_encode($json);
                 return;
             }
 
-            if (empty($data['email'] || empty($data['password']))) {
-                $json['message'] = $this->message->warning("Informe seu email e senha para entrar")->render();
-                echo json_encode($json);
-                return;
-            }
-            $save = (!empty($data['save']) ? true : false);
             $auth = new Auth();
-            // $login = $auth->login($data["email"], $data["password"], true, 5);
-            $login = $auth->login($data['email'], $data['password'], $save);
+            $login = $auth->login($data["email"], $data["password"], true, 5);
 
             if ($login) {
-                $this->message->success("Seja bem-vindo(a) de volta " . Auth::user()->first_name . " " . Auth::user()->last_name . "!")->flash();
-                $json['redirect'] = url("/admin/dash");
+                $json["redirect"] = url("/admin/dash");
             } else {
-                $json['message'] = $auth->message()->before("Ooops! ")->after(".")->render();
+                $json["message"] = $auth->message()->render();
             }
 
             echo json_encode($json);
+            return;
+
+
+
+
             return;
         }
 

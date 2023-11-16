@@ -230,7 +230,9 @@ $route->post("/users/user/{user_id}", "Users:user");
 
 
 //Backup
-$route->get("/backup", "Backup:backup");
+$route->get("/backup/home", "Admin:backupHome");
+$route->get("/backup/new", "Admin:execBackup");
+// $route->get("/backup/list", "Backup:home");
 
 
 /**

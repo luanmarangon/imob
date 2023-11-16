@@ -295,7 +295,7 @@ CREATE TABLE `customer_service` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO customer_service VALUES("13","Luan de Lima Marangon","luan.limarangon@gmail.com","(18) 99748-2397","Ola, gostaria de saber mais informações relevantes para anunciar um imovel.","S","2023-08-24 20:30:07","2023-08-24 20:31:02");
 INSERT INTO customer_service VALUES("14","Luan de Lima Marangon","luan.limarangon@gmail.com","(18) 99748-2397","afadfad","S","2023-10-21 10:58:39","2023-10-21 10:59:56");
@@ -304,6 +304,8 @@ INSERT INTO customer_service VALUES("16","JESSICA FERNANDA VIEIRA MARANGON","jes
 INSERT INTO customer_service VALUES("17","vanda","vanda@marangon.com","(11) 11111-1111","teste de envio automatioc","S","2023-10-21 11:36:45","2023-10-21 11:37:10");
 INSERT INTO customer_service VALUES("18","Luan de Lima Marangon","luan.limarangon@gmail.com","(18) 99748-2397","teste de relatorios","N","2023-10-26 11:57:43","2023-10-26 11:57:43");
 INSERT INTO customer_service VALUES("19","LUAN DE LIMA MARANGON","jessicafer470@hotmail.com","(18) 9866-6332","bnzcn","N","2023-11-03 18:52:16","2023-11-03 18:52:16");
+INSERT INTO customer_service VALUES("20","LUAN DE LIMA MARANGON","jessicafer470@hotmail.com","(18) 9866-6332","asa","N","2023-11-15 10:38:07","2023-11-15 10:38:07");
+INSERT INTO customer_service VALUES("21","LUAN DE LIMA MARANGON","luan.marangon@egestora.com.br","(18) 9866-6332","asdads\n","N","2023-11-15 10:39:01","2023-11-15 10:39:01");
 
 
 DROP TABLE IF EXISTS features;

@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Developer
+ */
+
+define("CONF_DEVELOPER_NAME", "Luan Marangon");
+define("CONF_DEVELOPER_SITE", "www.marangondev.com.br");
+define("CONF_DEVELOPER_SITE_DOMAIN", "https:\\www.marangondev.com.br");
+
+
+
+
+
+/**
  * DATA BASE
  */
 

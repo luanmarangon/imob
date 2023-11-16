@@ -60,7 +60,7 @@
                 echo $nav("files-o", "cs/home", "Suporte ao Cliente");
                 echo $nav("user", "users/home", "Usuários");
                 echo "<li class=\"dash_sidebar_nav_li\"><a class=\"icon-link\" href=\"" . url() . " \" target=\"_blank\">Ver site</a></li>";
-                echo $nav("cloud-download", "backup", "Backup");
+                echo $nav("cloud-download", "backup/home", "Backup");
 
 
                 echo $nav("sign-out on_mobile", "logoff", "Sair");

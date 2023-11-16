@@ -3,23 +3,27 @@
 
 <section class="dash_content_app">
     <header class="dash_content_app_header">
-        <h2 class="icon-coffee">Relatorio</h2>
+        <h2 class="icon-coffee">Relatório de Imóveis</h2>
     </header>
+    <div class="ajax_response"><?= flash(); ?></div>
+
     <?php if (!$reports) : ?>
     <div class="dash_content_app_box">
-        <form class="app_form" action="<?= url("/admin/reports/relImoveis"); ?>" method="get">
+        <form class="app_form" action="<?= url("/admin/reports/relImoveis"); ?>" method="post"
+            enctype="multipart/form-data">
+            <!-- <?= csrf_input(); ?> -->
             <!--ACTION SPOOFING-->
             <input type="hidden" name="action" value="relImoveis" />
             <div class="label_g2">
                 <label class="label">
                     <span class="legend">*Data Inicial:</span>
-                    <input type="date" name="dateFirst" required value="<?= date('2023-01-01'); ?>" />
+                    <input type="date" name="dateFirst" required />
 
                 </label>
 
                 <label class="label">
                     <span class="legend">*Data Final:</span>
-                    <input type="date" name="dateLast" required value="<?= date('Y-m-d'); ?>" />
+                    <input type="date" name="dateLast" required />
                 </label>
 
                 <label class="label">
@@ -46,19 +50,17 @@
                     </select>
                 </label>
             </div>
-
-
-
             <div class="al-right">
                 <button class="btn btn-blue icon-check-square-o">Buscar</button>
-                <!-- <a href="<?= url("/admin/reports/relatorioImoveis"); ?>" class="btn btn-green icon-check-square-o"
-                    data-teste="teste">Buscar</a> -->
             </div>
         </form>
     </div>
     <?php else : ?>
     <div class="dash_content_app_box">
-        <!-- <?php if ($reports) : ?> -->
+        <?php if ($dateFirst && $dateLast) : ?>
+        <p>Período: <?= date_fmt($dateFirst); ?> à <?= date_fmt($dateLast); ?></p>
+        <?php endif; ?>
+
         <div id="containerDoBotao">
             <a class="btn btn-default icon-print" id="printReports">Imprimir</a>
         </div>
@@ -85,9 +87,6 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-        <!-- <?= $paginator; ?> -->
-        <!-- <?php endif; ?> -->
     </div>
 
     <?php endif; ?>

@@ -365,6 +365,11 @@ p {
     transition-duration: var(--hover-duration);
 }
 
+.btn-small {
+    font-size: 0.658em !important;
+}
+
+
 .btn-green {
     background-color: var(--color-green);
 }
@@ -811,6 +816,10 @@ p {
     justify-content: space-between;
     padding: 15px;
     background: #FBFBFB;
+}
+
+.app_control_subs article h4:first-child {
+    flex: 0.8;
 }
 
 .app_control_subs article:nth-child(2n+0) {
