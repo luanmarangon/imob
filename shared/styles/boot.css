@@ -252,6 +252,68 @@ input:-webkit-autofill {
   display: none;
 }
 
+/*BUTTONS*/
+
+.btn {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #555555;
+  border: none;
+  cursor: pointer;
+
+  color: #ffffff;
+  font-size: 0.9em;
+  font-weight: var(--weight-strong);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+
+  -webkit-border-radius: var(--radius-normal);
+  -moz-border-radius: var(--radius-normal);
+  border-radius: var(--radius-normal);
+  transition-duration: var(--hover-duration);
+}
+
+.btn-small {
+  font-size: 0.658em !important;
+}
+
+
+.btn-green {
+  background-color: var(--color-green);
+}
+
+.btn-green:hover {
+  background-color: var(--hover-color-green);
+}
+
+.btn-blue {
+  background-color: var(--color-blue);
+}
+
+.btn-blue:hover {
+  background-color: var(--hover-color-blue);
+}
+
+.btn-red {
+  background-color: var(--color-red);
+}
+
+.btn-red:hover {
+  background-color: var(--hover-color-red);
+}
+
+.btn-yellow {
+  background-color: var(--color-yellow);
+}
+
+.btn-yellow:hover {
+  background-color: var(--hover-color-yellow);
+}
+
+.btn-default {
+  background-color: var(--color-default) !important;
+}
+
+
 /*GRADIENTS*/
 .gradient {
   background-size: 200% auto;

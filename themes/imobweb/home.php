@@ -19,70 +19,72 @@ $v->layout("_theme"); ?>
 <div class="main_filter">
     <div class="container my-5">
         <div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="filtros" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Habilitar Filtros</label>
+            </div>
+            <!-- <h6>Pesquisa de Fltros</h6> -->
+            <!-- <a class="btn btn-default advanced_hidden">Filtros</a> -->
+        </div>
+        <div class="advanced_filter">
             <form action="<?= url("/propertySearch"); ?>" class="row form-inline w-100" method="post" enctype="multipart/form-data">
                 <div class="ajax_response"><?= flash(); ?></div>
                 <?= csrf_input(); ?>
                 <!--ACTION SPOOFING-->
                 <input type="hidden" name="action" value="home" />
 
-                <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="category" class="mb-2"><b>Categorias</b></label>
-                    <select name="category[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                <div class="main_filter_home">
+                    <div class="form-group col-12 col-sm-6 col-lg-3 main_filter_home_options">
+                        <p>Categorias</p>
                         <?php foreach ($category as $c) : ?>
-                            <option value="<?= $c->id; ?>"><?= $c->category; ?></option>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="category[]" value="<?= $c->id; ?>">
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><?= $c->category; ?></label>
+                            </div>
                         <?php endforeach; ?>
-                    </select>
-                </div>
+                    </div>
 
-                <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="type" class="mb-2"><b>Tipo</b></label>
-                    <select name="type[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                    <div class="form-group col-12 col-sm-6 col-lg-3 main_filter_home_options">
+                        <p>Tipos</p>
                         <?php foreach ($types as $t) : ?>
-                            <option value="<?= $t->id; ?>"><?= $t->type; ?></option>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="type[]" value="<?= $t->id; ?>" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault"><?= $t->type; ?></label>
+                            </div>
                         <?php endforeach; ?>
-                    </select>
-                </div>
+                    </div>
 
-                <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="localition" class="mb-2"><b>Localidade</b></label>
-                    <select name="locality[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
+                    <div class="form-group col-12 col-sm-6 col-lg-3 main_filter_home_options">
+                        <p>Cidades</p>
                         <?php foreach ($addresses as $a) : ?>
-                            <option value="<?= $a->city; ?>-<?= $a->state; ?>"><?= $a->city; ?>-<?= $a->state; ?></option>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="city[]" value="<?= $a->city; ?>-<?= $a->state; ?>" id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><?= $a->city; ?>-<?= $a->state; ?></label>
+                            </div>
                         <?php endforeach; ?>
-                    </select>
+                    </div>
                 </div>
-
-                <div class="form-group col-12 col-sm-6 col-lg-3">
-                    <label for="search" class="mb-2"><b>Características</b></label>
-                    <select name="features[]" class="selectpicker" title="Escolha..." multiple data-actions-box="true">
-                        <?php foreach ($features as $f) : ?>
-                            <option value="<?= $f->id; ?>"><?= $f->feature; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- <div class="col-6 mt-3"> -->
-                <!-- <a href="#" class="text-front advanced_filter_btn">Filtro Avançado &darr;</a> -->
-                <!-- <a class="btn btn-front advanced_hidden mb-2">Filtro Avançado &darr;</a> -->
-                <!-- </div> -->
-
-                <!-- filtros avancados -->
-                <!-- <div class="row form-inline w-100 advanced_filter">
-                    <hr>
-                    <?php
-                    for ($i = 0; $i < 4; $i++) {   ?>
-                        <div class="form-group col-12 col-sm-6 col-lg-3">
-                            <label for="search" class="mb-2"><b>Comprar ou Alugar?</b></label>
-                            <select name="search" class="selectpicker" title="Escolha...">
-                                <option value=" ">Comprar</option>
-                                <option value=" ">Alugar</option>
-                            </select>
-                        </div>
-                    <?php
-                    }
-                    ?>
+                <hr>
+                <!-- <div class="main_filter_home_options">
+                    <p>Caracteristicas</p>  
                 </div> -->
+                <!-- <div class="main_filter_home"> -->
+                <div class="main_filter_home_features_title">
+                    <p>Características</p>
+                </div>
 
+                <div class="main_filter_home_features">
+                    <!-- <p>Características</p> -->
+                    <?php foreach ($features as $f) : ?>
+                        <div class="form-check feature">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault"><?= $f->feature; ?></label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <!-- </div> -->
 
                 <div class="col-6 mt-3 text-end">
                     <button class="btn btn-front icon-search" type="submit">Pesquisar</button>
@@ -166,7 +168,8 @@ $v->layout("_theme"); ?>
                             </div>
 
                             <div class="card-body">
-                                <h2 class="main_properties_item_title text-front"><span class="reference"><?= $s->reference; ?> -</span> Linda Casa no
+                                <h2 class="main_properties_item_title text-front"><span class="reference"><?= $s->reference; ?>
+                                        -</span> Linda Casa no
                                     <?= $s->district ?> </h2>
                                 <p class="main_properties_item_category">Imóvel
                                     <?= $s->category; ?></p>
@@ -206,7 +209,8 @@ $v->layout("_theme"); ?>
                             </div>
 
                             <div class="card-body">
-                                <h2 class="main_properties_item_title text-front"><span class="reference"><?= $s->reference; ?> -</span> Linda Casa no
+                                <h2 class="main_properties_item_title text-front"><span class="reference"><?= $s->reference; ?>
+                                        -</span> Linda Casa no
                                     <?= $s->district ?> </h2>
                                 <p class="main_properties_item_category">Imóvel
                                     <?= $s->category; ?></p>

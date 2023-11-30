@@ -1,22 +1,43 @@
-$(document).ready(function () {
-    /*Advanced Filter*/
-    var btn = document.querySelector('.advanced_hidden');
-    var container = document.querySelector('.advanced_filter');
-    /**Condição para não apresentar erro nas demais páginas */
-    if (btn) {
-        btn.addEventListener('click', function () {
-            if (container.style.display === 'none') {
-                container.style.display = 'flex';
-            } else {
-                container.style.display = 'none';
-            }
-        });
-    }
+// $(document).ready(function () {
+//     /*Advanced Filter*/
+//     var btn = document.querySelector('.advanced_hidden');
+//     var container = document.querySelector('.advanced_filter');
+//     /**Condição para não apresentar erro nas demais páginas */
+//     if (btn) {
+//         btn.addEventListener('click', function () {
+//             if (container.style.display === 'none') {
+//                 container.style.display = 'flex';
+//             } else {
+//                 container.style.display = 'none';
+//             }
+//         });
+//     }
 
 
 
-    //FIM Script
-})
+//     //FIM Script
+// })
+
+// $(document).ready(function () {
+//     /* Advanced Filter Toggle */
+//     $('.advanced_hidden').on('click', function () {
+//         $('.advanced_filter').toggle();
+//     });
+// });
+
+// $(document).ready(function () {
+$(function () {
+    /* Advanced Filter Toggle */
+    $('.form-check-input').on('change', function () {
+        if (this.checked) {
+            $('.advanced_filter').show();  // Exibe o elemento se o checkbox estiver marcado
+        } else {
+            $('.advanced_filter').hide();  // Oculta o elemento se o checkbox não estiver marcado
+        }
+    });
+});
+
+
 
 // JQUERY INIT
 

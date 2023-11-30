@@ -23,16 +23,21 @@
                             <br><?= CONF_SITE_ADDR_CITY . "/" . CONF_SITE_ADDR_STATE; ?>
                         </p>
                     </div>
-                    <div class="d-none d-md-flex col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
+                    <div
+                        class="d-none d-md-flex col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
                         <i class="icon-clock-o"></i>
                         <p class="my-auto ml-3">
                             <?= CONF_COMPANY_ATTENDANCE_WEEK . ": " . CONF_COMPANY_ATTENDANCE_WEEK_TIME; ?>
                             <br><?= CONF_COMPANY_ATTENDANCE_WEEKEND . ": " . CONF_COMPANY_ATTENDANCE_WEEKEND_TIME; ?>
                         </p>
                     </div>
-                    <div class="d-flex col-4 col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
+                    <div
+                        class="d-flex col-4 col-md-6 col-lg-4 justify-content-center align-items-center p-2 text-white">
                         <i class="icon-envelope"></i>
-                        <p class="my-auto ml-3"><a class="text-white" href="mailto:<?= CONF_COMPANY_ATTENDANCE_MAIL; ?>"><?= CONF_COMPANY_ATTENDANCE_MAIL; ?></a></br><a class="text-white" href="tel:<?= CONF_COMPANY_ATTENDANCE_PHONE; ?>"><?= CONF_COMPANY_ATTENDANCE_PHONE; ?></a>
+                        <p class="my-auto ml-3"><a class="text-white"
+                                href="mailto:<?= CONF_COMPANY_ATTENDANCE_MAIL; ?>"><?= CONF_COMPANY_ATTENDANCE_MAIL; ?></a></br><a
+                                class="text-white"
+                                href="tel:<?= CONF_COMPANY_ATTENDANCE_PHONE; ?>"><?= CONF_COMPANY_ATTENDANCE_PHONE; ?></a>
                         </p>
                     </div>
                 </div>
@@ -49,7 +54,9 @@
                     </a>
                 </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -57,10 +64,14 @@
                     <ul class="navbar-nav  mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/"); ?>">Home</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link text-front" aria-current="page" href="<?= url("/destaques"); ?>">Destaque</a></li>
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro/Aluguel"); ?>">Alugar</a></li>
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/filtro/Venda"); ?>">Comprar</a></li>
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="<?= url("/contato"); ?>">Contato</a></li>
+                        <li class="nav-item"><a class="nav-link text-front" aria-current="page"
+                                href="<?= url("/destaques"); ?>">Destaque</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page"
+                                href="<?= url("/filtro/Aluguel"); ?>">Alugar</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page"
+                                href="<?= url("/filtro/Venda"); ?>">Comprar</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page"
+                                href="<?= url("/contato"); ?>">Contato</a></li>
                     </ul>
                 </div>
             </div>
@@ -85,8 +96,10 @@
                     <div class="ajax_response"><?= flash(); ?></div>
                     <?= csrf_input(); ?>
                     <input type="text" name="name" class="form-control" placeholder="Digite seu nome" size="50">
-                    <input type="email" name="email" class="form-control" placeholder="Digite seu melhor e-mail" size="50" required>
-                    <input type="tel" name="phone" class="form-control mask-phone" placeholder="Digite seu whatsapp" size="50" required>
+                    <input type="email" name="email" class="form-control" placeholder="Digite seu melhor e-mail"
+                        size="50" required>
+                    <input type="tel" name="phone" class="form-control mask-phone" placeholder="Digite seu whatsapp"
+                        size="50" required>
                     <button type="submit" class="btn btn-front">Me Avise</button>
                     <!-- <div class="ajax_response"><?= flash(); ?></div> -->
                 </form>
@@ -120,13 +133,16 @@
                 </div>
                 <div class="col-12 col-md-12 col-lg-3 text-center">
                     <?php if (CONF_SOCIAL_FACEBOOK_PAGE != "#") : ?>
-                        <a href="https://www.facebook.com/<?= CONF_SOCIAL_FACEBOOK_PAGE; ?>" target="_blank" class="btn btn-front icon-facebook icon-notext"></a>
+                    <a href="https://www.facebook.com/<?= CONF_SOCIAL_FACEBOOK_PAGE; ?>" target="_blank"
+                        class="btn btn-front icon-facebook icon-notext"></a>
                     <?php endif; ?>
                     <?php if (CONF_SOCIAL_TWITTER_CREATOR != "#") : ?>
-                        <a href="https://twitter.com/<?= CONF_SOCIAL_TWITTER_CREATOR; ?>" target="_blank" class="btn btn-front icon-twitter icon-notext"></a>
+                    <a href="https://twitter.com/<?= CONF_SOCIAL_TWITTER_CREATOR; ?>" target="_blank"
+                        class="btn btn-front icon-twitter icon-notext"></a>
                     <?php endif; ?>
                     <?php if (CONF_SOCIAL_INSTAGRAM_PAGE != "#") : ?>
-                        <a href="https://www.instagram.com/<?= CONF_SOCIAL_INSTAGRAM_PAGE; ?>" target="_blank" class="btn btn-front icon-instagram icon-notext"></a>
+                    <a href="https://www.instagram.com/<?= CONF_SOCIAL_INSTAGRAM_PAGE; ?>" target="_blank"
+                        class="btn btn-front icon-instagram icon-notext"></a>
                     <?php endif; ?>
 
 
@@ -144,7 +160,8 @@
                         CRECI 1234 |
                         <?= CONF_SITE_ADDR_STREET . ", " . CONF_SITE_ADDR_NUMBER . " - " . CONF_SITE_ADDR_DISTRICT . " - " . CONF_SITE_ADDR_CITY . "/" . CONF_SITE_ADDR_STATE . " - C.E.P: " . CONF_SITE_ADDR_ZIPCODE; ?>
                     </p>
-                    <p class="mb-0">Todos os Direitos Reservados - <a href="<?= CONF_SITE_DOMAIN_LINK; ?>" class="text-white" target="_blank"><strong><?= CONF_SITE_DOMAIN; ?></strong></a></p>
+                    <p class="mb-0">Todos os Direitos Reservados - <a href="<?= CONF_SITE_DOMAIN_LINK; ?>"
+                            class="text-white" target="_blank"><strong><?= CONF_SITE_DOMAIN; ?></strong></a></p>
                 </div>
             </div>
         </div>

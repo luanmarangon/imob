@@ -285,6 +285,8 @@ class Web extends Controller
     {
 
         if (!empty($data["action"]) && $data["action"] == "home") {
+
+            var_dump($data);
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
             $type = null;
             $category = null;

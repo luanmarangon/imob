@@ -592,7 +592,59 @@ body {
 }
 
 /*# sourceMappingURL=style.css.map */
+/*Filtro Category, Types, City*/
+.main_filter_home {
+  /* border: 5px solid green; */
+  display: flex;
+  justify-content: space-between;
 
-.border_teste {
-  border: 5px solid green;
+}
+
+.main_filter_home_options {
+  display: inline-grid;
+}
+
+.main_filter_home_options>p {
+  color: var(--color-default);
+  display: block;
+  text-align: start;
+  font-size: 1.2em;
+  font-weight: 600;
+
+}
+
+hr {
+  border: none;
+  height: 3px;
+  background-color: var(--color-default);
+  margin: 20px 0 !important;
+  transition: width 0.5s ease;
+}
+
+/*Filtro Features*/
+.main_filter_home_features {
+  /* border: 5px solid fuchsia; */
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.main_filter_home_features_title {
+  color: var(--color-default);
+  display: block;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.main_filter_home_features .feature {
+  flex-basis: calc(25% - 10px);
+  flex-grow: 1;
+  margin: 5px;
+}
+
+@media (max-width: 50em) {
+  .feature {
+    flex-basis: calc(30% - 10px);
+  }
 }

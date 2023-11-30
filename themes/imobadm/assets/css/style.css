@@ -345,7 +345,7 @@ p {
     background: var(--hover-color-green);
 }
 
-/*BUTTONS*/
+/* BUTTONS
 
 .btn {
     display: inline-block;
@@ -404,7 +404,7 @@ p {
 
 .btn-default {
     background-color: var(--color-default);
-}
+} */
 
 /*NOTIFICATION CENTER*/
 

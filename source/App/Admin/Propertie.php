@@ -1052,7 +1052,13 @@ class Propertie extends Admin
 
             /**If para travar a inserção com star e end entre um transaction ativo */
             $active = (new Transactions())->find("status = :s and properties_id = :p", "s=Ativo&p={$propertie->id}")->fetch();
-            if ($active) {
+
+
+            // var_dump($active,  $transactionUpdate);
+            // exit();
+
+
+            if ($active->id != $transactionUpdate->id) {
                 $msg = 'No momento, você possui a  transação ' . $active->id . ' ativa.';
                 $status = 'warning';
                 $transactionUpdate->status = "Inativo";

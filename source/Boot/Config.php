@@ -144,3 +144,10 @@ define("CONF_MAIL_OPTION_HTML", true);
 define("CONF_MAIL_OPTION_AUTH", true);
 define("CONF_MAIL_OPTION_SECURE", "tls");
 define("CONF_MAIL_OPTION_CHARSET", "utf-8");
+
+
+
+// define("CONF_MAIL_HOST", "smtp.gmail.com");
+// define("CONF_MAIL_PORT", "587");
+// define("CONF_MAIL_USER", "luan.limarangon@gmail.com");
+// define("CONF_MAIL_PASS", "npayumczcbeefneo");

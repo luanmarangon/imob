@@ -36,8 +36,8 @@ if (strpos(url(), "localhost")) {
     $minJS->add(__DIR__ . "/../../../shared/scripts/mask.js");
     $minJS->add(__DIR__ . "/../../../shared/scripts/maps.js");
     $minJS->add(__DIR__ . "/../../../shared/scripts/bootstrap.bundle.min.js");
-    $minJS->add(__DIR__ . "/../../../shared/scripts/bootstrap-select.min.js");
-    $minJS->add(__DIR__ . "/../../../shared/scripts/defaults-pt_BR.min.js");
+    // $minJS->add(__DIR__ . "/../../../shared/scripts/bootstrap-select.min.js");
+    // $minJS->add(__DIR__ . "/../../../shared/scripts/defaults-pt_BR.min.js");
     $minJS->add(__DIR__ . "/../../../shared/scripts/tinymce/tinymce.min.js");
     // $minJS->add(__DIR__ . "/../../../shared/scripts/ajax.js");
 

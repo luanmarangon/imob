@@ -13,7 +13,7 @@
 
 // });
 
-document.getElementById("printReports").addEventListener("click", function () {
-    window.print();
-});
+// document.getElementById("printReports").addEventListener("click", function () {
+//     window.print();
+// });
 
